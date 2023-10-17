@@ -1,0 +1,29 @@
+﻿
+using WebApp.Data;
+
+namespace WebApp.Models
+{
+    public class Client
+    {
+        public int ClientID { get; set; }
+        public string Name { get; set; } = null!;
+        public string Phonenumber { get; set; } = null!;
+        public string? Email { get; set; }
+
+        public int SellerID { get; set; }
+        public Seller Seller { get; set; } = null!;
+        public int ClientStatusID { get; set; }
+        public virtual ClientStatus ClientStatus { get; set; } = null!;
+        public int CompanyID { get; set; }
+        public virtual Company Company { get; set; } = null!;
+
+        public ICollection<Event> Events { get; } = new List<Event>();
+        public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
+        public ICollection<Order> Orders { get; } = new List<Order>();
+        public ICollection<Opportunity> Opportunities { get; } = new List<Opportunity>();
+        public string WhatsappID {get; set;}= null!;
+        public virtual WhatsappData WhatsappData {get; set;} = null!;
+
+    }
+}
+
