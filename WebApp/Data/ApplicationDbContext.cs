@@ -86,6 +86,7 @@ namespace WebApp.Data
                 entity.Property(e => e.Email).HasMaxLength(100).HasColumnName("email");
                 entity.Property(e => e.ClientStatusID).HasColumnName("client_status_id");
                 entity.Property(e => e.CompanyID).HasColumnName("company_id");
+                entity.Property(e => e.SellerID).HasColumnName("seller_id");
                 entity.Property(e => e.WhatsappID).HasMaxLength(25).HasColumnName("whatsapp_id");
             });
 
