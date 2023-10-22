@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace WebApp.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class WeatherForecastController : ControllerBase
 {
 

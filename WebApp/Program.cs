@@ -1,3 +1,6 @@
+using Microsoft.Net.Http.Headers;
+using Azure;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using WebApp.Data;
@@ -8,6 +11,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+
+//Add SpaStaticFiles
+
+builder.Services.AddSpaStaticFiles(configuration =>
+{
+    configuration.RootPath = "ClientApp/dist";
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -29,6 +39,35 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+
+//Add spaPath 
+var spaPath = "/app";
+if(app.Environment.IsDevelopment()){
+    app.MapWhen(y => y.Request.Path.StartsWithSegments(spaPath), builder => {
+        builder.UseSpa(spa => {
+            spa.UseProxyToSpaDevelopmentServer("http://localhost:44445");
+        });
+    });
+}else{
+    app.UseStaticFiles();
+    app.UseSpa(spa =>
+    {
+        spa.Options.SourcePath = "ClientApp"; // La carpeta raíz de tu aplicación SPA.
+        spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+        {
+            OnPrepareResponse = ctx =>
+            {
+                var headers = ctx.Context.Response.GetTypedHeaders();
+                headers.CacheControl = new CacheControlHeaderValue
+                {
+                    NoCache = true,
+                    NoStore = true,
+                    MustRevalidate = true
+                };
+            }
+        };
+    });
+}
 
 app.MapFallbackToFile("index.html");
 

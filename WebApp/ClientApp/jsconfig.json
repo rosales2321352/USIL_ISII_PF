@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Cambia a la versión de ECMAScript que necesitas
+    "module": "ESNext", // Cambia a la opción adecuada
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@config/*": ["config/*"],
+      "@hooks/*": ["hooks/*"],
+      "@context/*": ["context/*"],
+      "@assets/*": ["assets/*"],
+      "@common/*": ["common/*"],
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
