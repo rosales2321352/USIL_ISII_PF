@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Container, Typography, Grid, Paper, Divider } from '@mui/material';
+import { Button, Container, Typography, Grid, Paper, Divider, IconButton } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Link } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
 
 export class Pedidos extends Component {
     static displayName = Pedidos.name;
@@ -27,6 +30,29 @@ export class Pedidos extends Component {
         columnsCopy[0].users.push(newContact);
         this.setState({ columns: columnsCopy });
     }
+
+    // 1. Añade el estado para el modal
+    state = {
+        // ... (estado existente)
+        isModalOpen: false,
+        selectedContact: null,
+    };
+
+    // 2. Implementa el método para abrir el modal
+    openModal = (contact) => {
+        this.setState({
+            isModalOpen: true,
+            selectedContact: contact,
+        });
+    };
+
+    // 3. Implementa el método para cerrar el modal
+    closeModal = () => {
+        this.setState({
+            isModalOpen: false,
+            selectedContact: null,
+        });
+    };
 
     constructor(props) {
         super(props);
@@ -65,9 +91,18 @@ export class Pedidos extends Component {
 
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
-                        <Button variant="outlined" color="primary" onClick={this.addContact}>
-                            Añadir Pedido a Prospecto
-                        </Button>
+                        <IconButton sx={{
+                            fontSize: 30,
+                            color: '#fff',
+                            backgroundColor: '#ffa726', 
+                            boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                            '&:hover': {
+                                backgroundColor: '#ff8c00',    // Cambiamos a una tonalidad más oscura de naranja al hacer hover
+                                boxShadow: '0 0 8px rgba(0, 0, 0, 0.4)'
+                            }
+                        }} onClick={this.addContact}>
+                            <AddIcon />
+                        </IconButton>
                     </div>
                     <Grid container spacing={3}>
                         {this.state.columns.map((column, columnIndex) => (
@@ -88,20 +123,39 @@ export class Pedidos extends Component {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            style={{ ...provided.draggableProps.style, padding: 10, marginBottom: 10, backgroundColor: 'white' }}>
+                                                            style={{ ...provided.draggableProps.style, padding: 10, marginBottom: 10, backgroundColor: 'white' }}
+                                                            // 6. Añade el evento de clic al ítem (contacto)
+                                                            onClick={() => this.openModal(user)}
+                                                        >
                                                             {user}
                                                         </Paper>
                                                     )}
                                                 </Draggable>
                                             ))}
                                             {provided.placeholder}
+
                                         </Paper>
+                                        <Button
+                                            variant="text"
+                                            color="warning"
+                                            style={{ marginTop: 10, display: 'block', textAlign: 'center' }}
+                                            component={Link}
+                                            to={`/${column.title.replace(/\s+/g, '-').toLowerCase()}`}
+                                        >
+                                            Ver más
+                                        </Button>
                                     </Grid>
                                 )}
                             </Droppable>
                         ))}
                     </Grid>
                 </Container>
+                <Dialog open={this.state.isModalOpen} onClose={this.closeModal}>
+                    <DialogTitle>{this.state.selectedContact}</DialogTitle>
+                    <DialogContent>
+                        Aquí puedes añadir el contenido que desees mostrar en el modal.
+                    </DialogContent>
+                </Dialog>
             </DragDropContext>
         );
     }
