@@ -7,5 +7,6 @@ namespace WebApp.Models
         public int OrderStatusID { get; set; }
         public string Name {get; set;} = null!;
         public ICollection<Order> Orders { get; } = new List<Order>();
+        public ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
     }
 }

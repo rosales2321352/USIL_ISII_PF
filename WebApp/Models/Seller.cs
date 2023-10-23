@@ -1,11 +1,10 @@
 namespace WebApp.Models
 {
-    public class Seller
+    public class Seller : Person
     {
         public int SellerID { get; set; }
-
-        public string Name { get; set; } = null!;
-        public string Phonenumber { get; set; } = null!;
+        public string Username {get; set;} = null!;
+        public string Password {get; set;} = null!;
 
         public ICollection<Client> Clients { get; } = new List<Client>();
         public ICollection<Event> Events { get; } = new List<Event>();

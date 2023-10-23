@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
-using WebApp.Modelsñ
+using WebApp.Models;
 
 namespace WebApp.Controllers
 {
@@ -17,6 +18,11 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
+        [Route("Lista")]
+        public async Task<ActionResult<IEnumerable<Client>>> GetClients()
+        {
+            return await _context.Clients.ToListAsync();
+        }
 
     }
 }

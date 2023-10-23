@@ -14,5 +14,6 @@ namespace WebApp.Models
         public virtual Client Client { get; set; } = null!;
         public int SellerID { get; set; }
         public virtual Seller Seller { get; set; } = null!;
+        public ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
     }
 }
