@@ -56,6 +56,8 @@ namespace WebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
+        //TODO Verificar si se puede eliminar estados
+        /*
         [HttpDelete]
         [Route("Eliminar/{id:int}")]
         public async Task<IActionResult> Delete(int id)
@@ -71,6 +73,6 @@ namespace WebApp.Controllers
             }
 
             return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-        }
+        }*/
     }
 }

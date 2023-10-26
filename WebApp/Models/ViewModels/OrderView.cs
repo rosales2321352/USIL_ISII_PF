@@ -6,7 +6,24 @@ public class OrderView
     public DateOnly CreationDate { get; set; }
     public string? ClientName { get; set; }
     public string OrderStatus { get; set; } = null!;
+    public int OrderStatusID { get; set; }
 
+}
+
+public class OrderStatusUpdate
+{
+    public string? Comment { get; set; }
+    public int OrderID { get; set; }
+    public int NewStatusID { get; set; }
+}
+
+public class OrderUpdate
+{
+    public int OrderID { get; set; }
+    public string? Address { get; set; }
+    public string? Location { get; set; }
+    public string? ContactName { get; set; }
+    public int OrderStatusID { get; set; }
 }
 
 public class OrderDetail
