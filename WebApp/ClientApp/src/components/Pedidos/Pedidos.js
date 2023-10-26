@@ -106,49 +106,59 @@ export class Pedidos extends Component {
                     </div>
                     <Grid container spacing={3}>
                         {this.state.columns.map((column, columnIndex) => (
-                            <Droppable droppableId={String(columnIndex)} key={columnIndex}>
-                                {(provided) => (
-                                    <Grid item xs={3} ref={provided.innerRef} {...provided.droppableProps}>
-                                        <Paper elevation={10} style={{ padding: 15, height: '600px', overflowY: 'auto' }}>
-                                            <div style={titleStyle}>
-                                                <Typography variant="h6">
-                                                    {column.title}
-                                                </Typography>
-                                            </div>
-                                            <Divider style={{ marginBottom: 10, backgroundColor: 'orange', height: '4px' }} />
-                                            {column.users.map((user, userIndex) => (
-                                                <Draggable key={user} draggableId={user} index={userIndex}>
-                                                    {(provided) => (
-                                                        <Paper
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                            style={{ ...provided.draggableProps.style, padding: 10, marginBottom: 10, backgroundColor: 'white' }}
-                                                            // 6. Añade el evento de clic al ítem (contacto)
-                                                            onClick={() => this.openModal(user)}
-                                                        >
-                                                            {user}
-                                                        </Paper>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
+                            <Grid item xs={3} >
+                                <Paper elevation={10} style={{ padding: 15, height: '600px', minHeight: '100px', overflowY: 'auto' }}>
 
-                                        </Paper>
-                                        <Button
-                                            variant="text"
-                                            color="warning"
-                                            style={{ marginTop: 10, display: 'block', textAlign: 'center' }}
-                                            component={Link}
-                                            to={`/${column.title.replace(/\s+/g, '-').toLowerCase()}`}
-                                        >
-                                            Ver más
-                                        </Button>
-                                    </Grid>
-                                )}
-                            </Droppable>
+                                    <div style={titleStyle}>
+                                        <Typography variant="h6">
+                                            {column.title}
+                                        </Typography>
+                                    </div>
+
+                                    <Divider style={{ marginBottom: 10, backgroundColor: 'orange', height: '4px' }} />
+
+                                    <Droppable droppableId={String(columnIndex)} key={columnIndex}>
+                                        {(provided) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.droppableProps}
+                                                style={{ minHeight: '500px' }}
+                                            >
+                                                {column.users.map((user, userIndex) => (
+                                                    <Draggable key={user} draggableId={user} index={userIndex}>
+                                                        {(provided) => (
+                                                            <Paper
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                                style={{ ...provided.draggableProps.style, padding: 10, marginBottom: 10, backgroundColor: 'white' }}
+                                                                onClick={() => this.openModal(user)}
+                                                            >
+                                                                {user}
+                                                            </Paper>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                                {provided.placeholder}
+                                            </div>
+                                        )}
+                                    </Droppable>
+
+                                </Paper>
+
+                                <Button
+                                    variant="text"
+                                    color="warning"
+                                    style={{ marginTop: 10, display: 'block', textAlign: 'center' }}
+                                    component={Link}
+                                    to={`/${column.title.replace(/\s+/g, '-').toLowerCase()}`}
+                                >
+                                    Ver más
+                                </Button>
+                            </Grid>
                         ))}
                     </Grid>
+
                 </Container>
                 <Dialog open={this.state.isModalOpen} onClose={this.closeModal}>
                     <DialogTitle>{this.state.selectedContact}</DialogTitle>

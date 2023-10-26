@@ -6,7 +6,7 @@ export class Prospecto extends Component {
 
     // Datos de ejemplo para la tabla
     rows = [
-        { cliente: 'Arnold Pajuelo Araujo', estado: 'Cotización', telefono: '904089518', direccion: '-', pais: 'Perú' },
+        { cliente: 'Arnold Pajuelo Araujo', estado: 'Prospecto', telefono: '904089518', direccion: '-', correo: 'arnold@usil.pe' },
         // Puedes agregar más registros aquí
     ];
 
@@ -71,7 +71,7 @@ export class Prospecto extends Component {
                                 <TableCell style={styles.tableHeader}>ESTADO</TableCell>
                                 <TableCell style={styles.tableHeader}>TELÉFONO</TableCell>
                                 <TableCell style={styles.tableHeader}>DIRECCIÓN</TableCell>
-                                <TableCell style={styles.tableHeader}>PAÍS</TableCell>
+                                <TableCell style={styles.tableHeader}>CORREO</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -84,14 +84,15 @@ export class Prospecto extends Component {
                                             value={row.estado}
                                             onChange={(event) => this.handleChange(index, event)}
                                         >
-                                            <MenuItem value="Cotización">Cotización</MenuItem>
-                                            <MenuItem value="Aprobado">Aprobado</MenuItem>
-                                            <MenuItem value="Rechazado">Rechazado</MenuItem>
+                                            <MenuItem value="Prospecto">Prospecto</MenuItem>
+                                            <MenuItem value="Orden de Compra">Orden de Compra</MenuItem>
+                                            <MenuItem value="Finalizado">Finalizado</MenuItem>
+                                            <MenuItem value="Cancelado">Cancelado</MenuItem>
                                         </Select>
                                     </TableCell>
                                     <TableCell style={styles.tableCell}>{row.telefono}</TableCell>
                                     <TableCell style={styles.tableCell}>{row.direccion}</TableCell>
-                                    <TableCell style={styles.tableCell}>{row.pais}</TableCell>
+                                    <TableCell style={styles.tableCell}>{row.correo}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
