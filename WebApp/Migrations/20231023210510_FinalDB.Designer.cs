@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.Data;
 
@@ -10,9 +11,11 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231023210510_FinalDB")]
+    partial class FinalDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,7 +290,7 @@ namespace WebApp.Migrations
 
                     b.Property<int>("OpportunityStatusID")
                         .HasColumnType("int")
-                        .HasColumnName("opportunity_status_id");
+                        .HasColumnName("order_status_id");
 
                     b.Property<int>("SellerID")
                         .HasColumnType("int")
@@ -362,7 +365,7 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("order_id");
 
-                    b.Property<DateOnly?>("AcceptionDate")
+                    b.Property<DateOnly>("AcceptionDate")
                         .HasColumnType("date")
                         .HasColumnName("acception_date");
 

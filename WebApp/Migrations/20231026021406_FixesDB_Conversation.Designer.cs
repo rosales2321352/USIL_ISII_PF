@@ -11,8 +11,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231023045550_FeedbackBD")]
-    partial class FeedbackBD
+    [Migration("20231026021406_FixesDB_Conversation")]
+    partial class FixesDB_Conversation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,16 +131,20 @@ namespace WebApp.Migrations
                 {
                     b.Property<int>("ConversationID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("conversation_id");
 
                     b.Property<int>("ClientID")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("client_id");
 
                     b.Property<int>("SellerID")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("seller_id");
 
                     b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
 
                     b.HasKey("ConversationID");
 
@@ -148,7 +152,7 @@ namespace WebApp.Migrations
 
                     b.HasIndex("SellerID");
 
-                    b.ToTable("Conversations");
+                    b.ToTable("conversation", (string)null);
                 });
 
             modelBuilder.Entity("WebApp.Models.Event", b =>
@@ -286,7 +290,7 @@ namespace WebApp.Migrations
 
                     b.Property<int>("OpportunityStatusID")
                         .HasColumnType("int")
-                        .HasColumnName("order_status_id");
+                        .HasColumnName("opportunity_status_id");
 
                     b.Property<int>("SellerID")
                         .HasColumnType("int")
@@ -361,7 +365,7 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("order_id");
 
-                    b.Property<DateOnly>("AcceptionDate")
+                    b.Property<DateOnly?>("AcceptionDate")
                         .HasColumnType("date")
                         .HasColumnName("acception_date");
 
@@ -460,7 +464,7 @@ namespace WebApp.Migrations
 
             modelBuilder.Entity("WebApp.Models.Person", b =>
                 {
-                    b.Property<int>("PersonId")
+                    b.Property<int>("PersonID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("person_id");
@@ -489,7 +493,7 @@ namespace WebApp.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("whatsapp_id");
 
-                    b.HasKey("PersonId");
+                    b.HasKey("PersonID");
 
                     b.HasIndex("WhatsappID")
                         .IsUnique();
@@ -618,13 +622,13 @@ namespace WebApp.Migrations
             modelBuilder.Entity("WebApp.Models.Conversation", b =>
                 {
                     b.HasOne("WebApp.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Conversations")
                         .HasForeignKey("ClientID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebApp.Models.Seller", "Seller")
-                        .WithMany()
+                        .WithMany("Conversations")
                         .HasForeignKey("SellerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -808,7 +812,7 @@ namespace WebApp.Migrations
 
                     b.HasOne("WebApp.Models.Person", null)
                         .WithOne()
-                        .HasForeignKey("WebApp.Models.Client", "PersonId")
+                        .HasForeignKey("WebApp.Models.Client", "PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -829,7 +833,7 @@ namespace WebApp.Migrations
                 {
                     b.HasOne("WebApp.Models.Person", null)
                         .WithOne()
-                        .HasForeignKey("WebApp.Models.Seller", "PersonId")
+                        .HasForeignKey("WebApp.Models.Seller", "PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -898,6 +902,8 @@ namespace WebApp.Migrations
                 {
                     b.Navigation("Annotations");
 
+                    b.Navigation("Conversations");
+
                     b.Navigation("Events");
 
                     b.Navigation("Opportunities");
@@ -910,6 +916,8 @@ namespace WebApp.Migrations
                     b.Navigation("Annotations");
 
                     b.Navigation("Clients");
+
+                    b.Navigation("Conversations");
 
                     b.Navigation("Events");
 

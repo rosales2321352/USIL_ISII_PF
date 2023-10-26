@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class FeedbackBD : Migration
+    public partial class FinalDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -270,27 +270,27 @@ namespace WebApp.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Conversations",
+                name: "conversation",
                 columns: table => new
                 {
-                    ConversationID = table.Column<int>(type: "int", nullable: false)
+                    conversation_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    SellerID = table.Column<int>(type: "int", nullable: false),
-                    ClientID = table.Column<int>(type: "int", nullable: false)
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    seller_id = table.Column<int>(type: "int", nullable: false),
+                    client_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Conversations", x => x.ConversationID);
+                    table.PrimaryKey("PK_conversation", x => x.conversation_id);
                     table.ForeignKey(
-                        name: "FK_Conversations_client_ClientID",
-                        column: x => x.ClientID,
+                        name: "FK_conversation_client_client_id",
+                        column: x => x.client_id,
                         principalTable: "client",
                         principalColumn: "person_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Conversations_seller_SellerID",
-                        column: x => x.SellerID,
+                        name: "FK_conversation_seller_seller_id",
+                        column: x => x.seller_id,
                         principalTable: "seller",
                         principalColumn: "person_id",
                         onDelete: ReferentialAction.Cascade);
@@ -429,10 +429,10 @@ namespace WebApp.Migrations
                 {
                     table.PrimaryKey("PK_message", x => x.message_id);
                     table.ForeignKey(
-                        name: "FK_message_Conversations_conversation_id",
+                        name: "FK_message_conversation_conversation_id",
                         column: x => x.conversation_id,
-                        principalTable: "Conversations",
-                        principalColumn: "ConversationID",
+                        principalTable: "conversation",
+                        principalColumn: "conversation_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_message_message_type_message_type_id",
@@ -555,14 +555,14 @@ namespace WebApp.Migrations
                 column: "seller_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Conversations_ClientID",
-                table: "Conversations",
-                column: "ClientID");
+                name: "IX_conversation_client_id",
+                table: "conversation",
+                column: "client_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Conversations_SellerID",
-                table: "Conversations",
-                column: "SellerID");
+                name: "IX_conversation_seller_id",
+                table: "conversation",
+                column: "seller_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_event_client_id",
@@ -686,7 +686,7 @@ namespace WebApp.Migrations
                 name: "order_status");
 
             migrationBuilder.DropTable(
-                name: "Conversations");
+                name: "conversation");
 
             migrationBuilder.DropTable(
                 name: "message_type");

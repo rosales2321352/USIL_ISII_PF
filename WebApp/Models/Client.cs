@@ -14,7 +14,7 @@
         public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
         public ICollection<Order> Orders { get; } = new List<Order>();
         public ICollection<Opportunity> Opportunities { get; } = new List<Opportunity>();
-
+         public ICollection<Conversation> Conversations { get; } = new List<Conversation>();
     }
 }
 
