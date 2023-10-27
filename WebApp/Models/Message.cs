@@ -1,14 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace WebApp.Data
+namespace WebApp.Models
 {
     public class Message
     {
         public string MessageID { get; set; } = null!;
+        public int ConversationID { get; set; }
+        public Conversation Conversation { get; set; } = null!;
         public DateTime Timestamp { get; set; }
-        public string Type {get; set;} = null!;
-        public string Text {get; set;} = null!;
         public string WhatsappID { get; set; } = null!;
-        public virtual WhatsappData WhatsappData {get; set;} = null!;
+        public int MessageTypeId { get; set; }
+        public MessageType MessageType { get; set; } = null!;
     }
 }

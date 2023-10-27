@@ -1,5 +1,3 @@
-using WebApp.Models;
-
 namespace WebApp.Models
 {
     public class ClientStatus
