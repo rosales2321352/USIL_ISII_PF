@@ -8,11 +8,11 @@ namespace WebApp.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AnnotationController : ControllerBase
+    public class EventController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public AnnotationController(ApplicationDbContext context)
+        public EventController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,16 +21,17 @@ namespace WebApp.Controllers
         [Route("Lista")]
         public async Task<IActionResult> GetList()
         {
-            var lista = await _context.Annotations
-            .Include(e => e.AnnotationType)
+            var lista = await _context.Events
+            .Include(e => e.EventType)
             .Include(e => e.Client)
             .AsNoTracking()
             .Select(e => new
             {
-                e.AnnotationID,
-                e.Description,
+                e.EventID,
                 e.Title,
-                AnnotationType = e.AnnotationType.Name,
+                e.Description,
+                e.DateAssigned,
+                EventType = e.EventType.Name,
                 ClientName = e.Client.Name
             }).ToListAsync();
 
@@ -41,17 +42,18 @@ namespace WebApp.Controllers
         [Route("ListaCliente/{id:int}")]
         public async Task<IActionResult> GetListByClient(int id)
         {
-            var listByClient = await _context.Annotations
-            .Include(e => e.AnnotationType)
+            var listByClient = await _context.Events
+            .Include(e => e.EventType)
             .Include(e => e.Client)
             .AsNoTracking()
             .Where(e => e.ClientID == id)
             .Select(e => new
             {
-                e.AnnotationID,
-                e.Description,
+                e.EventID,
                 e.Title,
-                AnnotationType = e.AnnotationType.Name,
+                e.Description,
+                e.DateAssigned,
+                EventType = e.EventType.Name,
                 ClientName = e.Client.Name
             })
             .ToListAsync();
@@ -63,37 +65,39 @@ namespace WebApp.Controllers
         [Route("Detalle/{id:int}")]
         public async Task<IActionResult> GetDetails(int id)
         {
-            var annotation = await _context.Annotations
-            .Include(e => e.AnnotationType)
+            var eventDetail = await _context.Events
+            .Include(e => e.EventType)
             .Include(e => e.Client)
             .AsNoTracking()
             .Select(e => new
             {
-                e.AnnotationID,
-                e.Description,
+                e.EventID,
                 e.Title,
-                AnnotationType = e.AnnotationType.Name,
+                e.Description,
+                e.DateAssigned,
+                EventType = e.EventType.Name,
                 ClientName = e.Client.Name
             })
-            .FirstOrDefaultAsync(e => e.AnnotationID == id);
+            .FirstOrDefaultAsync(e => e.EventID == id);
 
-            return StatusCode(StatusCodes.Status200OK, annotation);
+            return StatusCode(StatusCodes.Status200OK, eventDetail);
         }
 
         [HttpPost]
         [Route("Guardar")]
-        public async Task<IActionResult> NewAnnotation([FromBody] AnnotationView request)
+        public async Task<IActionResult> NewEvent([FromBody] EventView request)
         {
-            Annotation newAnnotation = new()
+            Event newEvent = new()
             {
                 Title = request.Title,
-                ClientID = request.ClientID,
+                EventTypeID = request.EventTypeID,
+                DateAssigned = request.DateAssigned,
                 Description = request.Description,
-                AnnotationTypeID = request.AnnotationTypeID,
-                SellerID = 1
+                SellerID = 1,
+                ClientID = request.ClientID
             };
 
-            await _context.Annotations.AddAsync(newAnnotation);
+            await _context.Events.AddAsync(newEvent);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");
@@ -102,22 +106,24 @@ namespace WebApp.Controllers
 
         [HttpPut]
         [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] AnnotationUpdate request)
+        public async Task<IActionResult> Edit([FromBody] EventUpdate request)
         {
-            var annotation = await _context.Annotations.FindAsync(request.AnnotationID);
+            var eventUpdate = await _context.Events.FindAsync(request.EventID);
 
-            if (annotation != null)
+            if (eventUpdate != null)
             {
-                annotation.Title = request.Title;
-                annotation.Description = request.Description;
-                annotation.AnnotationTypeID = request.AnnotationTypeID;
+                eventUpdate.Title = request.Title;
+                eventUpdate.Description = request.Description;
+                eventUpdate.DateAssigned = request.DateAssigned;
+                eventUpdate.EventTypeID = request.EventTypeID;
 
-                _context.Annotations.Update(annotation);
+                _context.Events.Update(eventUpdate);
                 await _context.SaveChangesAsync();
                 return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
+            }
+            else
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Annnotation Found with that ID");
+                return StatusCode(StatusCodes.Status400BadRequest, "Not Event Found with that ID");
             }
 
 
@@ -127,16 +133,16 @@ namespace WebApp.Controllers
         [Route("Eliminar/{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var annotation = await _context.Annotations.FindAsync(id);
+            var eventDelete = await _context.Events.FindAsync(id);
 
-            if (annotation != null)
+            if (eventDelete != null)
             {
-                _context.Annotations.Remove(annotation);
+                _context.Events.Remove(eventDelete);
                 await _context.SaveChangesAsync();
                 return StatusCode(StatusCodes.Status200OK, "ok");
             }
 
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Annnotation Found with that ID");
+            return StatusCode(StatusCodes.Status400BadRequest, "Not Event Found with that ID");
         }
     }
 }
