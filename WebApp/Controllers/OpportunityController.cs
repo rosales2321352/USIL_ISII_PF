@@ -95,7 +95,7 @@ namespace WebApp.Controllers
 
         [HttpPost]
         [Route("Guardar")]
-        public async Task<IActionResult> SaveCompany([FromBody] int clientId)
+        public async Task<IActionResult> NewOpportunity([FromBody] int clientId)
         {
 
             Opportunity opportunity = new()
