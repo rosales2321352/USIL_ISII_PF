@@ -8,45 +8,45 @@ namespace WebApp.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OpportunityController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public OrderController(ApplicationDbContext context)
+        public OpportunityController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public Task<List<OrderView>> GetAllOrders()
+        public Task<List<OpportunityView>> GetAllOpportunities()
         {
-            var lista = _context.Orders
+            var lista = _context.Opportunities
             .Include(e => e.Client)
             .Include(e => e.Seller)
-            .Include(e => e.OrderStatus)
+            .Include(e => e.OpportunityStatus)
             .AsNoTracking()
-            .Select(e => new OrderView
+            .Select(e => new OpportunityView
             {
-                OrderID = e.OrderID,
+                OpportunityID = e.OpportunityID,
                 CreationDate = e.CreationDate,
                 ClientName = e.Client.Name,
-                OrderStatus = e.OrderStatus.Name,
-                OrderStatusID = e.OrderStatusID
+                StatusName = e.OpportunityStatus.Name,
+                OpportunityStatusID = e.OpportunityStatusID
             }).ToListAsync();
 
             return lista;
         }
 
-        public async Task<IActionResult> RegisterOrderStatusChange(OrderStatusUpdate request)
+        public async Task<IActionResult> RegisterOpportunityStatusChange(OpportunityStatusUpdate request)
         {
-            OrderStatusHistory order = new()
+            OpportunityStatusHistory opportunity = new()
             {
                 UpdateDate = DateOnly.FromDateTime(DateTime.Now),
                 Comment = request.Comment,
-                OrderID = request.OrderID,
-                OrderStatusID = request.NewStatusID
+                OpportunityID = request.OpportunityID,
+                OpportunityStatusID = request.NewStatusID
             };
 
-            await _context.OrderStatusHistories.AddAsync(order);
+            await _context.OpportunityStatusHistories.AddAsync(opportunity);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");
@@ -56,7 +56,7 @@ namespace WebApp.Controllers
         [Route("Lista")]
         public async Task<IActionResult> GetList()
         {
-            var lista = await GetAllOrders();
+            var lista = await GetAllOpportunities();
 
             return StatusCode(StatusCodes.Status200OK, lista);
         }
@@ -65,9 +65,9 @@ namespace WebApp.Controllers
         [Route("ListaEstado/{id:int}")]
         public async Task<IActionResult> GetListByStatus(int id)
         {
-            var lista = await GetAllOrders();
+            var lista = await GetAllOpportunities();
 
-            var newLista = lista.Where(e => e.OrderStatusID == id);
+            var newLista = lista.Where(e => e.OpportunityStatusID == id);
 
             return StatusCode(StatusCodes.Status200OK, newLista);
         }
@@ -76,23 +76,20 @@ namespace WebApp.Controllers
         [Route("Detalle/{id:int}")]
         public async Task<IActionResult> GetDetails(int id)
         {
-            var orderDetail = await _context.Orders
+            var opportunityDetail = await _context.Opportunities
             .Include(e => e.Client)
             .AsNoTracking().Select(e => new
             {
-                e.OrderID,
+                e.OpportunityID,
                 e.CreationDate,
                 ClientName = e.Client.Name,
                 ClientPhone = e.Client.PhoneNumber,
-                OrderName = e.OrderStatus.Name,
-                e.OrderStatusID,
-                Address = e.ShippingAddress,
-                Location = e.GeographicLocation,
-                e.ContactName
+                OrderName = e.OpportunityStatus.Name,
+                e.OpportunityStatusID
             })
-            .FirstOrDefaultAsync(e => e.OrderID == id);
+            .FirstOrDefaultAsync(e => e.OpportunityID == id);
 
-            return StatusCode(StatusCodes.Status200OK, orderDetail);
+            return StatusCode(StatusCodes.Status200OK, opportunityDetail);
 
         }
 
@@ -101,16 +98,15 @@ namespace WebApp.Controllers
         public async Task<IActionResult> SaveCompany([FromBody] int clientId)
         {
 
-            Order order = new()
+            Opportunity opportunity = new()
             {
                 CreationDate = DateOnly.FromDateTime(DateTime.Now),
-                AcceptionDate = DateOnly.FromDateTime(DateTime.Now),
-                OrderStatusID = 1,
+                OpportunityStatusID = 1,
                 ClientID = clientId,
                 SellerID = 1
             };
 
-            await _context.Orders.AddAsync(order);
+            await _context.Opportunities.AddAsync(opportunity);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");
@@ -119,50 +115,46 @@ namespace WebApp.Controllers
 
         [HttpPut]
         [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] OrderUpdate request)
+        public async Task<IActionResult> Edit([FromBody] OpportunityStatusUpdate request)
         {
-            var orderDetail = await _context.Orders
-            .FirstOrDefaultAsync(e => e.OrderID == request.OrderID);
+            var opportunityDetail = await _context.Opportunities
+            .FirstOrDefaultAsync(e => e.OpportunityID == request.OpportunityID);
 
-            if (orderDetail != null)
+            if (opportunityDetail != null)
             {
-                if (orderDetail.OrderStatusID != request.OrderStatusID)
+                if (opportunityDetail.OpportunityStatusID != request.NewStatusID)
                 {
-                    OrderStatusUpdate newStatus = new()
+                    OpportunityStatusUpdate newStatus = new()
                     {
-                        OrderID = request.OrderID,
-                        NewStatusID = request.OrderStatusID
+                        Comment = request.Comment,
+                        OpportunityID = request.OpportunityID,
+                        NewStatusID = request.NewStatusID
                     };
-                    await RegisterOrderStatusChange(newStatus);
+                    await RegisterOpportunityStatusChange(newStatus);
                 }
 
-                orderDetail.OrderID = request.OrderID;
-                orderDetail.ShippingAddress = request.Address;
-                orderDetail.GeographicLocation = request.Location;
-                orderDetail.ContactName = request.ContactName;
-                orderDetail.OrderStatusID = request.OrderStatusID;
-
-                _context.Orders.Update(orderDetail);
+                opportunityDetail.OpportunityStatusID = request.NewStatusID;
+                _context.Opportunities.Update(opportunityDetail);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status200OK, "ok");
             }else
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
+                return StatusCode(StatusCodes.Status400BadRequest, "Not Opportunity Found with that ID");
             }
         }
 
         [HttpPut]
         [Route("ActualizarEstado")]
-        public async Task<IActionResult> UpdateStatus([FromBody] OrderStatusUpdate request)
+        public async Task<IActionResult> UpdateStatus([FromBody] OpportunityStatusUpdate request)
         {
-            var orderDetail = await _context.Orders.FirstOrDefaultAsync(e => e.OrderID == request.OrderID);
-            if(orderDetail != null)
+            var opportunityDetail = await _context.Opportunities.FirstOrDefaultAsync(e => e.OpportunityID == request.OpportunityID);
+            if(opportunityDetail != null)
             {
-                await RegisterOrderStatusChange(request);
+                await RegisterOpportunityStatusChange(request);
                 
-                orderDetail.OrderStatusID = request.NewStatusID;
-                _context.Orders.Update(orderDetail);
+                opportunityDetail.OpportunityStatusID = request.NewStatusID;
+                _context.Opportunities.Update(opportunityDetail);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status200OK, "ok");
