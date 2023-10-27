@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-export class OrdenDeCompra extends Component {
-    static displayName = OrdenDeCompra.name;
+export class OrdenCompraView extends Component {
+    static displayName = OrdenCompraView.name;
 
   render() {
     return (

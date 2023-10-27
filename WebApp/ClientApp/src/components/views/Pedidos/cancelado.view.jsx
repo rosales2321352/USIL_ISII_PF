@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-export class Cancelado extends Component {
-    static displayName = Cancelado.name;
+export class CanceladoView extends Component {
+    static displayName = CanceladoView.name;
 
   render() {
     return (
