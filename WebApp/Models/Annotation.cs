@@ -5,8 +5,8 @@ namespace WebApp.Models
         public int AnnotationID { get; set; }
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
-        //TODO Normalizar tabla
-        public string Status { get; set; } = null!;
+        public int AnnotationTypeID { get; set; }
+        public AnnotationType AnnotationType { get; set; } = null!;
         public int SellerID { get; set; }
         public virtual Seller Seller { get; set; } = null!;
         public int ClientID { get; set; }

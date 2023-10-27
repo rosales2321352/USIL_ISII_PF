@@ -1,15 +1,8 @@
-﻿
-using WebApp.Data;
-
-namespace WebApp.Models
+﻿namespace WebApp.Models
 {
-    public class Client
+    public class Client : Person
     {
         public int ClientID { get; set; }
-        public string Name { get; set; } = null!;
-        public string Phonenumber { get; set; } = null!;
-        public string? Email { get; set; }
-
         public int SellerID { get; set; }
         public Seller Seller { get; set; } = null!;
         public int ClientStatusID { get; set; }
@@ -21,9 +14,7 @@ namespace WebApp.Models
         public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
         public ICollection<Order> Orders { get; } = new List<Order>();
         public ICollection<Opportunity> Opportunities { get; } = new List<Opportunity>();
-        public string WhatsappID {get; set;}= null!;
-        public virtual WhatsappData WhatsappData {get; set;} = null!;
-
+         public ICollection<Conversation> Conversations { get; } = new List<Conversation>();
     }
 }
 

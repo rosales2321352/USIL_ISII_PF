@@ -27,15 +27,6 @@ public class WeatherForecastController : ControllerBase
     [HttpGet]
     public IEnumerable<WeatherForecast> Get()
     {
-        var appContext = _context.Clients.Include(h => h.Company);
-
-        var listCli = appContext.ToList();
-
-        foreach (var cli in appContext)
-        {
-            Console.WriteLine(cli.Name + " pertenece a la empresa:  " + cli.Company.Name);
-        }
-
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateTime.Now.AddDays(index),
