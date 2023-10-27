@@ -36,3 +36,20 @@ code {
     scrollbar-width: thin; /* Esto hará que el scrollbar sea más delgado */
     scrollbar-color: #ffcc99 #f1f1f1; /* Color más claro */
 }
+
+.pandingall{
+    padding: 10px 10px 10px 10px;
+}
+
+.reutittle{
+    font-weight:700;
+}
+
+.reusubtitlle{
+    font-size: 14px;
+}
+
+.gradient {
+    background: rgb(249,191,108);
+    background: radial-gradient(circle, rgba(249,191,108,0.6979166666666667) 0%, rgba(255,235,96,0.8267682072829132) 100%);
+}
