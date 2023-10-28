@@ -8,11 +8,11 @@ namespace WebApp.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AnnotationTypeController : ControllerBase
+    public class ClientStatusController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public AnnotationTypeController(ApplicationDbContext context)
+        public ClientStatusController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,9 +21,9 @@ namespace WebApp.Controllers
         [Route("Lista")]
         public async Task<IActionResult> GetList()
         {
-            var lista = await _context.AnnotationTypes.Select(e => new 
+            var lista = await _context.ClientStatuses.Select(e => new 
             {
-                Id = e.AnnotationTypeID,
+                Id = e.ClientStatusID,
                 e.Name
             }).ToListAsync();
 
@@ -32,14 +32,14 @@ namespace WebApp.Controllers
 
         [HttpPost]
         [Route("Guardar")]
-        public async Task<IActionResult> NewAnnotationType([FromBody] string newName)
+        public async Task<IActionResult> NewStatus([FromBody] string newName)
         {
-            AnnotationType newStatus = new()
+            ClientStatus newStatus = new()
             {
                 Name = newName
             };
             
-            await _context.AnnotationTypes.AddAsync(newStatus);
+            await _context.ClientStatuses.AddAsync(newStatus);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");
@@ -48,9 +48,9 @@ namespace WebApp.Controllers
 
         [HttpPut]
         [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] AnnotationType request)
+        public async Task<IActionResult> Edit([FromBody] ClientStatus request)
         {
-            _context.AnnotationTypes.Update(request);
+            _context.ClientStatuses.Update(request);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");

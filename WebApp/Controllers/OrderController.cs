@@ -98,7 +98,7 @@ namespace WebApp.Controllers
 
         [HttpPost]
         [Route("Guardar")]
-        public async Task<IActionResult> SaveCompany([FromBody] int clientId)
+        public async Task<IActionResult> NewOrder([FromBody] int clientId)
         {
 
             Order order = new()

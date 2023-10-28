@@ -32,7 +32,7 @@ namespace WebApp.Controllers
 
         [HttpPost]
         [Route("Guardar")]
-        public async Task<IActionResult> SaveCompany([FromBody] string newName)
+        public async Task<IActionResult> NewEventType([FromBody] string newName)
         {
             EventType newStatus = new()
             {
