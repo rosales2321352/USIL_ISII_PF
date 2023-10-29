@@ -24,7 +24,7 @@ const AppRoutes = [
     },
     {
         path: '/Contactos',
-    element: <Contactos />
+        element: <Contactos />
     }
 ];
 
