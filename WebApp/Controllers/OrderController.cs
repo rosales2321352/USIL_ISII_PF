@@ -104,7 +104,6 @@ namespace WebApp.Controllers
             Order order = new()
             {
                 CreationDate = DateOnly.FromDateTime(DateTime.Now),
-                AcceptionDate = DateOnly.FromDateTime(DateTime.Now),
                 OrderStatusID = 1,
                 ClientID = clientId,
                 SellerID = 1

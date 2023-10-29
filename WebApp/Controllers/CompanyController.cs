@@ -28,7 +28,14 @@ namespace WebApp.Controllers
                 Email = b.Email
             }).ToListAsync();
 
-            return StatusCode(StatusCodes.Status200OK, lista);
+            ApiPositiveResponse response = new()
+            {
+                StatusCode = 200,
+                Data = lista,
+                TotalRows = lista.Count
+            };
+
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
