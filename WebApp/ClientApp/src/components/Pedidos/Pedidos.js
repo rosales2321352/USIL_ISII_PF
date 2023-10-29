@@ -24,6 +24,7 @@ export class Pedidos extends Component {
 
         this.setState({ columns: columnsCopy });
     }
+
     addContact = () => {
         const newContact = `Contacto ${this.state.columns[0].users.length + 1}`;
         const columnsCopy = [...this.state.columns];
@@ -31,20 +32,26 @@ export class Pedidos extends Component {
         this.setState({ columns: columnsCopy });
     }
 
-    // 1. Añade el estado para el modal
-    state = {
-        // ... (estado existente)
-        isModalOpen: false,
-        selectedContact: null,
+    // 2. Implementa el método para abrir el modal
+    openModal = async (contact) => {
+        try {
+            // Hacer una solicitud al controlador para obtener los detalles del pedido
+            const response = await fetch(`api/Order/Detalle/${contact.draggableId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            this.setState({
+                isModalOpen: true,
+                selectedContact: contact,
+                orderDetails: data, // Establecer los detalles del pedido en el estado
+            });
+        } catch (error) {
+            console.error("Hubo un problema con la petición fetch:", error);
+        }
     };
 
-    // 2. Implementa el método para abrir el modal
-    openModal = (contact) => {
-        this.setState({
-            isModalOpen: true,
-            selectedContact: contact,
-        });
-    };
 
     // 3. Implementa el método para cerrar el modal
     closeModal = () => {
@@ -58,16 +65,56 @@ export class Pedidos extends Component {
         super(props);
         this.state = {
             columns: [
-                { title: 'Prospecto', users: ['Contacto 1', 'Contacto 2', 'Contacto 3', 'Contacto 4', 'Contacto 5', 'Contacto 6', 'Contacto 7', 'Contacto 8', 'Contacto 9', 'Contacto 10', 'Contacto 11', 'Contacto 12', 'Contacto 13', 'Contacto 14'] },
-                { title: 'Orden de Compra', users: ['Contacto 15'] },
+                { title: 'Prospecto', users: [] },
+                { title: 'Orden de Compra', users: [] },
                 { title: 'Finalizado', users: [] },
-                { title: 'Cancelado', users: ['Contacto 16', 'Contacto 17', 'Contacto 18'] },
-            ]
+                { title: 'Cancelado', users: [] },
+            ],
+            isModalOpen: false,
+            selectedContact: null,
+            orderDetails: null, // Agrega un estado para los detalles del pedido
         };
     }
 
+    // Realiza una sola solicitud para obtener todas las órdenes
+    loadData = async () => {
+        try {
+            const response = await fetch(`api/Order/Lista`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            // Organiza las órdenes según su estado en el estado local
+            const columns = [
+                { title: 'Prospecto', users: [] },
+                { title: 'Orden de Compra', users: [] },
+                { title: 'Finalizado', users: [] },
+                { title: 'Cancelado', users: [] },
+            ];
+
+            data.forEach(order => {
+                const columnIndex = order.orderStatusID - 1; // Suponiendo que el orderStatusID comienza en 1
+                columns[columnIndex].users.push({
+                    draggableId: String(order.orderID),
+                    clientName: order.clientName,
+                    creationDate: order.creationDate,
+                });
+            });
+
+            this.setState({ columns });
+
+        } catch (error) {
+            console.error("Hubo un problema con la petición fetch:", error);
+        }
+    }
+
+    componentDidMount() {
+        this.loadData();
+    }
+
     render() {
-        
+
         const titleStyle = {
             height: '50px',
             display: 'flex',
@@ -94,7 +141,7 @@ export class Pedidos extends Component {
                         <IconButton sx={{
                             fontSize: 30,
                             color: '#fff',
-                            backgroundColor: '#ffa726', 
+                            backgroundColor: '#ffa726',
                             boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
                             '&:hover': {
                                 backgroundColor: '#ff8c00',    // Cambiamos a una tonalidad más oscura de naranja al hacer hover
@@ -106,7 +153,7 @@ export class Pedidos extends Component {
                     </div>
                     <Grid container spacing={3}>
                         {this.state.columns.map((column, columnIndex) => (
-                            <Grid item xs={3} >
+                            <Grid key={columnIndex} item xs={3} >
                                 <Paper elevation={10} style={{ padding: 15, height: '600px', minHeight: '100px', overflowY: 'auto' }}>
 
                                     <div style={titleStyle}>
@@ -125,7 +172,7 @@ export class Pedidos extends Component {
                                                 style={{ minHeight: '500px' }}
                                             >
                                                 {column.users.map((user, userIndex) => (
-                                                    <Draggable key={user} draggableId={user} index={userIndex}>
+                                                    <Draggable key={user.draggableId} draggableId={user.draggableId} index={userIndex}>
                                                         {(provided) => (
                                                             <Paper
                                                                 ref={provided.innerRef}
@@ -134,7 +181,10 @@ export class Pedidos extends Component {
                                                                 style={{ ...provided.draggableProps.style, padding: 10, marginBottom: 10, backgroundColor: 'white' }}
                                                                 onClick={() => this.openModal(user)}
                                                             >
-                                                                {user}
+                                                                <div>
+                                                                    <div>Client Name: {user.clientName}</div>
+                                                                    <div>Creation Date: {user.creationDate}</div>
+                                                                </div>
                                                             </Paper>
                                                         )}
                                                     </Draggable>
@@ -161,11 +211,21 @@ export class Pedidos extends Component {
 
                 </Container>
                 <Dialog open={this.state.isModalOpen} onClose={this.closeModal}>
-                    <DialogTitle>{this.state.selectedContact}</DialogTitle>
+                    <DialogTitle>{this.state.selectedContact && this.state.selectedContact.clientName}</DialogTitle>
                     <DialogContent>
-                        Aquí puedes añadir el contenido que desees mostrar en el modal.
+                        {this.state.orderDetails && (
+                            <div>
+                                <div>Creation Date: {this.state.orderDetails.creationDate}</div>
+                                <div>Client Phone: {this.state.orderDetails.clientPhone}</div>
+                                <div>Order Status: {this.state.orderDetails.orderName}</div>
+                                <div>Address: {this.state.orderDetails.address}</div>
+                                <div>Location: {this.state.orderDetails.location}</div>
+                                <div>Contact Name: {this.state.orderDetails.contactName}</div>
+                            </div>
+                        )}
                     </DialogContent>
                 </Dialog>
+
             </DragDropContext>
         );
     }

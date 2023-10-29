@@ -17,7 +17,7 @@ namespace WebApp.Controllers
 
         public OrderController(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context; 
         }
 
         public Task<List<OrderView>> GetAllOrders()
@@ -173,8 +173,6 @@ namespace WebApp.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
             }
-
-
         }
 
         //TODO Confirmar si se puede eliminar un pedido o no
