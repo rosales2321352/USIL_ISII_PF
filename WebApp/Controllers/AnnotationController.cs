@@ -31,10 +31,21 @@ namespace WebApp.Controllers
                 e.Description,
                 e.Title,
                 AnnotationType = e.AnnotationType.Name,
-                ClientName = e.Client.Name
+                Client = new
+                {
+                    e.Client.Name,
+                    e.Client.PhoneNumber
+                }
             }).ToListAsync();
 
-            return StatusCode(StatusCodes.Status200OK, lista);
+            ApiPositiveResponse response = new()
+            {
+                StatusCode = 200,
+                Data = lista,
+                TotalRows = lista.Count
+            };
+
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]

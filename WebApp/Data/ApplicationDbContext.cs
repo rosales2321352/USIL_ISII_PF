@@ -91,6 +91,7 @@ namespace WebApp.Data
 
                 entity.Property(e => e.OpportunityStatusID).HasColumnName("opportunity_status_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).HasMaxLength(50).HasColumnName("name");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
             });
 
             modelBuilder.Entity<OpportunityStatus>().HasMany(e => e.Opportunities).WithOne(e => e.OpportunityStatus).HasForeignKey(e => e.OpportunityStatusID).IsRequired();
@@ -104,6 +105,7 @@ namespace WebApp.Data
 
                 entity.Property(e => e.AnnotationTypeID).HasColumnName("annotation_type_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).HasMaxLength(50).HasColumnName("name");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
             });
 
             modelBuilder.Entity<AnnotationType>().HasMany(e => e.Annotations).WithOne(e => e.AnnotationType).HasForeignKey(e => e.AnnotationTypeID).IsRequired();
@@ -116,6 +118,7 @@ namespace WebApp.Data
 
                 entity.Property(e => e.EventTypeID).HasColumnName("event_type_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).HasMaxLength(50).HasColumnName("name");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
             });
 
             modelBuilder.Entity<EventType>().HasMany(e => e.Events).WithOne(e => e.EventType).HasForeignKey(e => e.EventTypeID).IsRequired();
@@ -128,7 +131,6 @@ namespace WebApp.Data
             {
                 entity.ToTable("seller");
 
-                entity.Property(e => e.SellerID).HasColumnName("seller_id");
                 entity.Property(e => e.Username).HasMaxLength(200).HasColumnName("username");
                 entity.Property(e => e.Password).HasMaxLength(200).HasColumnName("password");
             });
@@ -148,6 +150,7 @@ namespace WebApp.Data
                 entity.ToTable("company");
 
                 entity.Property(e => e.CompanyID).HasColumnName("company_id").ValueGeneratedOnAdd();
+                entity.Property(e => e.RUC).HasMaxLength(12);
                 entity.Property(e => e.Name).HasMaxLength(200).HasColumnName("name");
                 entity.Property(e => e.Address).HasMaxLength(500).HasColumnName("address");
                 entity.Property(e => e.Email).HasMaxLength(100).HasColumnName("email");
@@ -163,6 +166,7 @@ namespace WebApp.Data
 
                 entity.Property(e => e.ClientStatusID).HasColumnName("client_status_id").ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).HasMaxLength(50).HasColumnName("name");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
             });
 
             modelBuilder.Entity<ClientStatus>().HasMany(e => e.Clients).WithOne(e => e.ClientStatus).HasForeignKey(e => e.ClientStatusID).IsRequired();
@@ -175,7 +179,6 @@ namespace WebApp.Data
             {
                 entity.ToTable("client");
 
-                entity.Property(e => e.ClientID).HasColumnName("client_id");
                 entity.Property(e => e.ClientStatusID).HasColumnName("client_status_id");
                 entity.Property(e => e.CompanyID).HasColumnName("company_id");
                 entity.Property(e => e.SellerID).HasColumnName("seller_id");
@@ -216,9 +219,11 @@ namespace WebApp.Data
                 entity.Property(e => e.Title).HasMaxLength(100).HasColumnName("title");
                 entity.Property(e => e.EventTypeID).HasColumnName("event_type_id");
                 entity.Property(e => e.Description).HasMaxLength(500).HasColumnName("description");
-                entity.Property(e => e.DateAssigned).HasColumnType("date").HasColumnName("date_assigned"); //! Probar
+                entity.Property(e => e.DateAssigned).HasColumnType("date").HasColumnName("date_assigned");
                 entity.Property(e => e.ClientID).HasColumnName("client_id");
                 entity.Property(e => e.SellerID).HasColumnName("seller_id");
+                entity.Property(e => e.BeginTime).HasColumnType("time").HasColumnName("begin_time");
+                entity.Property(e => e.EndTime).HasColumnType("time").HasColumnName("end_time");
             });
 
             modelBuilder.Entity<Event>().HasOne(e => e.Client).WithMany(e => e.Events).HasForeignKey(e => e.ClientID).IsRequired();
@@ -252,14 +257,15 @@ namespace WebApp.Data
                 entity.ToTable("order");
 
                 entity.Property(e => e.OrderID).HasColumnName("order_id").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).HasMaxLength(150).HasColumnName("name");
                 entity.Property(e => e.CreationDate).HasColumnType("date").HasColumnName("creation_date");
-                entity.Property(e => e.AcceptionDate).HasColumnType("date").HasColumnName("acception_date");
                 entity.Property(e => e.ShippingAddress).HasMaxLength(200).HasColumnName("shipping_address");
                 entity.Property(e => e.GeographicLocation).HasMaxLength(200).HasColumnName("geographical_location");
                 entity.Property(e => e.ContactName).HasMaxLength(100).HasColumnName("contact_name");
                 entity.Property(e => e.ClientID).HasColumnName("client_id");
                 entity.Property(e => e.SellerID).HasColumnName("seller_id");
                 entity.Property(e => e.OrderStatusID).HasColumnName("order_status_id");
+                entity.Property(e => e.TotalAmount).HasColumnType("decimal(10,2)").HasColumnName("total_amount");
             });
 
             modelBuilder.Entity<Order>().HasOne(e => e.Client).WithMany(e => e.Orders).HasForeignKey(e => e.ClientID).IsRequired();

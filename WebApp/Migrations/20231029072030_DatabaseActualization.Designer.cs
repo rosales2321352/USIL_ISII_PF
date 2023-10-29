@@ -11,8 +11,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231026021406_FixesDB_Conversation")]
-    partial class FixesDB_Conversation
+    [Migration("20231029072030_DatabaseActualization")]
+    partial class DatabaseActualization
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,12 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("annotation_type_id");
 
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -87,6 +93,12 @@ namespace WebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("client_status_id");
+
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -121,6 +133,11 @@ namespace WebApp.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
                         .HasColumnName("name");
+
+                    b.Property<string>("RUC")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("varchar(12)");
 
                     b.HasKey("CompanyID");
 
@@ -162,6 +179,10 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("event_id");
 
+                    b.Property<TimeSpan>("BeginTime")
+                        .HasColumnType("time")
+                        .HasColumnName("begin_time");
+
                     b.Property<int>("ClientID")
                         .HasColumnType("int")
                         .HasColumnName("client_id");
@@ -174,6 +195,10 @@ namespace WebApp.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)")
                         .HasColumnName("description");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time")
+                        .HasColumnName("end_time");
 
                     b.Property<int>("EventTypeID")
                         .HasColumnType("int")
@@ -206,6 +231,12 @@ namespace WebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("event_type_id");
+
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -314,6 +345,12 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("opportunity_status_id");
 
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -365,10 +402,6 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("order_id");
 
-                    b.Property<DateOnly?>("AcceptionDate")
-                        .HasColumnType("date")
-                        .HasColumnName("acception_date");
-
                     b.Property<int>("ClientID")
                         .HasColumnType("int")
                         .HasColumnName("client_id");
@@ -387,6 +420,12 @@ namespace WebApp.Migrations
                         .HasColumnType("varchar(200)")
                         .HasColumnName("geographical_location");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("name");
+
                     b.Property<int>("OrderStatusID")
                         .HasColumnType("int")
                         .HasColumnName("order_status_id");
@@ -399,6 +438,10 @@ namespace WebApp.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
                         .HasColumnName("shipping_address");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("total_amount");
 
                     b.HasKey("OrderID");
 
@@ -417,6 +460,9 @@ namespace WebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("order_status_id");
+
+                    b.Property<bool?>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -544,10 +590,6 @@ namespace WebApp.Migrations
                 {
                     b.HasBaseType("WebApp.Models.Person");
 
-                    b.Property<int>("ClientID")
-                        .HasColumnType("int")
-                        .HasColumnName("client_id");
-
                     b.Property<int>("ClientStatusID")
                         .HasColumnType("int")
                         .HasColumnName("client_status_id");
@@ -578,10 +620,6 @@ namespace WebApp.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
                         .HasColumnName("password");
-
-                    b.Property<int>("SellerID")
-                        .HasColumnType("int")
-                        .HasColumnName("seller_id");
 
                     b.Property<string>("Username")
                         .IsRequired()

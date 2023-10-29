@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class FinalDB : Migration
+    public partial class DatabaseActualization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,8 @@ namespace WebApp.Migrations
                     annotation_type_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -37,7 +38,8 @@ namespace WebApp.Migrations
                     client_status_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -52,6 +54,8 @@ namespace WebApp.Migrations
                     company_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RUC = table.Column<string>(type: "varchar(12)", maxLength: 12, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     address = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -71,7 +75,8 @@ namespace WebApp.Migrations
                     event_type_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -101,7 +106,8 @@ namespace WebApp.Migrations
                     opportunity_status_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -116,7 +122,8 @@ namespace WebApp.Migrations
                     order_status_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsAvailable = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -173,7 +180,6 @@ namespace WebApp.Migrations
                 columns: table => new
                 {
                     person_id = table.Column<int>(type: "int", nullable: false),
-                    seller_id = table.Column<int>(type: "int", nullable: false),
                     username = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     password = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
@@ -196,7 +202,6 @@ namespace WebApp.Migrations
                 columns: table => new
                 {
                     person_id = table.Column<int>(type: "int", nullable: false),
-                    client_id = table.Column<int>(type: "int", nullable: false),
                     seller_id = table.Column<int>(type: "int", nullable: false),
                     client_status_id = table.Column<int>(type: "int", nullable: false),
                     company_id = table.Column<int>(type: "int", nullable: false)
@@ -307,6 +312,8 @@ namespace WebApp.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     event_type_id = table.Column<int>(type: "int", nullable: false),
                     date_assigned = table.Column<DateOnly>(type: "date", nullable: false),
+                    begin_time = table.Column<TimeSpan>(type: "time", nullable: false),
+                    end_time = table.Column<TimeSpan>(type: "time", nullable: false),
                     description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     seller_id = table.Column<int>(type: "int", nullable: false),
@@ -343,7 +350,7 @@ namespace WebApp.Migrations
                     opportunity_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     creation_date = table.Column<DateOnly>(type: "date", nullable: false),
-                    order_status_id = table.Column<int>(type: "int", nullable: false),
+                    opportunity_status_id = table.Column<int>(type: "int", nullable: false),
                     client_id = table.Column<int>(type: "int", nullable: false),
                     seller_id = table.Column<int>(type: "int", nullable: false)
                 },
@@ -357,8 +364,8 @@ namespace WebApp.Migrations
                         principalColumn: "person_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_opportunity_opportunity_status_order_status_id",
-                        column: x => x.order_status_id,
+                        name: "FK_opportunity_opportunity_status_opportunity_status_id",
+                        column: x => x.opportunity_status_id,
                         principalTable: "opportunity_status",
                         principalColumn: "opportunity_status_id",
                         onDelete: ReferentialAction.Cascade);
@@ -377,14 +384,16 @@ namespace WebApp.Migrations
                 {
                     order_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     creation_date = table.Column<DateOnly>(type: "date", nullable: false),
-                    acception_date = table.Column<DateOnly>(type: "date", nullable: false),
                     shipping_address = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     geographical_location = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     contact_name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    total_amount = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
                     order_status_id = table.Column<int>(type: "int", nullable: false),
                     client_id = table.Column<int>(type: "int", nullable: false),
                     seller_id = table.Column<int>(type: "int", nullable: false)
@@ -595,9 +604,9 @@ namespace WebApp.Migrations
                 column: "client_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_opportunity_order_status_id",
+                name: "IX_opportunity_opportunity_status_id",
                 table: "opportunity",
-                column: "order_status_id");
+                column: "opportunity_status_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_opportunity_seller_id",
