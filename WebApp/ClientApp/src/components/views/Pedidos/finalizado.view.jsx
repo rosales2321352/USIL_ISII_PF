@@ -21,7 +21,7 @@ const contacts = [
     },
 ];
 
-export class Finalizado extends Component {
+export class FinalizadoView extends Component {
 
     state = {
         selectedContact: null,

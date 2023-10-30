@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Select, MenuItem, IconButton, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-export class Prospecto extends Component {
-    static displayName = Prospecto.name;
+export class ProspectoView extends Component {
+    static displayName = ProspectoView.name;
 
     // Datos de ejemplo para la tabla
     rows = [

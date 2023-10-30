@@ -8,11 +8,11 @@ namespace WebApp.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderStatusController : ControllerBase
+    public class ClientStatusController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public OrderStatusController(ApplicationDbContext context)
+        public ClientStatusController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,9 +21,9 @@ namespace WebApp.Controllers
         [Route("Lista")]
         public async Task<IActionResult> GetList()
         {
-            var lista = await _context.OrderStatuses.Select(e => new 
+            var lista = await _context.ClientStatuses.Select(e => new 
             {
-                Id = e.OrderStatusID,
+                Id = e.ClientStatusID,
                 e.Name
             }).ToListAsync();
 
@@ -34,12 +34,12 @@ namespace WebApp.Controllers
         [Route("Guardar")]
         public async Task<IActionResult> NewStatus([FromBody] string newName)
         {
-            OrderStatus newStatus = new()
+            ClientStatus newStatus = new()
             {
                 Name = newName
             };
             
-            await _context.OrderStatuses.AddAsync(newStatus);
+            await _context.ClientStatuses.AddAsync(newStatus);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");
@@ -48,31 +48,12 @@ namespace WebApp.Controllers
 
         [HttpPut]
         [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] OrderStatus request)
+        public async Task<IActionResult> Edit([FromBody] ClientStatus request)
         {
-            _context.OrderStatuses.Update(request);
+            _context.ClientStatuses.Update(request);
             await _context.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
-
-        //TODO Verificar si se puede eliminar estados
-        /*
-        [HttpDelete]
-        [Route("Eliminar/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            OrderStatus? order = await _context.OrderStatuses.FindAsync(id);
-
-            if (order != null)
-            {
-                _context.OrderStatuses.Remove(order);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-        }*/
     }
 }

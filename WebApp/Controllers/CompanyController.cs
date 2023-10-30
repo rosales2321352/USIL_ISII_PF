@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
@@ -29,7 +28,14 @@ namespace WebApp.Controllers
                 Email = b.Email
             }).ToListAsync();
 
-            return StatusCode(StatusCodes.Status200OK, lista);
+            ApiPositiveResponse response = new()
+            {
+                StatusCode = 200,
+                Data = lista,
+                TotalRows = lista.Count
+            };
+
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]

@@ -5,8 +5,8 @@ import { Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 
-export class Pedidos extends Component {
-    static displayName = Pedidos.name;
+export class PedidosView extends Component {
+    static displayName = PedidosView.name;
 
     onDragEnd = (result) => {
         const { source, destination } = result;
