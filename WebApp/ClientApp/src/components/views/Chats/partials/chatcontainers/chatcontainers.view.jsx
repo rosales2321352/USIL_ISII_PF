@@ -1,5 +1,7 @@
-import { Box } from "@mui/material";
+import { Box,Avatar } from "@mui/material";
+import ChatHeaderView from "./partials/chatheader.view";
 import bg_wat from "../../../../../assets/img/bg_watt.webp";
+import ChatToolsView from "./partials/chattools.view";
 
 export default function ChatContainersView(){
   return (
@@ -10,21 +12,11 @@ export default function ChatContainersView(){
       backgroundSize: 'fill',
       backgroundPosition: 'center',
     }}>
-      <Box sx={{
-        border: '1px solid #e0e0e0',
-        height: "120px",
-        borderRadius: '0 0 30px 30px',
-        backgroundColor: 'white',
-      }}>1</Box>
+      <ChatHeaderView/>
       <Box sx={{
         height: "calc(100% - 300px)"
       }}>2</Box>
-      <Box sx={{
-        border: '1px solid #e0e0e0',
-        height: "180px",
-        borderRadius: '30px 30px 0 0',
-        backgroundColor: 'white',
-      }}>3</Box>
+      <ChatToolsView/>
     </Box>
   )
 }

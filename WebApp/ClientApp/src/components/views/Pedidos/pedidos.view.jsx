@@ -106,7 +106,7 @@ export class PedidosView extends Component {
                     </div>
                     <Grid container spacing={3}>
                         {this.state.columns.map((column, columnIndex) => (
-                            <Grid item xs={3} >
+                            <Grid item xs={3} key={columnIndex}>
                                 <Paper elevation={10} style={{ padding: 15, height: '600px', minHeight: '100px', overflowY: 'auto' }}>
 
                                     <div style={titleStyle}>

@@ -1,18 +1,22 @@
-import 'bootstrap/dist/css/bootstrap.css';
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import AppRoutes from './config/routes';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import ClientState from './context/Client/client.state.context';
+import 'bootstrap/dist/css/bootstrap.css';
+import './assets/css/main.css'
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-  <StrictMode>
-    <RouterProvider router={AppRoutes} />
-  </StrictMode>
+  
+    <ClientState>
+      <RouterProvider router={AppRoutes} />
+    </ClientState>
+  
 )
 
 // If you want your app to work offline and load faster, you can change

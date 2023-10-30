@@ -36,14 +36,20 @@ function useApi(apiData) {
         status: res.status,
         statusText: res.statusText
       }))
-      .then((data) => {
-        if(data["status_code"] === 200){
-          setData(data["data"]);
-          if(data["total_rows"]) setTotalRows(data["total_rows"]);
+      .then((data_) => {
+
+        if(data_){
+          setData(data_);
           setError(null);
         }
+
+        //if(data["status_code"] === 200){
+          //setData(data["data"]);
+          //if(data["total_rows"]) setTotalRows(data["total_rows"]);
+          //setError(null);
+        //}
       
-        setError(data["message"]);
+        //setError(data["message"]);
 
         /*AESUtil.decrypt(data).then((decryptedData:any) => {
           const decryptedText = new TextDecoder().decode(decryptedData);

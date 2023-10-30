@@ -6,28 +6,8 @@ import { useEffect } from "react";
 
 export default function ChatView(){
 
-  const data = useApi({
-    url:"https://pokeapi.co/api/v2/pokemon/ditto",
-    options:{
-      method: "GET",
-    },
-    condition:[]
-  });
+  
 
-  useEffect(() => {
-    if(data){
-      submitApi({
-        url:"https://pokeapi.co/api/v2/pokemon/ditto",
-        options:{
-          method: "GET",
-        },
-      }).then((data) => {
-        console.log(data);
-      }).catch((err) => {
-        console.log(err);
-      })
-    }
-  },[])
 
   return (
     <Box sx={{p:1}}>

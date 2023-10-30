@@ -1,0 +1,112 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+import java.text.DecimalFormat;
+import java.util.Optional;
+
+public class VentanaVentas extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle("Ventas y Facturación");
+        stage.setWidth(800);
+        stage.setHeight(600);
+
+        BorderPane layout = new BorderPane();
+
+        CarritoDeCompras carrito = CarritoDeCompras.getInstance();
+
+        TableView<Producto> carritoTable = new TableView<>();
+        TableColumn<Producto, String> nombreColumn = new TableColumn<>("Nombre");
+        nombreColumn.setCellValueFactory(cellData -> cellData.getValue().nombreProperty());
+        TableColumn<Producto, Double> precioColumn = new TableColumn<>("Precio");
+        precioColumn.setCellValueFactory(cellData -> cellData.getValue().precioProperty());
+        carritoTable.getColumns().addAll(nombreColumn, precioColumn);
+        carritoTable.setItems(carrito.getProductos());
+
+        Button agregarProductoButton = new Button("Agregar Producto");
+        agregarProductoButton.setOnAction(e -> mostrarDialogoAgregarProducto());
+
+        Button eliminarProductoButton = new Button("Eliminar Producto");
+        eliminarProductoButton.setOnAction(e -> eliminarProductoSeleccionado());
+
+        Button generarFacturaButton = new Button("Generar Factura");
+        generarFacturaButton.setOnAction(e -> generarFactura());
+
+        Label totalLabel = new Label("Total: " + carrito.calcularTotal());
+
+        HBox buttonsBox = new HBox(10, agregarProductoButton, eliminarProductoButton, generarFacturaButton);
+        VBox rightBox = new VBox(10, totalLabel, carritoTable);
+
+        layout.setTop(buttonsBox);
+        layout.setCenter(rightBox);
+
+        Scene scene = new Scene(layout);
+        stage.setScene(scene);
+
+        stage.show();
+    }
+
+    private void mostrarDialogoAgregarProducto() {
+        AgregarProductoDialog dialog = new AgregarProductoDialog();
+        dialog.mostrarDialogo();
+    }
+
+    private void generarFactura() {
+        CarritoDeCompras carrito = CarritoDeCompras.getInstance();
+
+        if (carrito.estaVacio()) {
+            mostrarAlerta("Carrito vacío", "No hay productos en el carrito.");
+            return;
+        }
+
+        // Mostrar una ventana de confirmación antes de generar la factura
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar Generación de Factura");
+        confirmacion.setHeaderText("¿Desea generar la factura?");
+        confirmacion.setContentText("Revise los detalles antes de continuar.");
+        Optional<ButtonType> result = confirmacion.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Generar la factura
+            Factura factura = new Factura(carrito.getProductos());
+            String totalStr = "$" + factura.calcularTotal();
+
+            // Eliminar los productos del carrito después de generar la factura
+            carrito.limpiarCarrito();
+
+            mostrarAlerta("Factura Generada", "Total de la factura: " + totalStr);
+        }
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void eliminarProductoSeleccionado() {
+        Producto productoSeleccionado = carritoTable.getSelectionModel().getSelectedItem();
+        if (productoSeleccionado != null) {
+            // Llamar al método para eliminar el producto del carrito
+            eliminarProductoDelCarrito(productoSeleccionado);
+        } else {
+            mostrarAlerta("Ningún producto seleccionado", "Seleccione un producto para eliminar del carrito.");
+        }
+    }
+
+    // Método para eliminar un producto del carrito
+    private void eliminarProductoDelCarrito(Producto producto) {
+        CarritoDeCompras.getInstance().eliminarProducto(producto);
+        totalLabel.setText("Total: " + CarritoDeCompras.getInstance().calculeTotal());
+    }
+}

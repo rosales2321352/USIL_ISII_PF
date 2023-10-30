@@ -1,0 +1,12 @@
+.textarea-chat{
+  resize: none;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.textarea-chat:focus{
+  outline: none;
+}

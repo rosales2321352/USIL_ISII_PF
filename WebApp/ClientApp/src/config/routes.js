@@ -45,14 +45,13 @@ const AppRoutes = createBrowserRouter([
           {
               path: '/chat',
               Component: ChatView
-          }
+          },
+          
         ]
       }
     ]
   }
   
-],{
-  basename: "/"
-})
+])
 
 export default AppRoutes;
