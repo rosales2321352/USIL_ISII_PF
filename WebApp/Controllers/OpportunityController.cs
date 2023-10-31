@@ -1,170 +1,94 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/opportunities")]
     [ApiController]
     public class OpportunityController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOpportunityService _opportunityService;
 
-        public OpportunityController(ApplicationDbContext context)
+        public OpportunityController(IOpportunityService opportunityService)
         {
-            _context = context;
-        }
-
-        public Task<List<OpportunityView>> GetAllOpportunities()
-        {
-            var lista = _context.Opportunities
-            .Include(e => e.Client)
-            .Include(e => e.Seller)
-            .Include(e => e.OpportunityStatus)
-            .AsNoTracking()
-            .Select(e => new OpportunityView
-            {
-                OpportunityID = e.OpportunityID,
-                CreationDate = e.CreationDate,
-                ClientName = e.Client.Name,
-                StatusName = e.OpportunityStatus.Name,
-                OpportunityStatusID = e.OpportunityStatusID
-            }).ToListAsync();
-
-            return lista;
-        }
-
-        public async Task<IActionResult> RegisterOpportunityStatusChange(OpportunityStatusUpdate request)
-        {
-            OpportunityStatusHistory opportunity = new()
-            {
-                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                Comment = request.Comment,
-                OpportunityID = request.OpportunityID,
-                OpportunityStatusID = request.NewStatusID
-            };
-
-            await _context.OpportunityStatusHistories.AddAsync(opportunity);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            _opportunityService = opportunityService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetOpportunities()
         {
-            var lista = await GetAllOpportunities();
+            var opportunities = await _opportunityService.GetAllOpportunities();
 
-            return StatusCode(StatusCodes.Status200OK, lista);
+            ApiListResponse<object> apiListResponse = new(opportunities, StatusCodes.Status200OK);
+
+            return StatusCode(StatusCodes.Status200OK, apiListResponse);
         }
 
         [HttpGet]
-        [Route("ListaEstado/{id:int}")]
-        public async Task<IActionResult> GetListByStatus(int id)
+        [Route("detail/{id:int}")]
+        public async Task<IActionResult> GetOpportunityById(int id)
         {
-            var lista = await GetAllOpportunities();
+            var opportunity = await _opportunityService.GetOpportunityById(id);
 
-            var newLista = lista.Where(e => e.OpportunityStatusID == id);
+            ApiSingleObjectResponse<object> response = new(opportunity, StatusCodes.Status200OK);
 
-            return StatusCode(StatusCodes.Status200OK, newLista);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
-        [Route("Detalle/{id:int}")]
-        public async Task<IActionResult> GetDetails(int id)
+        [Route("bystatus/{id:int}")]
+        public async Task<IActionResult> GetOpportunitiesByStatus(int id)
         {
-            var opportunityDetail = await _context.Opportunities
-            .Include(e => e.Client)
-            .AsNoTracking().Select(e => new
-            {
-                e.OpportunityID,
-                e.CreationDate,
-                ClientName = e.Client.Name,
-                ClientPhone = e.Client.PhoneNumber,
-                OrderName = e.OpportunityStatus.Name,
-                e.OpportunityStatusID
-            })
-            .FirstOrDefaultAsync(e => e.OpportunityID == id);
+            var opportunities = await _opportunityService.GetOpportunityByStatus(id);
 
-            return StatusCode(StatusCodes.Status200OK, opportunityDetail);
+            ApiListResponse<object> response = new(opportunities, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, response);
 
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewOpportunity([FromBody] int clientId)
+        [Route("create")]
+        public async Task<IActionResult> CreateOpportunity([FromBody] OpportunityRequest request)
         {
-
-            Opportunity opportunity = new()
-            {
-                CreationDate = DateOnly.FromDateTime(DateTime.Now),
-                OpportunityStatusID = 1,
-                ClientID = clientId,
-                SellerID = 1
-            };
-
-            await _context.Opportunities.AddAsync(opportunity);
-            await _context.SaveChangesAsync();
+            await _opportunityService.CreateOpportunity(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
-
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] OpportunityStatusUpdate request)
+        [Route("update")]
+        public async Task<IActionResult> UpdateOpportunityStatus([FromBody] OpportunityStatusUpdate request)
         {
-            var opportunityDetail = await _context.Opportunities
-            .FirstOrDefaultAsync(e => e.OpportunityID == request.OpportunityID);
-
-            if (opportunityDetail != null)
-            {
-                if (opportunityDetail.OpportunityStatusID != request.NewStatusID)
-                {
-                    OpportunityStatusUpdate newStatus = new()
-                    {
-                        Comment = request.Comment,
-                        OpportunityID = request.OpportunityID,
-                        NewStatusID = request.NewStatusID
-                    };
-                    await RegisterOpportunityStatusChange(newStatus);
-                }
-
-                opportunityDetail.OpportunityStatusID = request.NewStatusID;
-                _context.Opportunities.Update(opportunityDetail);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Opportunity Found with that ID");
-            }
+            await _opportunityService.UpdateOpportunityStatus(request);
+            return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
+        /*
         [HttpPut]
         [Route("ActualizarEstado")]
         public async Task<IActionResult> UpdateStatus([FromBody] OpportunityStatusUpdate request)
         {
             var opportunityDetail = await _context.Opportunities.FirstOrDefaultAsync(e => e.OpportunityID == request.OpportunityID);
-            if(opportunityDetail != null)
+            if (opportunityDetail != null)
             {
                 await RegisterOpportunityStatusChange(request);
-                
+
                 opportunityDetail.OpportunityStatusID = request.NewStatusID;
                 _context.Opportunities.Update(opportunityDetail);
                 await _context.SaveChangesAsync();
 
                 return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
+            }
+            else
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
             }
-
-
-        }
+        }*/
 
         //TODO Confirmar si se puede eliminar un pedido o no
         /*[HttpDelete]

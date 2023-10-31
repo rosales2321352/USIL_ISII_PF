@@ -21,12 +21,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 builder.Services.AddScoped<IOrderHistoryService, OrderHistoryService>();
-
+builder.Services.AddScoped<IOpportunityService,OpportunityService>();
+builder.Services.AddScoped<IOpportunityStatusService,OpportunityStatusService>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
 builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
 builder.Services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
+builder.Services.AddScoped<IOpportunityRepository, OpportunityRepository>();
+builder.Services.AddScoped<IOpportunityStatusRepository, OpportunityStatusRepository>();
+builder.Services.AddScoped<IOpportunityHistoryRepository, OpportunityHistoryRepository>();
+
 
 
 var app = builder.Build();

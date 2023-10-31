@@ -37,10 +37,10 @@ namespace WebApp.Data
             {
                 e.OrderID,
                 e.CreationDate,
-                Status = new 
+                Status = new
                 {
                     e.OrderStatus.Name,
-                    e.OrderStatusID,  
+                    e.OrderStatusID,
                 },
                 Address = e.ShippingAddress,
                 Location = e.GeographicLocation,
@@ -52,7 +52,7 @@ namespace WebApp.Data
                 }
             })
             .FirstOrDefaultAsync(e => e.OrderID == id);
-            if(order != null)
+            if (order != null)
                 return order;
             else
                 return default!;    //TODO! Que se retorna?
