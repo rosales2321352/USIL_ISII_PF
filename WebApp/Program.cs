@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using WebApp.Data;
+using WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,17 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
+builder.Services.AddScoped<IOrderHistoryService, OrderHistoryService>();
+
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
+builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
+builder.Services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
+
 
 var app = builder.Build();
 
