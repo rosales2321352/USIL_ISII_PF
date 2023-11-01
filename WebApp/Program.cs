@@ -23,6 +23,7 @@ builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 builder.Services.AddScoped<IOrderHistoryService, OrderHistoryService>();
 builder.Services.AddScoped<IOpportunityService,OpportunityService>();
 builder.Services.AddScoped<IOpportunityStatusService,OpportunityStatusService>();
+builder.Services.AddScoped<IOpportunityHistoryService,OpportunityHistoryService>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();

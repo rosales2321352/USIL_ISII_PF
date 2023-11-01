@@ -34,7 +34,9 @@ namespace WebApp.Services
             Opportunity opportunity = new()
             {
                 CreationDate = DateOnly.FromDateTime(DateTime.Now),
-                ClientID = request.ClientID
+                ClientID = request.ClientID,
+                SellerID = 1,
+                OpportunityStatusID = 1
             };
 
             await _repository.Add(opportunity);
@@ -49,7 +51,7 @@ namespace WebApp.Services
             {
                 UpdateDate = DateOnly.FromDateTime(DateTime.Now),
                 OpportunityID = request.OpportunityID,
-                OpportunityStatusHistoryID = request.OpportunityStatusID,
+                OpportunityStatusID = request.OpportunityStatusID,
                 Comment = request.Comment
             };
 

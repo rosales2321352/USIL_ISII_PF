@@ -4,25 +4,25 @@ using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Route("api/orderstatushistory")]
+
+    [Route("api/opportunitystatushistory")]
     [ApiController]
-    public class OrderHistoryController : ControllerBase
+    public class OpportunityHistoryController : ControllerBase
     {
-        private readonly IOrderHistoryService _orderHistoryService;
-        public OrderHistoryController(IOrderHistoryService orderHistoryService)
+        private readonly IOpportunityHistoryService _opportunityHistoryService;
+        public OpportunityHistoryController(IOpportunityHistoryService orderHistoryService)
         {
-            _orderHistoryService = orderHistoryService;
+            _opportunityHistoryService = orderHistoryService;
         }
 
         [HttpGet]
         [Route("all/{id:int}")]
         public async Task<IActionResult> GetOrdersHistory(int id)
         {
-            var lista = await _orderHistoryService.GetAllHistory(id);
+            var lista = await _opportunityHistoryService.GetAllHistory(id);
 
             ApiListResponse<object> apiResponse = new(lista, StatusCodes.Status200OK);
             return StatusCode(StatusCodes.Status200OK, apiResponse);
         }
-
     }
 }

@@ -1,78 +1,50 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/opportunitystatus")]
     [ApiController]
     public class OpportunityStatusController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOpportunityStatusService _opportunityStatusService;
 
-        public OpportunityStatusController(ApplicationDbContext context)
+        public OpportunityStatusController(IOpportunityStatusService opportunityStatusService)
         {
-            _context = context;
+            _opportunityStatusService = opportunityStatusService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetOpportunitiesStatuses()
         {
-            var lista = await _context.OpportunityStatuses.Select(e => new 
-            {
-                Id = e.OpportunityStatusID,
-                e.Name
-            }).ToListAsync();
+            var opportunityStatuses = await _opportunityStatusService.GetAllOpportunityStatuses();
+            ApiListResponse<object> apiResponse = new(opportunityStatuses, StatusCodes.Status200OK);
 
-            return StatusCode(StatusCodes.Status200OK, lista);
+            return StatusCode(StatusCodes.Status200OK, apiResponse);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewStatus([FromBody] string newName)
+        [Route("create")]
+        public async Task<IActionResult> CreateOpportunityStatus([FromBody] OpportunityStatusRequest request)
         {
-            OpportunityStatus newStatus = new()
-            {
-                Name = newName
-            };
-            
-            await _context.OpportunityStatuses.AddAsync(newStatus);
-            await _context.SaveChangesAsync();
-
+            await _opportunityStatusService.CreateOpportunityStatus(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
 
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] OpportunityStatus request)
+        [Route("edit")]
+        public async Task<IActionResult> Edit([FromBody] OpportunityStatusRequest request)
         {
-            _context.OpportunityStatuses.Update(request);
-            await _context.SaveChangesAsync();
-
+            await _opportunityStatusService.EditOpportunityStatus(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
-        //TODO Verificar si se puede eliminar estados
-        
-        [HttpDelete]
-        [Route("Eliminar/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            OpportunityStatus? order = await _context.OpportunityStatuses.FindAsync(id);
 
-            if (order != null)
-            {
-                _context.OpportunityStatuses.Remove(order);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
 
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-        }
+        //TODO Eliminacion logica y fisica de estados.
     }
 }
