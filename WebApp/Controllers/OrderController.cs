@@ -44,7 +44,7 @@ namespace WebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, response);
         }
         [HttpGet]
-        [Route("bystatus/{id:int}")]
+        [Route("by-status/{id:int}")]
         public async Task<IActionResult> GetOrdersByStatus(int id)
         {
             var orders = await _orderService.GetOrdersByStatus(id);

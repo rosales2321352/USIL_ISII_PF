@@ -8,7 +8,7 @@ namespace WebApp.Data
         Task<IEnumerable<TEntity>> GetAll();
         Task Add(TEntity entity);
         Task Update(TEntity entity);
-        void Delete(TEntity entity);
+        Task Delete(TEntity entity);
     }
 
 }

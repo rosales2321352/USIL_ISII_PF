@@ -24,6 +24,9 @@ builder.Services.AddScoped<IOrderHistoryService, OrderHistoryService>();
 builder.Services.AddScoped<IOpportunityService,OpportunityService>();
 builder.Services.AddScoped<IOpportunityStatusService,OpportunityStatusService>();
 builder.Services.AddScoped<IOpportunityHistoryService,OpportunityHistoryService>();
+builder.Services.AddScoped<IAnnotationTypeService,AnnotationTypeService>();
+builder.Services.AddScoped<IAnnotationService,AnnotationService>();
+
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
@@ -31,7 +34,8 @@ builder.Services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
 builder.Services.AddScoped<IOpportunityRepository, OpportunityRepository>();
 builder.Services.AddScoped<IOpportunityStatusRepository, OpportunityStatusRepository>();
 builder.Services.AddScoped<IOpportunityHistoryRepository, OpportunityHistoryRepository>();
-
+builder.Services.AddScoped<IAnnotationTypeRepository,AnnotationTypeRepository>();
+builder.Services.AddScoped<IAnnotationRepository,AnnotationRepository>();
 
 
 var app = builder.Build();

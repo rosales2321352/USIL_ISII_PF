@@ -37,9 +37,9 @@ namespace WebApp.Data
             await _context.SaveChangesAsync();
         }
 
-        public async void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity);
+            _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

@@ -14,7 +14,6 @@ namespace WebApp.Services
         {
             return await _orderStatusRepository.GetAllOrderStatuses();
         }
-
         public async Task CreateOrderStatus(OrderStatusRequest request)
         {
             OrderStatus orderStatus = new ()
@@ -24,7 +23,6 @@ namespace WebApp.Services
 
             await _repository.Add(orderStatus);
         }
-
         public async Task EditOrderStatus(OrderStatusRequest request)
         {
             int statusId = request.StatusID ?? 0;

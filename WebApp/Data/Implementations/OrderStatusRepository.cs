@@ -11,7 +11,7 @@ namespace WebApp.Data
 
         public async Task<IEnumerable<object>> GetAllOrderStatuses()
         {
-            var lista = await _context.OrderStatuses
+            var list = await _context.OrderStatuses
             .OrderBy(e => e.OrderStatusID)
             .Select(status => new
             {
@@ -19,7 +19,7 @@ namespace WebApp.Data
                 status.Name
             }).ToListAsync();
 
-            return lista;
+            return list;
         }
     }
 }
