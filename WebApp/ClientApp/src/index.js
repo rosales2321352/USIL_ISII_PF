@@ -5,14 +5,15 @@ import { RouterProvider } from 'react-router-dom';
 import AppRoutes from './config/routes';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import './assets/GlobalStyles.css';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-  <StrictMode>
+  //<StrictMode>
     <RouterProvider router={AppRoutes} />
-  </StrictMode>
+  //</StrictMode>
 )
 
 // If you want your app to work offline and load faster, you can change

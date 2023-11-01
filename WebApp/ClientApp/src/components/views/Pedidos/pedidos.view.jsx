@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Container, Typography, Grid, Paper, Divider, IconButton } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -20,16 +20,42 @@ export class PedidosView extends Component {
             columnsCopy[destination.droppableId].users.splice(destination.index, 0, movedUser);
         } else {
             columnsCopy[destination.droppableId].users.splice(destination.index, 0, movedUser);
+            // Si el pedido ha sido movido a otra columna, actualiza el estado en el servidor
+            const newStatusID = parseInt(destination.droppableId) + 1; // Suponemos que el droppableId empieza desde 0 y el orderStatusID desde 1
+            this.updateOrderStatusOnServer(movedUser.draggableId, newStatusID);
         }
 
         this.setState({ columns: columnsCopy });
     }
 
-    addContact = () => {
-        const newContact = `Contacto ${this.state.columns[0].users.length + 1}`;
-        const columnsCopy = [...this.state.columns];
-        columnsCopy[0].users.push(newContact);
-        this.setState({ columns: columnsCopy });
+    // Método para actualizar el estado del pedido en el servidor
+    updateOrderStatusOnServer = async (orderID, newStatusID) => {
+        const request = {
+            comment: "Sin Comentario",
+            orderID: parseInt(orderID), // Asegurarse de que es un número
+            newStatusID: parseInt(newStatusID)
+        };
+
+        try {
+            const response = await fetch('api/Order/ActualizarEstado', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            // Aquí puedes manejar cualquier respuesta si es necesario
+            const data = await response.json();
+            console.log(data);
+
+        } catch (error) {
+            console.error("Hubo un problema con la petición fetch:", error);
+        }
     }
 
     // 2. Implementa el método para abrir el modal
@@ -47,7 +73,7 @@ export class PedidosView extends Component {
                 selectedContact: contact,
                 orderDetails: data, // Establecer los detalles del pedido en el estado
             });
-        } catch (error) {
+        } catch (error) {   
             console.error("Hubo un problema con la petición fetch:", error);
         }
     };
@@ -71,11 +97,14 @@ export class PedidosView extends Component {
                 { title: 'Cancelado', users: [] },
             ],
             isModalOpen: false,
+            isAddModalOpen: false,
             selectedContact: null,
             orderDetails: null, // Agrega un estado para los detalles del pedido
+            clients: [],
+            selectedClientId: null
         };
     }
-
+    
     // Realiza una sola solicitud para obtener todas las órdenes
     loadData = async () => {
         try {
@@ -113,6 +142,59 @@ export class PedidosView extends Component {
         this.loadData();
     }
 
+    loadClients = async () => {
+        try {
+            const response = await fetch('api/Client/Lista');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            this.setState({ clients: data });
+        } catch (error) {
+            console.error("Hubo un problema con la petición fetch:", error);
+        }
+    }
+    handleClientSelection = (id) => {
+        this.setState({ selectedClientId: id });
+    }
+
+    openAddModal = () => {
+        this.loadClients();  // Carga los clientes
+        this.setState({ isAddModalOpen: true });
+    }
+    closeAddModal = () => {
+        this.setState({ isAddModalOpen: false });
+    }
+
+    handleAdd = async () => {
+        const { selectedClientId } = this.state;
+
+        try {
+            const response = await fetch('api/Order/Guardar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedClientId)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data === "ok") {
+                console.log("Pedido creado exitosamente.");
+                this.closeAddModal();  // Cierra el modal una vez que el pedido ha sido creado
+                // Aquí puedes agregar lógica para actualizar tus pedidos o cualquier otra operación posterior
+            } else {
+                console.error("Error al crear el pedido:", data);
+            }
+        } catch (error) {
+            console.error("Hubo un problema con la petición fetch:", error);
+        }
+    }
+
     render() {
 
         const titleStyle = {
@@ -147,7 +229,7 @@ export class PedidosView extends Component {
                                 backgroundColor: '#ff8c00',    // Cambiamos a una tonalidad más oscura de naranja al hacer hover
                                 boxShadow: '0 0 8px rgba(0, 0, 0, 0.4)'
                             }
-                        }} onClick={this.addContact}>
+                        }} onClick={this.openAddModal}>
                             <AddIcon />
                         </IconButton>
                     </div>
@@ -160,7 +242,7 @@ export class PedidosView extends Component {
                                         <Typography variant="h6">
                                             {column.title}
                                         </Typography>
-                                    </div>
+                                     </div>
 
                                     <Divider style={{ marginBottom: 10, backgroundColor: 'orange', height: '4px' }} />
 
@@ -225,7 +307,32 @@ export class PedidosView extends Component {
                         )}
                     </DialogContent>
                 </Dialog>
-
+                <Dialog open={this.state.isAddModalOpen} onClose={this.closeAddModal}>
+                    <DialogTitle>Selecciona un cliente</DialogTitle>
+                    <DialogContent>
+                        {this.state.clients.map(client => (
+                            <div
+                                key={client.personID}
+                                style={{ padding: 10, cursor: 'pointer', backgroundColor: this.state.selectedClientId === client.personID ? '#e0e0e0' : 'transparent' }}
+                                onClick={() => this.handleClientSelection(client.personID)}
+                            >
+                                {client.name} - {client.phoneNumber}
+                            </div>
+                        ))}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.closeAddModal} color="primary">
+                            Cancelar
+                        </Button>
+                        <Button
+                            onClick={this.handleAdd}
+                            color="primary"
+                            disabled={!this.state.selectedClientId}
+                        >
+                            Añadir
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </DragDropContext>
         );
     }

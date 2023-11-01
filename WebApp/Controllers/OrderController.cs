@@ -106,7 +106,8 @@ namespace WebApp.Controllers
                 CreationDate = DateOnly.FromDateTime(DateTime.Now),
                 OrderStatusID = 1,
                 ClientID = clientId,
-                SellerID = 1
+                SellerID = 1,
+                Name = "Venta de Producto",
             };
 
             await _context.Orders.AddAsync(order);
