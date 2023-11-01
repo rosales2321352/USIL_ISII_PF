@@ -6,7 +6,9 @@ namespace WebApp.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
         public DbSet<Company> Companies { get; set; } = null!;
         public DbSet<Person> People { get; set; }
         public DbSet<Client> Clients { get; set; } = null!;
@@ -32,7 +34,8 @@ namespace WebApp.Data
 
             //* Conversation
 
-            modelBuilder.Entity<Conversation>(entity =>{
+            modelBuilder.Entity<Conversation>(entity =>
+            {
                 entity.ToTable("conversation");
 
                 entity.Property(e => e.ConversationID).HasColumnName("conversation_id").ValueGeneratedOnAdd();
@@ -46,7 +49,8 @@ namespace WebApp.Data
 
             //* TextMessage
 
-            modelBuilder.Entity<TextMessage>(entity =>{
+            modelBuilder.Entity<TextMessage>(entity =>
+            {
                 entity.ToTable("text_message");
 
                 entity.Property(e => e.Text).HasMaxLength(2000).HasColumnName("text");
