@@ -5,7 +5,7 @@ using WebApp.Services;
 namespace WebApp.Controllers
 {
 
-    [Route("api/opportunitystatushistory")]
+    [Route("api/opportunity-status-history")]
     [ApiController]
     public class OpportunityHistoryController : ControllerBase
     {

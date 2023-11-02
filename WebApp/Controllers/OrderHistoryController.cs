@@ -4,7 +4,7 @@ using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Route("api/orderstatushistory")]
+    [Route("api/order-status-history")]
     [ApiController]
     public class OrderHistoryController : ControllerBase
     {

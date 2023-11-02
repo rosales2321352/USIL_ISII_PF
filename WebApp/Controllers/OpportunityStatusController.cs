@@ -5,7 +5,7 @@ using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Route("api/opportunitystatus")]
+    [Route("api/opportunity-status")]
     [ApiController]
     public class OpportunityStatusController : ControllerBase
     {
