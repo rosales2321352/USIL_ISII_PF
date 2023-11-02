@@ -1,57 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/annotationtypes")]
     [ApiController]
     public class AnnotationTypeController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAnnotationTypeService _annotatitonTypeService;
 
-        public AnnotationTypeController(ApplicationDbContext context)
+        public AnnotationTypeController(IAnnotationTypeService annotatitonTypeService)
         {
-            _context = context;
+            _annotatitonTypeService = annotatitonTypeService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetAnnotationTypes()
         {
-            var lista = await _context.AnnotationTypes.Select(e => new 
-            {
-                Id = e.AnnotationTypeID,
-                e.Name
-            }).ToListAsync();
-
-            return StatusCode(StatusCodes.Status200OK, lista);
+            var annotationTypes = await _annotatitonTypeService.GetAllAnnotationTypes();
+            ApiListResponse<object> apiListResponse = new(annotationTypes, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, apiListResponse);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewAnnotationType([FromBody] string newName)
+        [Route("create")]
+        public async Task<IActionResult> CreateAnnotationType([FromBody] AnnotationTypeRequest request)
         {
-            AnnotationType newStatus = new()
-            {
-                Name = newName
-            };
-            
-            await _context.AnnotationTypes.AddAsync(newStatus);
-            await _context.SaveChangesAsync();
+            await _annotatitonTypeService.CreateAnnotationType(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
 
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] AnnotationType request)
+        [Route("edit")]
+        public async Task<IActionResult> Edit([FromBody] AnnotationTypeRequest request)
         {
-            _context.AnnotationTypes.Update(request);
-            await _context.SaveChangesAsync();
+            await _annotatitonTypeService.EditAnnotationType(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
         }

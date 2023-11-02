@@ -1,78 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/order-status")]
     [ApiController]
     public class OrderStatusController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOrderStatusService _orderStatusService;
 
-        public OrderStatusController(ApplicationDbContext context)
+        public OrderStatusController(IOrderStatusService orderStatusService)
         {
-            _context = context;
+            _orderStatusService = orderStatusService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetOrderStatuses()
         {
-            var lista = await _context.OrderStatuses.Select(e => new 
-            {
-                Id = e.OrderStatusID,
-                e.Name
-            }).ToListAsync();
+            var orderStatuses = await _orderStatusService.GetAllOrderStatus();
+            ApiListResponse<object> apiResponse = new(orderStatuses, StatusCodes.Status200OK);
 
-            return StatusCode(StatusCodes.Status200OK, lista);
+            return StatusCode(StatusCodes.Status200OK, apiResponse);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewStatus([FromBody] string newName)
+        [Route("create")]
+        public async Task<IActionResult> CreateOrderStatus([FromBody] OrderStatusRequest request)
         {
-            OrderStatus newStatus = new()
-            {
-                Name = newName
-            };
-            
-            await _context.OrderStatuses.AddAsync(newStatus);
-            await _context.SaveChangesAsync();
-
+            await _orderStatusService.CreateOrderStatus(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
-
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] OrderStatus request)
+        [Route("edit")]
+        public async Task<IActionResult> Edit([FromBody] OrderStatusRequest request)
         {
-            _context.OrderStatuses.Update(request);
-            await _context.SaveChangesAsync();
+            await _orderStatusService.EditOrderStatus(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
-        //TODO Verificar si se puede eliminar estados
-        /*
-        [HttpDelete]
-        [Route("Eliminar/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            OrderStatus? order = await _context.OrderStatuses.FindAsync(id);
-
-            if (order != null)
-            {
-                _context.OrderStatuses.Remove(order);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-        }*/
+        //TODO Eliminacion logica y fisica de estados.
+        
     }
 }
