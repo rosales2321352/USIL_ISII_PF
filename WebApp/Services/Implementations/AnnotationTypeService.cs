@@ -23,7 +23,6 @@ namespace WebApp.Services
             };
 
             await _repository.Add(annotationType);
-
         }
         public async Task EditAnnotationType(AnnotationTypeRequest request)
         {
@@ -33,7 +32,6 @@ namespace WebApp.Services
             annotationType.Name = request.Name;
 
             await _repository.Update(annotationType);
-
         }
     }
 }

@@ -11,13 +11,11 @@ namespace WebApp.Controllers
     [ApiController]
     public class AnnotationTypeController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IAnnotationTypeService _annotatitonTypeService;
 
-        public AnnotationTypeController(IAnnotationTypeService annotatitonTypeService, ApplicationDbContext context)
+        public AnnotationTypeController(IAnnotationTypeService annotatitonTypeService)
         {
             _annotatitonTypeService = annotatitonTypeService;
-            _context = context;
         }
 
         [HttpGet]

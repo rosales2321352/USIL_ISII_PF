@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Data;
 using WebApp.Helpers;
 using WebApp.Models;
 using WebApp.Services;
@@ -57,7 +56,7 @@ namespace WebApp.Controllers
 
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> Edit([FromBody] AnnotationUpdate request)
+        public async Task<IActionResult> EditAnnotation([FromBody] AnnotationUpdate request)
         {
             await _annotationService.EditAnnotation(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
@@ -65,7 +64,7 @@ namespace WebApp.Controllers
 
         [HttpDelete]
         [Route("delete")] //! Eliminacion fisica
-        public async Task<IActionResult> Delete([FromBody] AnnotationDelete request)
+        public async Task<IActionResult> DeleteAnnotation([FromBody] AnnotationDelete request)
         {
             await _annotationService.DeleteAnnotation(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
