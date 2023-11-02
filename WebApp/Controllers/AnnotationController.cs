@@ -1,153 +1,73 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/annotations")]
     [ApiController]
     public class AnnotationController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAnnotationService _annotationService;
 
-        public AnnotationController(ApplicationDbContext context)
+        public AnnotationController(IAnnotationService annotationService)
         {
-            _context = context;
+            _annotationService = annotationService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetAllAnnotations()
         {
-            var lista = await _context.Annotations
-            .Include(e => e.AnnotationType)
-            .Include(e => e.Client)
-            .AsNoTracking()
-            .Select(e => new
-            {
-                e.AnnotationID,
-                e.Description,
-                e.Title,
-                AnnotationType = e.AnnotationType.Name,
-                Client = new
-                {
-                    e.Client.Name,
-                    e.Client.PhoneNumber
-                }
-            }).ToListAsync();
-
-            ApiPositiveResponse response = new()
-            {
-                StatusCode = 200,
-                Data = lista,
-                TotalRows = lista.Count
-            };
+            var list = await _annotationService.GetAllAnnotations();
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
 
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
-        [Route("ListaCliente/{id:int}")]
-        public async Task<IActionResult> GetListByClient(int id)
+        [Route("by-client/{id:int}")]
+        public async Task<IActionResult> GetAnnotationsByClient(int id)
         {
-            var listByClient = await _context.Annotations
-            .Include(e => e.AnnotationType)
-            .Include(e => e.Client)
-            .AsNoTracking()
-            .Where(e => e.ClientID == id)
-            .Select(e => new
-            {
-                e.AnnotationID,
-                e.Description,
-                e.Title,
-                AnnotationType = e.AnnotationType.Name,
-                ClientName = e.Client.Name
-            })
-            .ToListAsync();
+            var list = await _annotationService.GetAnnotationsByClient(id);
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
 
-            return StatusCode(StatusCodes.Status200OK, listByClient);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
-        [Route("Detalle/{id:int}")]
-        public async Task<IActionResult> GetDetails(int id)
+        [Route("detail/{id:int}")]
+        public async Task<IActionResult> GetAnnotationDetail(int id)
         {
-            var annotation = await _context.Annotations
-            .Include(e => e.AnnotationType)
-            .Include(e => e.Client)
-            .AsNoTracking()
-            .Select(e => new
-            {
-                e.AnnotationID,
-                e.Description,
-                e.Title,
-                AnnotationType = e.AnnotationType.Name,
-                ClientName = e.Client.Name
-            })
-            .FirstOrDefaultAsync(e => e.AnnotationID == id);
-
-            return StatusCode(StatusCodes.Status200OK, annotation);
+            var annotation = await _annotationService.GetAnnotationDetail(id);
+            ApiSingleObjectResponse<Annotation> response = new(annotation, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewAnnotation([FromBody] AnnotationView request)
+        [Route("create")]
+        public async Task<IActionResult> CreateAnnotation([FromBody] AnnotationRequest request)
         {
-            Annotation newAnnotation = new()
-            {
-                Title = request.Title,
-                ClientID = request.ClientID,
-                Description = request.Description,
-                AnnotationTypeID = request.AnnotationTypeID,
-                SellerID = 1
-            };
-
-            await _context.Annotations.AddAsync(newAnnotation);
-            await _context.SaveChangesAsync();
+            await _annotationService.CreateAnnotation(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
-
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] AnnotationUpdate request)
+        [Route("edit")]
+        public async Task<IActionResult> EditAnnotation([FromBody] AnnotationUpdate request)
         {
-            var annotation = await _context.Annotations.FindAsync(request.AnnotationID);
-
-            if (annotation != null)
-            {
-                annotation.Title = request.Title;
-                annotation.Description = request.Description;
-                annotation.AnnotationTypeID = request.AnnotationTypeID;
-
-                _context.Annotations.Update(annotation);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Annnotation Found with that ID");
-            }
-
-
+            await _annotationService.EditAnnotation(request);
+            return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
         [HttpDelete]
-        [Route("Eliminar/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        [Route("delete")] //! Eliminacion fisica
+        public async Task<IActionResult> DeleteAnnotation([FromBody] AnnotationDelete request)
         {
-            var annotation = await _context.Annotations.FindAsync(id);
-
-            if (annotation != null)
-            {
-                _context.Annotations.Remove(annotation);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Annnotation Found with that ID");
+            await _annotationService.DeleteAnnotation(request);
+            return StatusCode(StatusCodes.Status200OK, "ok");
         }
     }
 }

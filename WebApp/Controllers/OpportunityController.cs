@@ -41,7 +41,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        [Route("bystatus/{id:int}")]
+        [Route("by-status/{id:int}")]
         public async Task<IActionResult> GetOpportunitiesByStatus(int id)
         {
             var opportunities = await _opportunityService.GetOpportunityByStatus(id);
@@ -68,44 +68,7 @@ namespace WebApp.Controllers
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
-        /*
-        [HttpPut]
-        [Route("ActualizarEstado")]
-        public async Task<IActionResult> UpdateStatus([FromBody] OpportunityStatusUpdate request)
-        {
-            var opportunityDetail = await _context.Opportunities.FirstOrDefaultAsync(e => e.OpportunityID == request.OpportunityID);
-            if (opportunityDetail != null)
-            {
-                await RegisterOpportunityStatusChange(request);
-
-                opportunityDetail.OpportunityStatusID = request.NewStatusID;
-                _context.Opportunities.Update(opportunityDetail);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-            }
-        }*/
-
-        //TODO Confirmar si se puede eliminar un pedido o no
-        /*[HttpDelete]
-        [Route("Eliminar/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            Order? order = await _context.Orders.FindAsync(id);
-
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-        }*/
+        //TODO eliminacion
+        
     }
 }

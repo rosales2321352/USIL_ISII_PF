@@ -1,58 +1,44 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/event-types")]
     [ApiController]
     public class EventTypeController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public EventTypeController(ApplicationDbContext context)
+        private readonly IEventTypeService _eventTypeService;
+        public EventTypeController(IEventTypeService eventTypeService)
         {
-            _context = context;
+            _eventTypeService = eventTypeService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetAllEventTypes()
         {
-            var lista = await _context.EventTypes.Select(e => new 
-            {
-                Id = e.EventTypeID,
-                e.Name
-            }).ToListAsync();
-
-            return StatusCode(StatusCodes.Status200OK, lista);
+            var eventTypes = await _eventTypeService.GetAllEventTypes();
+            ApiListResponse<object> apiListResponse = new(eventTypes, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, apiListResponse);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewEventType([FromBody] string newName)
+        [Route("create")]
+        public async Task<IActionResult> NewEventType([FromBody] EventTypeRequest request)
         {
-            EventType newStatus = new()
-            {
-                Name = newName
-            };
-            
-            await _context.EventTypes.AddAsync(newStatus);
-            await _context.SaveChangesAsync();
-
+            await _eventTypeService.CreateEventType(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
-
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] EventType request)
+        [Route("edit")]
+        public async Task<IActionResult> Edit([FromBody] EventTypeRequest request)
         {
-            _context.EventTypes.Update(request);
-            await _context.SaveChangesAsync();
-
+            await _eventTypeService.EditEventType(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
     }

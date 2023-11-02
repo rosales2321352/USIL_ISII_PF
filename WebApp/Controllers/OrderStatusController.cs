@@ -1,34 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 using WebApp.Helpers;
 using WebApp.Models;
 using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/orderstatus")]
+    [Route("api/order-status")]
     [ApiController]
     public class OrderStatusController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IOrderStatusService _orderStatusService;
 
-        public OrderStatusController(ApplicationDbContext context, IOrderStatusService orderStatusService)
+        public OrderStatusController(IOrderStatusService orderStatusService)
         {
             _orderStatusService = orderStatusService;
-            _context = context;
         }
 
         [HttpGet]
         [Route("all")]
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetOrderStatuses()
         {
             var orderStatuses = await _orderStatusService.GetAllOrderStatus();
             ApiListResponse<object> apiResponse = new(orderStatuses, StatusCodes.Status200OK);
 
-            return StatusCode(StatusCodes.Status200OK, orderStatuses);
+            return StatusCode(StatusCodes.Status200OK, apiResponse);
         }
 
         [HttpPost]
