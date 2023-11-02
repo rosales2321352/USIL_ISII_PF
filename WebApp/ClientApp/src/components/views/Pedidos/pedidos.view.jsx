@@ -37,7 +37,7 @@ export class PedidosView extends Component {
         };
 
         try {
-            const response = await fetch('api/Order/ActualizarEstado', {
+            const response = await fetch('api/orders/update', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,11 +108,13 @@ export class PedidosView extends Component {
     // Realiza una sola solicitud para obtener todas las órdenes
     loadData = async () => {
         try {
-            const response = await fetch(`api/Order/Lista`);
+            const response = await fetch(`api/Orders/all`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            const data = await response.json();
+            const responseData = await response.json();
+            const data = responseData.data; // Usa la propiedad 'data' del nuevo formato
+
 
             // Organiza las órdenes según su estado en el estado local
             const columns = [
@@ -123,10 +125,10 @@ export class PedidosView extends Component {
             ];
 
             data.forEach(order => {
-                const columnIndex = order.orderStatusID - 1; // Suponiendo que el orderStatusID comienza en 1
+                const columnIndex = order.status.orderStatusID - 1; // Usa la propiedad 'status' del nuevo formato
                 columns[columnIndex].users.push({
                     draggableId: String(order.orderID),
-                    clientName: order.clientName,
+                    clientName: order.client.name,  // Accede a la propiedad 'name' dentro de 'client'
                     creationDate: order.creationDate,
                 });
             });
@@ -170,7 +172,7 @@ export class PedidosView extends Component {
         const { selectedClientId } = this.state;
 
         try {
-            const response = await fetch('api/Order/Guardar', {
+            const response = await fetch('api/Orders/Guardar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
