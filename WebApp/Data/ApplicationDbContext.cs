@@ -158,10 +158,11 @@ namespace WebApp.Data
                 entity.Property(e => e.Name).HasMaxLength(200).HasColumnName("name");
                 entity.Property(e => e.Address).HasMaxLength(500).HasColumnName("address");
                 entity.Property(e => e.Email).HasMaxLength(100).HasColumnName("email");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
 
             });
 
-            modelBuilder.Entity<Company>().HasMany(e => e.Clients).WithOne(e => e.Company).HasForeignKey(e => e.CompanyID).IsRequired();
+            modelBuilder.Entity<Company>().HasMany(e => e.Clients).WithOne(e => e.Company).HasForeignKey(e => e.CompanyID).IsRequired(false);
 
             //* ClientStatus
             modelBuilder.Entity<ClientStatus>(entity =>
@@ -188,7 +189,7 @@ namespace WebApp.Data
                 entity.Property(e => e.SellerID).HasColumnName("seller_id");
             });
 
-            modelBuilder.Entity<Client>().HasOne(e => e.Company).WithMany(e => e.Clients).HasForeignKey(e => e.CompanyID).IsRequired();
+            modelBuilder.Entity<Client>().HasOne(e => e.Company).WithMany(e => e.Clients).HasForeignKey(e => e.CompanyID).IsRequired(false);
             modelBuilder.Entity<Client>().HasOne(e => e.ClientStatus).WithMany(e => e.Clients).HasForeignKey(e => e.ClientStatusID).IsRequired();
             modelBuilder.Entity<Client>().HasOne(e => e.Seller).WithMany(e => e.Clients).HasForeignKey(e => e.SellerID).IsRequired();
 
@@ -197,8 +198,6 @@ namespace WebApp.Data
             modelBuilder.Entity<Client>().HasMany(e => e.Orders).WithOne(e => e.Client).HasForeignKey(e => e.ClientID).IsRequired();
             modelBuilder.Entity<Client>().HasMany(e => e.Opportunities).WithOne(e => e.Client).HasForeignKey(e => e.ClientID).IsRequired();
             modelBuilder.Entity<Client>().HasMany(e => e.Conversations).WithOne(e => e.Client).HasForeignKey(e => e.ClientID).IsRequired();
-
-
 
 
             //* OrderStatus
@@ -268,6 +267,7 @@ namespace WebApp.Data
                 entity.Property(e => e.ContactName).HasMaxLength(100).HasColumnName("contact_name");
                 entity.Property(e => e.ClientID).HasColumnName("client_id");
                 entity.Property(e => e.SellerID).HasColumnName("seller_id");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
                 entity.Property(e => e.OrderStatusID).HasColumnName("order_status_id");
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10,2)").HasColumnName("total_amount");
             });
@@ -289,6 +289,7 @@ namespace WebApp.Data
                 entity.Property(e => e.ClientID).HasColumnName("client_id");
                 entity.Property(e => e.SellerID).HasColumnName("seller_id");
                 entity.Property(e => e.OpportunityStatusID).HasColumnName("opportunity_status_id");
+                entity.Property(e => e.IsAvailable).HasDefaultValue(true).HasColumnName("is_available");
             });
 
             modelBuilder.Entity<Opportunity>().HasOne(e => e.Client).WithMany(e => e.Opportunities).HasForeignKey(e => e.ClientID).IsRequired();

@@ -30,7 +30,7 @@ namespace WebApp.Controllers
 
         [HttpPost]
         [Route("webhook")]
-        public dynamic datos([FromBody] WhatsappData entry)
+        public dynamic EntryMessage([FromBody] object entry)
         {
             Console.WriteLine(entry.ToString());
             //JToken parsedJson = JToken.Parse(entry);

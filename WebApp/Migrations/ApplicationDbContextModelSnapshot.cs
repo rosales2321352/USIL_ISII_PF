@@ -125,6 +125,12 @@ namespace WebApp.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("email");
 
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -316,6 +322,12 @@ namespace WebApp.Migrations
                         .HasColumnType("date")
                         .HasColumnName("creation_date");
 
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
+
                     b.Property<int>("OpportunityStatusID")
                         .HasColumnType("int")
                         .HasColumnName("opportunity_status_id");
@@ -417,6 +429,12 @@ namespace WebApp.Migrations
                         .HasColumnType("varchar(200)")
                         .HasColumnName("geographical_location");
 
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -513,13 +531,11 @@ namespace WebApp.Migrations
                         .HasColumnName("person_id");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("email");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
                         .HasColumnName("name");
@@ -591,7 +607,7 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("client_status_id");
 
-                    b.Property<int>("CompanyID")
+                    b.Property<int?>("CompanyID")
                         .HasColumnType("int")
                         .HasColumnName("company_id");
 
@@ -841,9 +857,7 @@ namespace WebApp.Migrations
 
                     b.HasOne("WebApp.Models.Company", "Company")
                         .WithMany("Clients")
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyID");
 
                     b.HasOne("WebApp.Models.Person", null)
                         .WithOne()
