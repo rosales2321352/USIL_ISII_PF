@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Container, Typography, Grid, Paper, Divider, IconButton } from '@mui/material';
+import { Button, Container, Typography, Grid, Paper, Divider, IconButton, TextField } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
+import Autocomplete from '@mui/material/Autocomplete';
+import HistoryIcon from '@mui/icons-material/History';
+
+
+const statusToColumnIndex = {
+    1: 0, // Prospecto
+    2: 1, // Orden de Compra
+    3: 3, // Cancelado
+    4: 2  // Finalizado
+};
 
 export class PedidosView extends Component {
     static displayName = PedidosView.name;
@@ -21,7 +31,7 @@ export class PedidosView extends Component {
         } else {
             columnsCopy[destination.droppableId].users.splice(destination.index, 0, movedUser);
             // Si el pedido ha sido movido a otra columna, actualiza el estado en el servidor
-            const newStatusID = parseInt(destination.droppableId) + 1; // Suponemos que el droppableId empieza desde 0 y el orderStatusID desde 1
+            const newStatusID = statusToColumnIndex[parseInt(destination.droppableId) + 1] + 1; // Suponemos que el droppableId empieza desde 0 y el orderStatusID desde 1
             this.updateOrderStatusOnServer(movedUser.draggableId, newStatusID);
         }
 
@@ -31,13 +41,13 @@ export class PedidosView extends Component {
     // Método para actualizar el estado del pedido en el servidor
     updateOrderStatusOnServer = async (orderID, newStatusID) => {
         const request = {
-            comment: "Sin Comentario",
-            orderID: parseInt(orderID), // Asegurarse de que es un número
-            newStatusID: parseInt(newStatusID)
+            orderID: parseInt(orderID),
+            orderStatusID: parseInt(newStatusID),
+            comment: "Sin Comentario"
         };
 
         try {
-            const response = await fetch('api/orders/update', {
+            const response = await fetch('api/Orders/edit', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +72,7 @@ export class PedidosView extends Component {
     openModal = async (contact) => {
         try {
             // Hacer una solicitud al controlador para obtener los detalles del pedido
-            const response = await fetch(`api/Order/Detalle/${contact.draggableId}`);
+            const response = await fetch(`api/Orders/detail/${contact.draggableId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -71,7 +81,7 @@ export class PedidosView extends Component {
             this.setState({
                 isModalOpen: true,
                 selectedContact: contact,
-                orderDetails: data, // Establecer los detalles del pedido en el estado
+                orderDetails: data.data, // Establecer los detalles del pedido en el estado
             });
         } catch (error) {   
             console.error("Hubo un problema con la petición fetch:", error);
@@ -101,7 +111,10 @@ export class PedidosView extends Component {
             selectedContact: null,
             orderDetails: null, // Agrega un estado para los detalles del pedido
             clients: [],
-            selectedClientId: null
+            selectedClientId: null,
+
+            title: '',
+            totalAmount: '',
         };
     }
     
@@ -125,11 +138,13 @@ export class PedidosView extends Component {
             ];
 
             data.forEach(order => {
-                const columnIndex = order.status.orderStatusID - 1; // Usa la propiedad 'status' del nuevo formato
+                const columnIndex = statusToColumnIndex[order.status.orderStatusID];
                 columns[columnIndex].users.push({
                     draggableId: String(order.orderID),
-                    clientName: order.client.name,  // Accede a la propiedad 'name' dentro de 'client'
+                    clientName: order.client.name,
                     creationDate: order.creationDate,
+                    title: order.title,
+                    totalAmount: order.totalAmount,
                 });
             });
 
@@ -169,28 +184,36 @@ export class PedidosView extends Component {
     }
 
     handleAdd = async () => {
-        const { selectedClientId } = this.state;
+        const { selectedClientId, title, totalAmount } = this.state;
+
+        const requestBody = {
+            title: title,
+            totalAmount: parseFloat(totalAmount),
+            clientID: selectedClientId,
+            sellerID: 1  // Puedes cambiar esto si el ID del vendedor varía
+        };
 
         try {
-            const response = await fetch('api/Orders/Guardar', {
+            const response = await fetch('api/Orders/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(selectedClientId)
+                body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            const data = await response.json();
-            if (data === "ok") {
+            const text = await response.text();
+            if (text === "ok") {
                 console.log("Pedido creado exitosamente.");
+                this.loadData();
                 this.closeAddModal();  // Cierra el modal una vez que el pedido ha sido creado
                 // Aquí puedes agregar lógica para actualizar tus pedidos o cualquier otra operación posterior
             } else {
-                console.error("Error al crear el pedido:", data);
+                console.error("Error al crear el pedido:", text);
             }
         } catch (error) {
             console.error("Hubo un problema con la petición fetch:", error);
@@ -221,7 +244,7 @@ export class PedidosView extends Component {
                         </Typography>
 
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                         <IconButton sx={{
                             fontSize: 30,
                             color: '#fff',
@@ -234,6 +257,24 @@ export class PedidosView extends Component {
                         }} onClick={this.openAddModal}>
                             <AddIcon />
                         </IconButton>
+                        <Link to="/historialPedidos">
+                            <IconButton
+                                sx={{
+                                    fontSize: 30,
+                                    color: '#fff',
+                                    backgroundColor: '#3f51b5',    // Color azul como ejemplo
+                                    marginLeft: 10,                // Margen izquierdo para separarlo del otro ícono
+                                    boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+                                    '&:hover': {
+                                        backgroundColor: '#283593',  // Un tono de azul más oscuro al hacer hover
+                                        boxShadow: '0 0 8px rgba(0, 0, 0, 0.4)'
+                                    }
+                                }}
+                                onClick={this.navigateToHistory}   // Función que te llevará a la vista de historial
+                            >
+                                <HistoryIcon />
+                            </IconButton>
+                        </Link>
                     </div>
                     <Grid container spacing={3}>
                         {this.state.columns.map((column, columnIndex) => (
@@ -266,8 +307,10 @@ export class PedidosView extends Component {
                                                                 onClick={() => this.openModal(user)}
                                                             >
                                                                 <div>
-                                                                    <div>Client Name: {user.clientName}</div>
-                                                                    <div>Creation Date: {user.creationDate}</div>
+                                                                    <div>Pedido: {user.title}</div>
+                                                                    <div>Cliente: {user.clientName}</div>
+                                                                    <div>Fecha: {user.creationDate}</div>
+                                                                    <div>Monto: {user.totalAmount !== null ? user.totalAmount : 0}</div>
                                                                 </div>
                                                             </Paper>
                                                         )}
@@ -299,28 +342,56 @@ export class PedidosView extends Component {
                     <DialogContent>
                         {this.state.orderDetails && (
                             <div>
-                                <div>Creation Date: {this.state.orderDetails.creationDate}</div>
-                                <div>Client Phone: {this.state.orderDetails.clientPhone}</div>
-                                <div>Order Status: {this.state.orderDetails.orderName}</div>
-                                <div>Address: {this.state.orderDetails.address}</div>
-                                <div>Location: {this.state.orderDetails.location}</div>
-                                <div>Contact Name: {this.state.orderDetails.contactName}</div>
+                                <p><strong>Order ID:</strong> {this.state.orderDetails.orderID}</p>
+                                <p><strong>Fecha de creacion:</strong> {this.state.orderDetails.creationDate}</p>
+                                <p><strong>Estado de Pedido:</strong> {this.state.orderDetails.status.name}</p>
+                                <p><strong>Nombre del Cliente:</strong> {this.state.orderDetails.client.name}</p>
+                                <p><strong>Celular:</strong> {this.state.orderDetails.client.phoneNumber}</p>
+                                <p><strong>Ubicacion:</strong> {this.state.orderDetails.location}</p>
+                                <p><strong>Direccion:</strong> {this.state.orderDetails.address}</p>
                             </div>
                         )}
                     </DialogContent>
                 </Dialog>
                 <Dialog open={this.state.isAddModalOpen} onClose={this.closeAddModal}>
-                    <DialogTitle>Selecciona un cliente</DialogTitle>
-                    <DialogContent>
-                        {this.state.clients.map(client => (
-                            <div
-                                key={client.personID}
-                                style={{ padding: 10, cursor: 'pointer', backgroundColor: this.state.selectedClientId === client.personID ? '#e0e0e0' : 'transparent' }}
-                                onClick={() => this.handleClientSelection(client.personID)}
-                            >
-                                {client.name} - {client.phoneNumber}
-                            </div>
-                        ))}
+                    <DialogTitle style={{ margin: 5 }}>Selecciona un cliente</DialogTitle>
+                    <DialogContent >
+                        <TextField
+                            label="Título"
+                            variant="outlined"
+                            fullWidth
+                            value={this.state.title}
+                            onChange={e => this.setState({ title: e.target.value })}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Cantidad Total"
+                            variant="outlined"
+                            fullWidth
+                            value={this.state.totalAmount}
+                            onChange={e => this.setState({ totalAmount: e.target.value })}
+                            margin="normal"
+                        />
+                        <Autocomplete
+                            id="client-selection"
+                            options={this.state.clients}
+                            getOptionLabel={(client) => `${client.name} - ${client.phoneNumber}`}
+                            value={
+                                this.state.clients.find(client => client.personID === this.state.selectedClientId) || null
+                            }
+                            onChange={(event, newValue) => {
+                                this.setState({ selectedClientId: newValue ? newValue.personID : null });
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Selecciona un cliente"
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                />
+                            )}
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.closeAddModal} color="primary">
@@ -329,7 +400,7 @@ export class PedidosView extends Component {
                         <Button
                             onClick={this.handleAdd}
                             color="primary"
-                            disabled={!this.state.selectedClientId}
+                            disabled={!this.state.selectedClientId || !this.state.title || !this.state.totalAmount}
                         >
                             Añadir
                         </Button>

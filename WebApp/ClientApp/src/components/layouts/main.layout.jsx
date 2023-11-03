@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import { EventBarView } from "../../components/views/Events/eventBar.view"
 
 export default function MainLayout() {
   return (
@@ -29,10 +30,19 @@ export default function MainLayout() {
           justifyContent: 'end',
         }}>Hola1</Box>
         <Box sx={{
-          height: 'calc(100vh - 60px)',
-          overflow: 'auto',
+            height: 'calc(100vh - 60px)',
+            overflow: 'auto',
+            display: 'flex',
+            justifyContent: 'flex-end',
         }}>
-          <Outlet/>
+            <Outlet />
+            <Box sx={{
+                height: 'calc(100vh - 60px)',
+                overflow: 'auto',
+                width: '300px',
+            }}>
+                <EventBarView />
+            </Box>
         </Box>
       </Box>
     </Box>

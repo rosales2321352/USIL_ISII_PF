@@ -1,18 +1,15 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Select, TextField, IconButton, Typography, Container, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import InfoIcon from '@mui/icons-material/Info';
+import HistoryIcon from '@mui/icons-material/History';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export class OrdenCompraView extends Component {
-    static displayName = OrdenCompraView.name;
-
+export class HistorialPedidos extends Component {
+    static displayName = HistorialPedidos.name;
     handleChange = (index, event) => {
         const newRows = [...this.rows];
         newRows[index].estado = event.target.value;
@@ -23,20 +20,18 @@ export class OrdenCompraView extends Component {
         super(props);
         this.state = {
             data: [],  // Almacenará los datos de la API
-            error: null,  // Almacenará un mensaje de error en caso de que haya alguno
+            error: null, // Almacenará un mensaje de error en caso de que haya alguno
             searchTerm: '',  // Para el buscador
             orderBy: 'orderID',  // Por defecto, ordenaremos por orderID
-            order: 'asc',  // Puede ser 'asc' o 'desc'
-            isEditModalOpen: false,
-            editData: null,
-            isDetailModalOpen: false,
-            orderDetails: null,
+            order: 'asc',
+            isHistoryModalOpen: false,
+            orderHistory: [],
         };
     }
 
     async componentDidMount() {
         try {
-            const response = await fetch('api/Orders/by-status/2');
+            const response = await fetch('api/Orders/all');
 
             // Verificamos si la respuesta es válida
             if (!response.ok) {
@@ -59,64 +54,27 @@ export class OrdenCompraView extends Component {
         });
     };
 
-    handleOpenDetailModal = async (order) => {
+    handleOpenHistory = async (orderID) => {
         try {
-            const response = await fetch(`api/Orders/detail/${order.orderID}`);
+            const response = await fetch(`api/order-status-history/all/${orderID}`);
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error("Error al obtener datos de la API");
             }
             const data = await response.json();
-
             this.setState({
-                isDetailModalOpen: true,
-                orderDetails: data.data,
+                isHistoryModalOpen: true,
+                orderHistory: data.data
             });
-        } catch (error) {
-            console.error("Hubo un problema con la petición fetch:", error);
-        }
-    };
-
-
-    handleOpenEditModal = (order) => {
-        this.setState({
-            isEditModalOpen: true,
-            editData: {
-                orderID: order.orderID,
-                address: order.address,
-                location: order.location,
-                contactName: order.client.name,
-                totalAmount: order.totalAmount,
-                orderStatusID: 2,
-            }
-        });
-    };
-
-    handleCloseEditModal = () => {
-        this.setState({ isEditModalOpen: false, editData: null });
-    };
-
-    handleEditOrder = async () => {
-        try {
-            const response = await fetch('api/Orders/edit', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.state.editData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al editar el pedido');
-            }
-
-            this.handleCloseEditModal();
-            this.componentDidMount();  // Vuelve a cargar los datos
-
         } catch (error) {
             console.error(error);
-            alert('Ocurrió un error al editar el pedido.');
+            this.setState({ error: "Ocurrió un error al obtener los datos." });
         }
     };
+
+    handleCloseHistory = () => {
+        this.setState({ isHistoryModalOpen: false });
+    };
+
 
     render() {
         const styles = {
@@ -164,7 +122,7 @@ export class OrdenCompraView extends Component {
                     padding: '0 10px'  // Añade padding a la derecha e izquierda
                 }}>
                     <Typography variant="h2" style={{ fontWeight: 'bold', color: 'orange' }}>
-                        Orden de Compra
+                        Historial
                     </Typography>
                 </div>
                 <div style={{
@@ -201,7 +159,7 @@ export class OrdenCompraView extends Component {
                                 <TableCell style={styles.tableHeader}>MONTO</TableCell>
                                 <TableCell style={styles.tableHeader}>FECHA</TableCell>
                                 <TableCell style={styles.tableHeader}>PEDIDO</TableCell>
-                                <TableCell style={{ ...styles.tableHeader, width: '160px' }}>ACCIONES</TableCell>
+                                <TableCell style={{ ...styles.tableHeader, width: '100px' }}>HISTORIAL</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -212,15 +170,9 @@ export class OrdenCompraView extends Component {
                                     <TableCell style={styles.tableCell}>{order.totalAmount !== null ? order.totalAmount : 0}</TableCell>
                                     <TableCell style={styles.tableCell}>{order.creationDate}</TableCell>
                                     <TableCell style={styles.tableCell}>{order.title}</TableCell>
-                                    <TableCell style={{ width: '150px' }}>
-                                        <IconButton color="primary" onClick={() => this.handleOpenEditModal(order)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton color="primary">
-                                            <WhatsAppIcon />
-                                        </IconButton>
-                                        <IconButton color="primary" onClick={() => this.handleOpenDetailModal(order)}>
-                                            <InfoIcon />
+                                    <TableCell style={{ width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <IconButton color="primary" onClick={() => this.handleOpenHistory(order.orderID)}>
+                                            <HistoryIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -228,51 +180,37 @@ export class OrdenCompraView extends Component {
                         </TableBody>
                     </Table>
                 </Paper>
-                <Dialog open={this.state.isEditModalOpen} onClose={this.handleCloseEditModal}>
-                    <DialogTitle>Editar Pedido</DialogTitle>
+                <Dialog
+                    open={this.state.isHistoryModalOpen}
+                    onClose={this.handleCloseHistory}
+                    fullWidth
+                    maxWidth="md"
+                >
+                    <DialogTitle>Historial de Pedido</DialogTitle>
                     <DialogContent>
-                        <DialogContentText style={{ margin: 5 }}>
-                            Modifica los campos necesarios y guarda los cambios.
-                        </DialogContentText>
-                        <TextField
-                            label="Address"
-                            value={this.state.editData?.address || ''}
-                            margin="normal"
-                            onChange={(e) => this.setState({ editData: { ...this.state.editData, address: e.target.value } })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Location"
-                            value={this.state.editData?.location || ''}
-                            margin="normal"
-                            onChange={(e) => this.setState({ editData: { ...this.state.editData, location: e.target.value } })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Amount"
-                            value={this.state.editData?.totalAmount || 0}
-                            margin="normal"
-                            onChange={(e) => this.setState({ editData: { ...this.state.editData, totalAmount: parseFloat(e.target.value) } })}
-                            fullWidth
-                        />
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Fecha</TableCell>
+                                    <TableCell>Comentario</TableCell>
+                                    <TableCell>Estado</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {this.state.orderHistory.map((history, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{history.date}</TableCell>
+                                        <TableCell>{history.comment}</TableCell>
+                                        <TableCell>{history.orderStatus.name}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleEditOrder}>Guardar cambios</Button>
-                        <Button onClick={this.handleCloseEditModal}>Cancelar</Button>
-                    </DialogActions>
-                </Dialog>
-                <Dialog open={this.state.isDetailModalOpen} onClose={() => this.setState({ isDetailModalOpen: false })}>
-                    <DialogTitle>Order Details</DialogTitle>
-                    <DialogContent>
-                        <Typography variant="body1">Order ID: {this.state.orderDetails?.orderID}</Typography>
-                        <Typography variant="body1">Nombre del cliente: {this.state.orderDetails?.client.name}</Typography>
-                        <Typography variant="body1">Fecha de creacion:: {this.state.orderDetails?.creationDate}</Typography>
-                        <Typography variant="body1">Celular: {this.state.orderDetails?.client.phoneNumber}</Typography>
-                        <Typography variant="body1">Ubicacion: {this.state.orderDetails?.location}</Typography>
-                        <Typography variant="body1">Direccion: {this.state.orderDetails?.address}</Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => this.setState({ isDetailModalOpen: false })}>Close</Button>
+                        <Button onClick={this.handleCloseHistory} color="primary">
+                            Cerrar
+                        </Button>
                     </DialogActions>
                 </Dialog>
 
