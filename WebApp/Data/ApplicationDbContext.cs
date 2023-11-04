@@ -336,7 +336,7 @@ namespace WebApp.Data
             {
                 entity.ToTable("message");
 
-                entity.Property(e => e.MessageID).HasMaxLength(25).HasColumnName("message_id");
+                entity.Property(e => e.MessageID).HasMaxLength(100).HasColumnName("message_id");
                 entity.Property(e => e.ConversationID).HasColumnName("conversation_id");
                 entity.Property(e => e.Timestamp).HasColumnType("timestamp").HasColumnName("timestamp");
                 entity.Property(e => e.WhatsappID).HasMaxLength(25).HasColumnName("whatsapp_id");

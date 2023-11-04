@@ -28,6 +28,8 @@ builder.Services.AddScoped<IAnnotationTypeService,AnnotationTypeService>();
 builder.Services.AddScoped<IAnnotationService,AnnotationService>();
 builder.Services.AddScoped<IEventService,EventService>();
 builder.Services.AddScoped<IEventTypeService,EventTypeService>();
+builder.Services.AddScoped<IEventTypeService,EventTypeService>();
+builder.Services.AddScoped<IEventTypeService,EventTypeService>();
 
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -40,6 +42,8 @@ builder.Services.AddScoped<IAnnotationTypeRepository,AnnotationTypeRepository>()
 builder.Services.AddScoped<IAnnotationRepository,AnnotationRepository>();
 builder.Services.AddScoped<IEventRepository,EventRepository>();
 builder.Services.AddScoped<IEventTypeRepository,EventTypeRepository>();
+builder.Services.AddScoped<IClientStatusRepository,ClientStatusRepository>();
+builder.Services.AddScoped<IClientRepository,ClientRepository>();
 
 
 var app = builder.Build();
