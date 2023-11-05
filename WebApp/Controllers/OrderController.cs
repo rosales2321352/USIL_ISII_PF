@@ -1,194 +1,97 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IOrderService _orderService;
 
-        public OrderController(ApplicationDbContext context)
+        public OrdersController(IOrderService orderService)
         {
-            _context = context;
-        }
-
-        public Task<List<OrderView>> GetAllOrders()
-        {
-            var lista = _context.Orders
-            .Include(e => e.Client)
-            .Include(e => e.Seller)
-            .Include(e => e.OrderStatus)
-            .AsNoTracking()
-            .Select(e => new OrderView
-            {
-                OrderID = e.OrderID,
-                CreationDate = e.CreationDate,
-                ClientName = e.Client.Name,
-                OrderStatus = e.OrderStatus.Name,
-                OrderStatusID = e.OrderStatusID
-            }).ToListAsync();
-
-            return lista;
-        }
-
-        public async Task<IActionResult> RegisterOrderStatusChange(OrderStatusUpdate request)
-        {
-            OrderStatusHistory order = new()
-            {
-                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                Comment = request.Comment,
-                OrderID = request.OrderID,
-                OrderStatusID = request.NewStatusID
-            };
-
-            await _context.OrderStatusHistories.AddAsync(order);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            _orderService = orderService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetOrders()
         {
-            var lista = await GetAllOrders();
-
-            return StatusCode(StatusCodes.Status200OK, lista);
-        }
-
-        [HttpGet]
-        [Route("ListaEstado/{id:int}")]
-        public async Task<IActionResult> GetListByStatus(int id)
-        {
-            var lista = await GetAllOrders();
-
-            var newLista = lista.Where(e => e.OrderStatusID == id);
-
-            return StatusCode(StatusCodes.Status200OK, newLista);
-        }
-
-        [HttpGet]
-        [Route("Detalle/{id:int}")]
-        public async Task<IActionResult> GetDetails(int id)
-        {
-            var orderDetail = await _context.Orders
-            .Include(e => e.Client)
-            .AsNoTracking().Select(e => new
+            try
             {
-                e.OrderID,
-                e.CreationDate,
-                ClientName = e.Client.Name,
-                ClientPhone = e.Client.PhoneNumber,
-                OrderName = e.OrderStatus.Name,
-                e.OrderStatusID,
-                Address = e.ShippingAddress,
-                Location = e.GeographicLocation,
-                e.ContactName
-            })
-            .FirstOrDefaultAsync(e => e.OrderID == id);
+                var orders = await _orderService.GetAllOrders();
 
-            return StatusCode(StatusCodes.Status200OK, orderDetail);
+                ApiListResponse<object> apiResponse = new(orders, StatusCodes.Status200OK);
 
+                return StatusCode(StatusCodes.Status200OK, apiResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor: " + ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("detail/{id:int}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var order = await _orderService.GetOrderById(id);
+
+            ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK);
+
+            return StatusCode(StatusCodes.Status200OK, response);
+        }
+        [HttpGet]
+        [Route("by-status/{id:int}")]
+        public async Task<IActionResult> GetOrdersByStatus(int id)
+        {
+            var orders = await _orderService.GetOrdersByStatus(id);
+
+            ApiListResponse<object> response = new(orders, StatusCodes.Status200OK);
+
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewOrder([FromBody] int clientId)
+        [Route("create")]
+        public async Task<IActionResult> CreateOrder([FromBody] OrderRequest request)
         {
-
-            Order order = new()
+            try
             {
-                CreationDate = DateOnly.FromDateTime(DateTime.Now),
-                OrderStatusID = 1,
-                ClientID = clientId,
-                SellerID = 1
-            };
+                await _orderService.CreateOrder(request);
+                return StatusCode(StatusCodes.Status200OK, "ok");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor: " + ex.Message);
+            }
+        }
 
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
+        [HttpPut]
+        [Route("update")]
+        public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderStatusUpdate request)
+        {
+            try
+            {
+                await _orderService.UpdateOrderStatus(request);
+                return StatusCode(StatusCodes.Status200OK, "ok");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor: " + ex.Message);
+            }
+        }
 
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> Edit([FromBody] OrderEdit request)
+        {
+            await _orderService.EditOrder(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
-
         }
-
-        [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] OrderUpdate request)
-        {
-            var orderDetail = await _context.Orders
-            .FirstOrDefaultAsync(e => e.OrderID == request.OrderID);
-
-            if (orderDetail != null)
-            {
-                if (orderDetail.OrderStatusID != request.OrderStatusID)
-                {
-                    OrderStatusUpdate newStatus = new()
-                    {
-                        OrderID = request.OrderID,
-                        NewStatusID = request.OrderStatusID
-                    };
-                    await RegisterOrderStatusChange(newStatus);
-                }
-
-                orderDetail.OrderID = request.OrderID;
-                orderDetail.ShippingAddress = request.Address;
-                orderDetail.GeographicLocation = request.Location;
-                orderDetail.ContactName = request.ContactName;
-                orderDetail.OrderStatusID = request.OrderStatusID;
-
-                _context.Orders.Update(orderDetail);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-            }
-        }
-
-        [HttpPut]
-        [Route("ActualizarEstado")]
-        public async Task<IActionResult> UpdateStatus([FromBody] OrderStatusUpdate request)
-        {
-            var orderDetail = await _context.Orders.FirstOrDefaultAsync(e => e.OrderID == request.OrderID);
-            if(orderDetail != null)
-            {
-                await RegisterOrderStatusChange(request);
-                
-                orderDetail.OrderStatusID = request.NewStatusID;
-                _context.Orders.Update(orderDetail);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-            }
-
-
-        }
-
-        //TODO Confirmar si se puede eliminar un pedido o no
-        /*[HttpDelete]
-        [Route("Eliminar/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            Order? order = await _context.Orders.FindAsync(id);
-
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Order Found with that ID");
-        }*/
+        
+        //TODO Eliminacion Lógica y Física
     }
 }
