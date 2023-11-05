@@ -2,11 +2,17 @@ import { Box, Grid, Paper } from "@mui/material";
 import ContactListView from "./partials/contactlist/contactlist.view";
 import ChatContainersView from "./partials/chatcontainers/chatcontainers.view";
 import useApi, { submitApi } from "../../../hooks/useApi";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 
 export default function ChatView(){
 
-  
+  const pokemon = useApi({
+    url: "https://pokeapi.co/api/v2/pokemon/ditto",
+    options:{
+      method: "GET"
+    },
+    condition:[]
+  })  
 
 
   return (

@@ -24,6 +24,7 @@ function useApi(apiData) {
   const abortController = new AbortController();
   const signal = abortController.signal;
   apiData.options.signal = signal;
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -31,6 +32,7 @@ function useApi(apiData) {
         const encryptedData = await AESUtil.encryptData(apiData.options.body);
         apiData.options.body = encryptedData;
       }*/
+
       fetch(apiData.url, apiData.options)
       .then((res) => res.ok ? res.json() : Promise.reject({
         status: res.status,

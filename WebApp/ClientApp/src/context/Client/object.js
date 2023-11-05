@@ -2,7 +2,7 @@
 
 export const initialContext = {
   current_client: 0,
-  setCurrentClient: (current_client) => {}
+  setCurrentClient: (current_client) => {},
 }
 
 export const initialState = {

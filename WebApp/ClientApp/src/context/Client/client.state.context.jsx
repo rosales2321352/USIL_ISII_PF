@@ -4,6 +4,7 @@ import ClientReducer from "./client.reducer.context";
 import { initialContext } from "./object";
 
 export default function ClientState({children}){
+
   const [state,dispatch] = React.useReducer(ClientReducer,initialContext);
 
   const setClientState = (type,payload) => {
