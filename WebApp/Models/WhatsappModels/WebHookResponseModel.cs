@@ -1,6 +1,6 @@
 namespace WebApp.Models
 {
-    public class WebHookResponseModelText
+    public class WebHookResponseModel
     {
         public Entry[] Entry { get; set; } = null!;
     }
@@ -16,10 +16,16 @@ namespace WebApp.Models
     public class Value
     {
         public Messages[] Messages { get; set; } = null!;
-        public Contact Contact { get; set; } = null!;
+        public Contact[] Contacts { get; set; } = null!;
+        public Metadata Metadata { get; set; } = null!;
+    }
+    public class Metadata
+    {
+        public string Phone_number_id { get; set; } = null!;
     }
     public class Contact
     {
+        public string Wa_id { get; set; } = null!;
         public Profile Profile { get; set; } = null!;
     }
     public class Profile
@@ -31,7 +37,6 @@ namespace WebApp.Models
         public string Id { get; set; } = null!;
         public string From { get; set; } = null!;
         public string Timestamp { get; set; } = null!;
-        public string Type { get; set; } = null!;
         public Text Text { get; set; } = null!;
     }
     public class Text
@@ -39,3 +44,5 @@ namespace WebApp.Models
         public string Body { get; set; } = null!;
     }
 }
+
+

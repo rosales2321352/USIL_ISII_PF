@@ -11,8 +11,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231103162535_WzpChangesDB")]
-    partial class WzpChangesDB
+    [Migration("20231105033225_ChangeSizeMessage")]
+    partial class ChangeSizeMessage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -258,8 +258,8 @@ namespace WebApp.Migrations
             modelBuilder.Entity("WebApp.Models.Message", b =>
                 {
                     b.Property<string>("MessageID")
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("message_id");
 
                     b.Property<int>("ConversationID")

@@ -30,7 +30,7 @@ namespace WebApp.Data
             return lista;
         }
 
-        public async Task<object> GetOrderById(int id)
+        public async Task<object?> GetOrderById(int id)
         {
             var order = await _context.Orders
             .Select(e => new
@@ -55,7 +55,7 @@ namespace WebApp.Data
             if (order != null)
                 return order;
             else
-                return default!;    //TODO! Que se retorna?
+                return null;    //TODO! Que se retorna?
         }
 
         public async Task<IEnumerable<object>> GetOrdersByStatus(int id)

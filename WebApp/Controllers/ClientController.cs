@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/clients")]
     [ApiController]
     public class ClientController : ControllerBase
     {
+        private readonly IClientService _clientService;
         private readonly ApplicationDbContext _context;
 
-        public ClientController(ApplicationDbContext context)
+        public ClientController(ApplicationDbContext context, IClientService clientService)
         {
+            _clientService = clientService;
             _context = context;
         }
 
@@ -34,98 +38,46 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        [Route("Lista")]
+        [Route("all")]
         public async Task<IActionResult> GetClients()
         {
-            var lista = await _context.Clients
-            .Include(e => e.ClientStatus)
-            .Include(e => e.Company)
-            .AsNoTracking()
-            .Select(e => new
-            {
-                e.PersonID,
-                e.Name,
-                e.PhoneNumber,
-                ClientStatus = e.ClientStatus.Name,
-                CompanyAddress = e.Company.Address
-            })
-            .ToListAsync();
-
-            return StatusCode(StatusCodes.Status200OK, lista);
+            var list = await _clientService.GetAllClients();
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
-        [Route("Detalle/{id:int}")]
+        [Route("contacts")]
+        public async Task<IActionResult> GetClientsWithName()
+        {
+            var list = await _clientService.GetAllClientsWithName();
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, response);
+        }
+
+        [HttpGet]
+        [Route("detail/{id:int}")]
         public async Task<IActionResult> GetClientDetail(int id)
         {
-            var lista = await _context.Clients
-            .Include(e => e.ClientStatus)
-            .Include(e => e.Company)
-            .AsNoTracking()
-            .Select(e => new
-            {
-                e.PersonID,
-                e.Name,
-                e.PhoneNumber,
-                e.Email,
-                ClientStatus = e.ClientStatus.Name,
-                CompanyName = e.Company.Name,
-                CompanyAddress = e.Company.Address
-
-            })
-            .FirstOrDefaultAsync(e => e.PersonID == id);
-
-            return StatusCode(StatusCodes.Status200OK, lista);
+            var client = await _clientService.GetClientDetail(id);
+            ApiSingleObjectResponse<object> response = new(client, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
+
+        /*[HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateClient([FromBody] ClientRequest request)
+        {
+            await _clientService.CreateClient(request);
+            return StatusCode(StatusCodes.Status200OK, "ok");
+        }*/
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewClient([FromBody] NewClient newClient)
+        [Route("edit")]
+        public async Task<IActionResult> UpdateClient([FromBody] ClientUpdate request)
         {
-            await TemporalWhatssap(newClient.Phonenumber);
-
-            int whatsIdTemp = _context.WhatsappDatas.ToList().Count;
-            Client client = new()
-            {
-                Name = newClient.Name,
-                PhoneNumber = newClient.Phonenumber,
-                WhatsappID = whatsIdTemp.ToString(),
-                Email = newClient.Email,
-                SellerID = 1,
-                ClientStatusID = 1,
-                CompanyID = newClient.CompanyID
-            };
-
-            await _context.Clients.AddAsync(client);
-            await _context.SaveChangesAsync();
-
+            await _clientService.EditClient(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
-        }
-
-        [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> EditClient([FromBody] UpdateClient request)
-        {
-            var client = await _context.Clients.FindAsync(request.PersonID);
-
-            if (client != null)
-            {
-
-                client.Name = request.Name;
-                client.PhoneNumber = request.Phonenumber;
-                client.Email = request.Email;
-                client.ClientStatusID = request.ClientStatusID;
-
-                _context.Clients.Update(client);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "No Client with that ID");
-            }
-
-
         }
 
     }

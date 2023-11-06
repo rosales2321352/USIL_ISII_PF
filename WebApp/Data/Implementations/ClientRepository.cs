@@ -37,17 +37,79 @@ namespace WebApp.Data
 
             return list;
         }
-        public async Task<Client> GetClient(string id)
+
+        public async Task<IEnumerable<object>> GetClientsWithName()
         {
-            Client? client = await _context.Clients.FindAsync(id);
-            if (client is null)
+            var list = await _context.Clients
+            .OrderByDescending(e => e.PersonID)
+            .Where(e => e.Name != null)
+            .Select(e => new
             {
-                return default!;
-            }
-            else
+                ClientId = e.PersonID,
+                e.Name,
+                e.PhoneNumber,
+                e.Email,
+                Company = new
+                {
+                    e.Company.Address,
+                    e.Company.Name
+                },
+                Status = new
+                {
+                    e.ClientStatus.ClientStatusID,
+                    e.ClientStatus.Name
+                },
+                WhatsappData = new
+                {
+                    e.WhatsappData.WhatsappID,
+                    e.WhatsappData.PhonenumberCode
+                },
+                TotalOrders = e.Orders.Count(e => e.OrderStatusID != 3),
+                TotalOrdersCanceled = e.Orders.Count(e => e.OrderStatusID == 3),
+                TotalOrdersFinalize = e.Orders.Count(e => e.OrderStatusID == 4),
+                TotalOpportunities = e.Opportunities.Count(e => e.OpportunityID != 3),
+                TotalOpportunitiesCanceled = e.Opportunities.Count(e => e.OpportunityID == 3)
+            }).ToListAsync();
+
+            return list;
+        }
+        public async Task<Client?> GetClientByWhatsappId(string id)
+        {
+            Client? client = await _context.Clients.FirstOrDefaultAsync(e => e.WhatsappID.Equals(id));
+            return client;
+        }
+        public async Task<object?> GetClientDetail(int id)
+        {
+            var client = await _context.Clients
+            .Select(e => new
             {
-                return client;
-            }
+                ClientId = e.PersonID,
+                e.Name,
+                e.PhoneNumber,
+                e.Email,
+                Company = new
+                {
+                    e.Company.Address,
+                    e.Company.Name
+                },
+                Status = new
+                {
+                    e.ClientStatus.ClientStatusID,
+                    e.ClientStatus.Name
+                },
+                WhatsappData = new
+                {
+                    e.WhatsappData.WhatsappID,
+                    e.WhatsappData.PhonenumberCode
+                },
+                TotalOrders = e.Orders.Count(e => e.OrderStatusID != 3),
+                TotalOrdersCanceled = e.Orders.Count(e => e.OrderStatusID == 3),
+                TotalOrdersFinalize = e.Orders.Count(e => e.OrderStatusID == 4),
+                TotalOpportunities = e.Opportunities.Count(e => e.OpportunityID != 3),
+                TotalOpportunitiesCanceled = e.Opportunities.Count(e => e.OpportunityID == 3)
+            }).FirstOrDefaultAsync(e => e.ClientId == id);
+
+            return client;
         }
     }
 }

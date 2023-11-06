@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class WzpChangesDB : Migration
+    public partial class ChangeSizeMessage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -428,7 +428,7 @@ namespace WebApp.Migrations
                 name: "message",
                 columns: table => new
                 {
-                    message_id = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: false)
+                    message_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     conversation_id = table.Column<int>(type: "int", nullable: false),
                     timestamp = table.Column<DateTime>(type: "timestamp", nullable: false),
@@ -518,7 +518,7 @@ namespace WebApp.Migrations
                 name: "text_message",
                 columns: table => new
                 {
-                    message_id = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: false)
+                    message_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     text = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")

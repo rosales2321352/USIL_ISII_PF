@@ -1,76 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/companies")]
     [ApiController]
     public class CompanyController : ControllerBase
     {
+        private readonly ICompanyService _companyService;
         private readonly ApplicationDbContext _context;
 
-        public CompanyController(ApplicationDbContext context)
+        public CompanyController(ApplicationDbContext context, ICompanyService companyService)
         {
+            _companyService = companyService;
             _context = context;
         }
 
         [HttpGet]
-        [Route("Lista")]
+        [Route("all")]
         public async Task<IActionResult> GetList()
         {
-            List<CompanyView> lista = await _context.Companies.Select(b => new CompanyView
-            {
-                Name = b.Name,
-                Address = b.Address,
-                Email = b.Email
-            }).ToListAsync();
-
-            ApiPositiveResponse response = new()
-            {
-                StatusCode = 200,
-                Data = lista,
-                TotalRows = lista.Count
-            };
-
+            var list = await _companyService.GetAllCompanies();
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
-        [Route("Detalle/{id:int}")]
+        [Route("detail/{id:int}")]
         public async Task<IActionResult> GetDetails(int id)
         {
-           Company? lastCompany = await _context.Companies.FindAsync(id);
+            var company = await _companyService.GetById(id);
 
-            return StatusCode(StatusCodes.Status200OK, lastCompany);
+            ApiSingleObjectResponse<object> response = new(company, StatusCodes.Status200OK);
+
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> SaveCompany([FromBody] CompanyView request)
+        [Route("create")]
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyRequest request)
         {
-            Company? lastCompany = await _context.Companies.OrderByDescending(e => e.CompanyID).FirstOrDefaultAsync();
-            if (lastCompany != null)
-            {
+            await _companyService.CreateCompany(request);
 
-                int lastID = lastCompany.CompanyID;
-                Company newCompany = new()
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    Address = request.Address,
-                    CompanyID = lastID + 1
-                };
-
-                await _context.Companies.AddAsync(newCompany);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Valid Company");
+            return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
         [HttpPut]

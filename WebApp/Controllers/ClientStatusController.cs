@@ -1,58 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/client-status")]
     [ApiController]
     public class ClientStatusController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public ClientStatusController(ApplicationDbContext context)
+        private readonly IClientStatusService _clientStatusService;
+        public ClientStatusController(IClientStatusService clientStatusService)
         {
-            _context = context;
+            _clientStatusService = clientStatusService;
         }
 
         [HttpGet]
-        [Route("Lista")]
-        public async Task<IActionResult> GetList()
+        [Route("all")]
+        public async Task<IActionResult> GetAllClientStatus()
         {
-            var lista = await _context.ClientStatuses.Select(e => new 
-            {
-                Id = e.ClientStatusID,
-                e.Name
-            }).ToListAsync();
-
-            return StatusCode(StatusCodes.Status200OK, lista);
+            var list = await _clientStatusService.GetAllClientStatus();
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> NewStatus([FromBody] string newName)
+        [Route("create")]
+        public async Task<IActionResult> CreateClientStatus([FromBody] ClientStatusRequest request)
         {
-            ClientStatus newStatus = new()
-            {
-                Name = newName
-            };
-            
-            await _context.ClientStatuses.AddAsync(newStatus);
-            await _context.SaveChangesAsync();
-
+            await _clientStatusService.CreateClientStatus(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
-
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] ClientStatus request)
+        [Route("edit")]
+        public async Task<IActionResult> EditClientStatus([FromBody] ClientStatusRequest request)
         {
-            _context.ClientStatuses.Update(request);
-            await _context.SaveChangesAsync();
-
+            await _clientStatusService.EditClientStatus(request);
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
     }
