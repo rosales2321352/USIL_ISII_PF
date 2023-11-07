@@ -9,7 +9,8 @@ const context =  [
     "/api/Order",
     "/api/Client",
     "/api/Event",
-    "/api/order-status-history"
+    "/api/order-status-history",
+    "/api/event-types"
 ];
 
 module.exports = function(app) {

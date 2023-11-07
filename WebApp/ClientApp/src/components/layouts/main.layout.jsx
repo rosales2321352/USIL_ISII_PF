@@ -28,7 +28,7 @@ export default function MainLayout() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'end',
-        }}>Hola1</Box>
+        }}>       </Box>
         <Box sx={{
             height: 'calc(100vh - 60px)',
             overflow: 'auto',
@@ -37,7 +37,7 @@ export default function MainLayout() {
         }}>
             <Outlet />
             <Box sx={{
-                height: 'calc(100vh - 60px)',
+                height: '800px',
                 overflow: 'auto',
                 width: '300px',
             }}>

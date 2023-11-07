@@ -237,7 +237,7 @@ export class PedidosView extends Component {
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
 
-                <Container style={{ marginTop: 40 }}>
+                <Container style={{ marginTop: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10, color: 'ffa726' }}>
                         <Typography variant="h2" style={{ fontWeight: 'bold', color: 'orange' }}>
                             Pedidos
