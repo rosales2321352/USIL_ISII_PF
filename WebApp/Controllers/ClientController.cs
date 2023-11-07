@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 using WebApp.Helpers;
 using WebApp.Models;
 using WebApp.Services;
@@ -12,29 +10,10 @@ namespace WebApp.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IClientService _clientService;
-        private readonly ApplicationDbContext _context;
 
-        public ClientController(ApplicationDbContext context, IClientService clientService)
+        public ClientController(IClientService clientService)
         {
             _clientService = clientService;
-            _context = context;
-        }
-
-        public async Task<IActionResult> TemporalWhatssap(string number)
-        {
-            var index = _context.WhatsappDatas.ToList().Count + 1;
-
-            WhatsappData whatsappDummie = new()
-            {
-                WhatsappID = index.ToString(),
-                PhonenumberCode = number,
-                WhatsappName = "testing Name",
-            };
-
-            await _context.WhatsappDatas.AddAsync(whatsappDummie);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
         [HttpGet]

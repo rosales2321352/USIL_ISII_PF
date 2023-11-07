@@ -1,7 +1,8 @@
 namespace WebApp.Models
 {
-    public class CompanyRequest
+    public class CompanyUpdate
     {
+        public int CompanyID { get; set; }
         public string Name { get; set; } = null!;
         public string? Address { get; set; }
         public string? Email { get; set; }

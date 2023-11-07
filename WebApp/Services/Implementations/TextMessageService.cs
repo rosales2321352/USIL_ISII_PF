@@ -1,5 +1,9 @@
 using WebApp.Data;
 using WebApp.Models;
+using Newtonsoft.Json;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Net.Http.Headers;
 namespace WebApp.Services
 {
     public class TextMessageService : Service<TextMessage>, ITextMessageService
@@ -76,6 +80,68 @@ namespace WebApp.Services
                 };
                 await _repository.Add(textMessage);
             }
+        }
+
+        public async Task SendMessage(TextMessageRequest request)
+        {
+            string token = "EAAEfe408O1kBOxEJQtg2kPZCIhJieOeIZBeahkRpAR2Tc5VlIyxZCsWPf2tZA4mmZAk7GDfZBrxgBdsXAZC7QBBZBTk82vgzlF0Kf91YGBFyvkd3nNuzIYw0GpkZAuSlAksmSsygxVlXHKZAnB6XWZA5EiWhIp5DZBqeiUCLeWgokRUo3gZBg5ussF48tulGDecO2YZAsPuJtxhfKQt4RqhqZAxflcZD";
+            string url = "https://graph.facebook.com/v15.0/144739755381611/messages";
+
+            var message = new SendMessageRequest
+            {
+                MessagingProduct = "whatsapp",
+                RecipientType = "individual",
+                To = request.PhoneNumber,
+                Type = "text",
+                Text = new SendMessageRequest.TextContent
+                {
+                    PreviewUrl = false,
+                    Body = request.Text
+                }
+            };
+
+            string jsonBody = JsonConvert.SerializeObject(message);
+
+            Console.WriteLine(jsonBody);
+
+            using var client = new HttpClient();
+            
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, url);
+            req.Headers.Add("Authorization", "Bearer " + token);
+            req.Content = new StringContent(jsonBody);
+            req.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            HttpResponseMessage response = await client.SendAsync(req);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Solicitud exitosa. Respuesta: " + await response.Content.ReadAsStringAsync());
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(jsonResponse))
+                {
+                    WhatsAppResponse responseObject = JsonConvert.DeserializeObject<WhatsAppResponse>(jsonResponse) ?? new WhatsAppResponse();
+                    await SaveTextMessage(responseObject, request.ConversationID, request.Text);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error al enviar la solicitud. Código de estado: " + response.StatusCode);
+            }
+        }
+
+        public async Task SaveTextMessage(WhatsAppResponse request, int conversationId, string text)
+        {
+            TextMessage textMessage = new()
+            {
+                MessageID = request.Messages[0].Id,
+                Timestamp = DateTime.Now,
+                WhatsappID = request.Contacts[0].Input,
+                MessageTypeId = 1,
+                ConversationID = conversationId,
+                Text = text,
+            };
+            await _repository.Add(textMessage);
         }
     }
 }

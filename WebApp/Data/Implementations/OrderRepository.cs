@@ -18,7 +18,9 @@ namespace WebApp.Data
                 order.TotalAmount,
                 Client = new
                 {
-                    order.Client.Name // Aquí obtienes solo el nombre del cliente
+                    order.Client.Name,
+                    order.Client.Email,
+                    order.Client.PhoneNumber
                 },
                 Status = new
                 {
@@ -49,6 +51,7 @@ namespace WebApp.Data
                 {
                     e.Client.Name,
                     e.Client.PhoneNumber,
+                    e.Client.Email,
                 }
             })
             .FirstOrDefaultAsync(e => e.OrderID == id);
@@ -71,7 +74,9 @@ namespace WebApp.Data
                 order.TotalAmount,
                 Client = new
                 {
-                    order.Client.Name // Aquí obtienes solo el nombre del cliente
+                    order.Client.Name,
+                    order.Client.Email,
+                    order.Client.PhoneNumber
                 },
                 Status = new
                 {

@@ -26,5 +26,17 @@ namespace WebApp.Services
             };
             await _repository.Add(company);
         }
+
+        public async Task EditCompany(CompanyUpdate request)
+        {
+            var company = await _repository.GetById(request.CompanyID);
+            company.Address = request.Address;
+            company.RUC = request.RUC;
+            company.Email = request.Email;
+            company.Name = request.Name;
+
+            await _repository.Update(company);
+
+        }
     }
 }

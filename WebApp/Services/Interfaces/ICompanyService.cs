@@ -5,5 +5,6 @@ namespace WebApp.Services
     {
         Task<IEnumerable<object>> GetAllCompanies();
         Task CreateCompany(CompanyRequest request);
+        Task EditCompany(CompanyUpdate request);
     }
 }

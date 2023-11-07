@@ -5,5 +5,6 @@ namespace WebApp.Services
     {
         Task<int> CreateConversartion(Conversation request);
         Task<Conversation?> GetConversationByClient(int id);
+        Task<IEnumerable<object>> GetCompleteConversation(int id);
     }
 }

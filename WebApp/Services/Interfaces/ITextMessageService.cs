@@ -5,5 +5,7 @@ namespace WebApp.Services
     public interface ITextMessageService: IService<TextMessage>
     {
         Task CreateMessage(WebHookResponseModel request);
+        Task SendMessage(TextMessageRequest request);
+        Task SaveTextMessage(WhatsAppResponse request, int conversationId, string text);
     }
 }

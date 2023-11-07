@@ -20,5 +20,10 @@ namespace WebApp.Services
         {
             return await _conversationRepository.GetByClientId(id);
         }
+
+        public async Task<IEnumerable<object>> GetCompleteConversation(int id)
+        {
+            return await _conversationRepository.GetCompleteConversation(id);
+        }
     }
 }

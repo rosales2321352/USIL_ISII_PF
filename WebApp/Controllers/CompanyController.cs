@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 using WebApp.Helpers;
 using WebApp.Models;
 using WebApp.Services;
@@ -13,12 +11,10 @@ namespace WebApp.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
-        private readonly ApplicationDbContext _context;
 
-        public CompanyController(ApplicationDbContext context, ICompanyService companyService)
+        public CompanyController(ICompanyService companyService)
         {
             _companyService = companyService;
-            _context = context;
         }
 
         [HttpGet]
@@ -51,17 +47,17 @@ namespace WebApp.Controllers
         }
 
         [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] Company request)
+        [Route("edit")]
+        public async Task<IActionResult> EdiCompany([FromBody]CompanyUpdate request)
         {
-            _context.Companies.Update(request);
-            await _context.SaveChangesAsync();
+            await _companyService.EditCompany(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
-        [HttpDelete]
-        [Route("Eliminar/{id:int}")]
+        //TODO!
+        /*[HttpDelete]
+        [Route("delete/{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             Company? company = await _context.Companies.FindAsync(id);
@@ -71,10 +67,9 @@ namespace WebApp.Controllers
                 _context.Companies.Remove(company);
                 await _context.SaveChangesAsync();
                 return StatusCode(StatusCodes.Status200OK, "ok");
-
             }
 
             return StatusCode(StatusCodes.Status400BadRequest, "Not Company Found with that ID");
-        }
+        }*/
     }
 }

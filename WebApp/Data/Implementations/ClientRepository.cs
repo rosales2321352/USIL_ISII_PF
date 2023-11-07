@@ -109,7 +109,10 @@ namespace WebApp.Data
                 TotalOpportunitiesCanceled = e.Opportunities.Count(e => e.OpportunityID == 3)
             }).FirstOrDefaultAsync(e => e.ClientId == id);
 
-            return client;
+            if(client is null)
+                return null;
+            else
+                return client;
         }
     }
 }
