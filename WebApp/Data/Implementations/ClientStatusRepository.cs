@@ -8,5 +8,16 @@ namespace WebApp.Data
         {
 
         }
+        public async Task<IEnumerable<object>> GetAllClientStatuses()
+        {
+            var list = await _context.ClientStatuses
+            .OrderBy(e => e.ClientStatusID)
+            .Select(status => new
+            {
+                status.ClientStatusID,
+                status.Name
+            }).ToListAsync();
+            return list;
+        }
     }
 }

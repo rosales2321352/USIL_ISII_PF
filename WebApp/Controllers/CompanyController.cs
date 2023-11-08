@@ -1,90 +1,63 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
+using WebApp.Helpers;
 using WebApp.Models;
+using WebApp.Services;
 
 namespace WebApp.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/companies")]
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(ApplicationDbContext context)
+        public CompanyController(ICompanyService companyService)
         {
-            _context = context;
+            _companyService = companyService;
         }
 
         [HttpGet]
-        [Route("Lista")]
+        [Route("all")]
         public async Task<IActionResult> GetList()
         {
-            List<CompanyView> lista = await _context.Companies.Select(b => new CompanyView
-            {
-                Name = b.Name,
-                Address = b.Address,
-                Email = b.Email
-            }).ToListAsync();
-
-            ApiPositiveResponse response = new()
-            {
-                StatusCode = 200,
-                Data = lista,
-                TotalRows = lista.Count
-            };
-
+            var list = await _companyService.GetAllCompanies();
+            ApiListResponse<object> response = new(list, StatusCodes.Status200OK);
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpGet]
-        [Route("Detalle/{id:int}")]
+        [Route("detail/{id:int}")]
         public async Task<IActionResult> GetDetails(int id)
         {
-           Company? lastCompany = await _context.Companies.FindAsync(id);
+            var company = await _companyService.GetById(id);
 
-            return StatusCode(StatusCodes.Status200OK, lastCompany);
+            ApiSingleObjectResponse<object> response = new(company, StatusCodes.Status200OK);
+
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPost]
-        [Route("Guardar")]
-        public async Task<IActionResult> SaveCompany([FromBody] CompanyView request)
+        [Route("create")]
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyRequest request)
         {
-            Company? lastCompany = await _context.Companies.OrderByDescending(e => e.CompanyID).FirstOrDefaultAsync();
-            if (lastCompany != null)
-            {
-
-                int lastID = lastCompany.CompanyID;
-                Company newCompany = new()
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    Address = request.Address,
-                    CompanyID = lastID + 1
-                };
-
-                await _context.Companies.AddAsync(newCompany);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Valid Company");
-        }
-
-        [HttpPut]
-        [Route("Editar")]
-        public async Task<IActionResult> Edit([FromBody] Company request)
-        {
-            _context.Companies.Update(request);
-            await _context.SaveChangesAsync();
+            await _companyService.CreateCompany(request);
 
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
 
-        [HttpDelete]
-        [Route("Eliminar/{id:int}")]
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> EdiCompany([FromBody]CompanyUpdate request)
+        {
+            await _companyService.EditCompany(request);
+
+            return StatusCode(StatusCodes.Status200OK, "ok");
+        }
+
+        //TODO!
+        /*[HttpDelete]
+        [Route("delete/{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             Company? company = await _context.Companies.FindAsync(id);
@@ -94,10 +67,9 @@ namespace WebApp.Controllers
                 _context.Companies.Remove(company);
                 await _context.SaveChangesAsync();
                 return StatusCode(StatusCodes.Status200OK, "ok");
-
             }
 
             return StatusCode(StatusCodes.Status400BadRequest, "Not Company Found with that ID");
-        }
+        }*/
     }
 }

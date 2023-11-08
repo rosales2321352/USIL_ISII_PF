@@ -10,7 +10,6 @@ namespace WebApp.Services
         { 
             _opportunityRepository = repository;
             _opportunityHistoryRepository = historyRepository;
-
         }
 
         public async Task<IEnumerable<object>> GetAllOpportunities()
