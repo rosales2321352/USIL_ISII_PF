@@ -11,8 +11,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231029072030_DatabaseActualization")]
-    partial class DatabaseActualization
+    [Migration("20231105033225_ChangeSizeMessage")]
+    partial class ChangeSizeMessage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -127,6 +127,12 @@ namespace WebApp.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("email");
+
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -252,8 +258,8 @@ namespace WebApp.Migrations
             modelBuilder.Entity("WebApp.Models.Message", b =>
                 {
                     b.Property<string>("MessageID")
-                        .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("message_id");
 
                     b.Property<int>("ConversationID")
@@ -318,6 +324,12 @@ namespace WebApp.Migrations
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date")
                         .HasColumnName("creation_date");
+
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
 
                     b.Property<int>("OpportunityStatusID")
                         .HasColumnType("int")
@@ -420,6 +432,12 @@ namespace WebApp.Migrations
                         .HasColumnType("varchar(200)")
                         .HasColumnName("geographical_location");
 
+                    b.Property<bool?>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_available");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -516,13 +534,11 @@ namespace WebApp.Migrations
                         .HasColumnName("person_id");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("email");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)")
                         .HasColumnName("name");
@@ -594,7 +610,7 @@ namespace WebApp.Migrations
                         .HasColumnType("int")
                         .HasColumnName("client_status_id");
 
-                    b.Property<int>("CompanyID")
+                    b.Property<int?>("CompanyID")
                         .HasColumnType("int")
                         .HasColumnName("company_id");
 
@@ -844,9 +860,7 @@ namespace WebApp.Migrations
 
                     b.HasOne("WebApp.Models.Company", "Company")
                         .WithMany("Clients")
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyID");
 
                     b.HasOne("WebApp.Models.Person", null)
                         .WithOne()

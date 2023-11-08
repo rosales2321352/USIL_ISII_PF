@@ -18,7 +18,7 @@ namespace WebApp.Services
             return await _orderRepository.GetAllOrders();
         }
 
-        public async Task<object> GetOrderById(int id)
+        public async Task<object?> GetOrderById(int id)
         {
             return await _orderRepository.GetOrderById(id);
         }
@@ -41,6 +41,16 @@ namespace WebApp.Services
             };
 
             await _repository.Add(order);
+
+            OrderStatusHistory orderHistoryRegister = new()
+            {
+                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
+                OrderID = order.OrderID,
+                OrderStatusID = 1,
+                Comment = "Pedido Creado"
+            };
+
+            await _orderHistoryRepository.Add(orderHistoryRegister);
         }
 
         public async Task UpdateOrderStatus(OrderStatusUpdate request)
@@ -55,6 +65,8 @@ namespace WebApp.Services
                 OrderStatusID = request.OrderStatusID,
                 Comment = request.Comment
             };
+            //TODO _orderHistoryService.Add(orderHistoryRegister);
+            //TODO _orderRepository.UpdateOrderStatus(order);
 
             await _orderRepository.UpdateOrderStatus(order, orderHistoryRegister, _orderHistoryRepository);
         }
@@ -62,6 +74,7 @@ namespace WebApp.Services
         public async Task EditOrder(OrderEdit request)
         {
             var order = await _repository.GetById(request.OrderID);
+
             if (order.OrderStatusID != request.OrderStatusID)
             {
                 order.OrderStatusID = request.OrderStatusID;
@@ -74,6 +87,7 @@ namespace WebApp.Services
                 await _orderHistoryRepository.Add(orderHistoryRegister);
 
             }
+
             order.ShippingAddress = request.Address;
             order.GeographicLocation = request.Location;
             order.ContactName = request.ContactName;

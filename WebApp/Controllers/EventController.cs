@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Data;
 using WebApp.Helpers;
 using WebApp.Models;
 using WebApp.Services;
@@ -11,13 +9,11 @@ namespace WebApp.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IEventService _eventService;
 
-        public EventController(IEventService eventService, ApplicationDbContext context)
+        public EventController(IEventService eventService)
         {
             _eventService = eventService;
-            _context = context;
         }
 
         [HttpGet]

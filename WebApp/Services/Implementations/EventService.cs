@@ -6,11 +6,11 @@ namespace WebApp.Services
     {
         private readonly IEventRepository _eventRepository;
         public EventService(IEventRepository repository) : base(repository)
-        { 
+        {
             _eventRepository = repository;
         }
 
-         public async Task<IEnumerable<object>> GetAllEvents()
+        public async Task<IEnumerable<object>> GetAllEvents()
         {
 
             return await _eventRepository.GetAllEvents();
@@ -27,7 +27,7 @@ namespace WebApp.Services
         }
         public async Task CreateEvent(EventRequest request)
         {
-            Event eve = new ()
+            Event eve = new()
             {
                 Title = request.Title,
                 Description = request.Description,
@@ -45,7 +45,7 @@ namespace WebApp.Services
         public async Task EditEvent(EventUpdate request)
         {
             var eve = await _repository.GetById(request.EventID);
-            
+
             eve.Title = request.Title;
             eve.Description = request.Description;
             eve.EventTypeID = request.EventTypeID;

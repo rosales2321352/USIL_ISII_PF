@@ -9,10 +9,10 @@ namespace WebApp.Data
 
         }
 
-         public async Task<IEnumerable<object>> GetAllEventTypes()
+        public async Task<IEnumerable<object>> GetAllEventTypes()
         {
             var list = await _context.EventTypes
-            .OrderBy(e=> e.EventTypeID)
+            .OrderBy(e => e.EventTypeID)
             .Select(type => new
             {
                 type.EventTypeID,

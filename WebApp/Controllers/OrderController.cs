@@ -33,16 +33,25 @@ namespace WebApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor: " + ex.Message);
             }
         }
+
         [HttpGet]
         [Route("detail/{id:int}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderById(id);
 
-            ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK);
+            if(order is null)
+            {
+                //TODO! Json Error
+                return StatusCode(StatusCodes.Status404NotFound, "No hay");
+            }else
+            {
+                ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK);
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
 
-            return StatusCode(StatusCodes.Status200OK, response);
         }
+
         [HttpGet]
         [Route("by-status/{id:int}")]
         public async Task<IActionResult> GetOrdersByStatus(int id)

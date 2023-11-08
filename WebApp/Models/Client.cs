@@ -6,7 +6,7 @@
         public Seller Seller { get; set; } = null!;
         public int ClientStatusID { get; set; }
         public virtual ClientStatus ClientStatus { get; set; } = null!;
-        public int CompanyID { get; set; }
+        public int? CompanyID { get; set; }
         public virtual Company Company { get; set; } = null!;
         public ICollection<Event> Events { get; } = new List<Event>();
         public ICollection<Annotation> Annotations { get; } = new List<Annotation>();
