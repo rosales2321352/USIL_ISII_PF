@@ -36,10 +36,7 @@ export default function ContactListView(){
         <Typography component="span"  sx={{display:"block"}}>Contactos</Typography>
       </Box>
       <Box sx={{
-        height: 'calc(100% - 120px)',
-        display: 'flex',
-        alignItems: 'start',
-        justifyContent: 'center',
+        height: 'calc(100% - 120px)'
       }}>
         {clients.data && Array.isArray(clients.data) && clients.data.length > 0 &&
           clients.data.map((el,index) => (

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function Contactos() {
     const data = useApi({
-        url: "https://localhost:44445/api/client/lista",
+        url: "https://localhost:44445/api/clients/all",
         options: {
             method: "GET",
         },

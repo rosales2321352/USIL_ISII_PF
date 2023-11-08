@@ -6,17 +6,8 @@ import { useEffect,useState } from "react";
 
 export default function ChatView(){
 
-  const pokemon = useApi({
-    url: "https://pokeapi.co/api/v2/pokemon/ditto",
-    options:{
-      method: "GET"
-    },
-    condition:[]
-  })  
-
-
   return (
-    <Box sx={{p:1}}>
+    <Box sx={{p:1,width:"100%"}}>
       <Grid container spacing={1}>
         <Grid item xs={12} md={3} >
           <Paper sx={{height: 'calc(100vh - 78px)'}}>

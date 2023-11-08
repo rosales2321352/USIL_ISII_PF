@@ -12,7 +12,7 @@ export default function ListView({data}){
   }
 
   return(
-    <Box sx={{width:"100%",cursor:"pointer"}} onClick={handlerSelectedClient}>
+    <Box sx={{width:"100%",cursor:"pointer",mb:1}} onClick={handlerSelectedClient}>
       <Paper>
         <Box sx={{display:"flex", alignItems:"center", justifyContent:"start", p:1}}>
           <Box sx={{pr:1}}>

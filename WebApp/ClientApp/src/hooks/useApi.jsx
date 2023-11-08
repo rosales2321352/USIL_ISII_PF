@@ -38,18 +38,12 @@ function useApi(apiData) {
         status: res.status,
         statusText: res.statusText
       }))
-      .then((data_) => {
-
-        if(data_){
-          setData(data_);
+      .then((data) => {
+        if(data["statusCode"] === 200){
+          setData(data["data"]);
+          if(data["totalRows"]) setTotalRows(data["totalRows"]);
           setError(null);
         }
-
-        //if(data["status_code"] === 200){
-          //setData(data["data"]);
-          //if(data["total_rows"]) setTotalRows(data["total_rows"]);
-          //setError(null);
-        //}
       
         //setError(data["message"]);
 

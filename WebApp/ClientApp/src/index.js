@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import ClientState from './context/Client/client.state.context';
 import 'bootstrap/dist/css/bootstrap.css';
 import './assets/css/main.css'
+import './assets/GlobalStyles.css';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);

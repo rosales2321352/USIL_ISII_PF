@@ -7,9 +7,12 @@ import { ProspectoView } from "../components/views/Pedidos/prospecto.view";
 import { OrdenCompraView } from "../components/views/Pedidos/ordencompra.view";
 import { FinalizadoView } from "../components/views/Pedidos/finalizado.view";
 import { CanceladoView } from "../components/views/Pedidos/cancelado.view";
+import { HistorialPedidos } from "../components/views/Pedidos/historialPedidos";
 /***/
 import ChatView from "../components/views/Chats/chat.view";
 import Contactos from "../components/views/Contactos/contactos";
+/***/
+import { EventBarView } from "../components/views/Events/eventBar.view"
 
 const AppRoutes = createBrowserRouter([
   {
@@ -50,13 +53,19 @@ const AppRoutes = createBrowserRouter([
           {
               path:'/contactos',
               Component: Contactos
-          }
-          
+          },
+          {
+              path: '/events',
+              Component: EventBarView
+          },
+          {
+              path: '/historialPedidos',
+              Component: HistorialPedidos
+          },
         ]
       }
     ]
   }
-  
 ])
 
 export default AppRoutes;
