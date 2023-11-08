@@ -9,6 +9,7 @@ import { FinalizadoView } from "../components/views/Pedidos/finalizado.view";
 import { CanceladoView } from "../components/views/Pedidos/cancelado.view";
 /***/
 import ChatView from "../components/views/Chats/chat.view";
+import Contactos from "../components/views/Contactos/contactos";
 
 const AppRoutes = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const AppRoutes = createBrowserRouter([
               path: '/chat',
               Component: ChatView
           },
+          {
+              path:'/contactos',
+              Component: Contactos
+          }
           
         ]
       }
