@@ -8,15 +8,19 @@ import ClientState from './context/Client/client.state.context';
 import 'bootstrap/dist/css/bootstrap.css';
 import './assets/css/main.css'
 import './assets/GlobalStyles.css';
+import { ThemeProvider } from '@mui/material/styles';
+import ThemeDefault from './theme/theme';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
   <StrictMode>
-    <ClientState>
-      <RouterProvider router={AppRoutes} />
-    </ClientState>
+    <ThemeProvider theme={ThemeDefault}>
+      <ClientState>
+          <RouterProvider router={AppRoutes} />
+      </ClientState>
+    </ThemeProvider>
   </StrictMode>
   
 )

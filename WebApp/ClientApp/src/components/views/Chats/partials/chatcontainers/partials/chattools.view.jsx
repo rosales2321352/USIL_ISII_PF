@@ -10,6 +10,11 @@ import Picker from '@emoji-mart/react'
 
 export default function ChatToolsView(){
   const [openEmoji, setOpenEmoji] = useState(false);
+  const [selector,setSelector] = useState({
+    before: "",
+    after: ""
+  });
+  const [emojis, setEmojis] = useState("");
 
   const textArea = createRef();
   const buttonEmoji = createRef();
@@ -20,13 +25,17 @@ export default function ChatToolsView(){
     let u = editor.value;
     let start = editor.selectionStart;
     let end = editor.selectionEnd;
-    
-  
-    console.log([u.substring(0, start), u.substring(end), u.substring(start, end)]);
+    setEmojis("");
+    setSelector({
+      before: u.substring(0, start),
+      after: u.substring(end)
+    })
   }
 
   const handlerButton = (e) => {
-    console.log(e)
+    setEmojis(emojis+e.native);
+    let newText = selector.before + emojis+e.native + selector.after;
+    textArea.current.value = newText;
   }
 
   const handlerOpenEmoji = (e) => {
@@ -71,7 +80,7 @@ export default function ChatToolsView(){
         </Box>
       </Box>
       <Box sx={{height: "calc(100% - 75px)"}}>
-        <textarea ref={textArea}  className="textarea-chat"  placeholder="Escribe un mensaje" />
+        <textarea ref={textArea} onBlur={handlerSelector} className="textarea-chat"  placeholder="Escribe un mensaje" />
       </Box>
       <Box sx={{height: "40px",pl:1,display:"flex", alignItems:"center", justifyContent:"space-between  "}}>
         <Box sx={{width:"100%"}}>

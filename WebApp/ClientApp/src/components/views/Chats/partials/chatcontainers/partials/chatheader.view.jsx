@@ -11,8 +11,8 @@ export default function ChatHeaderView(){
 
   const getClientId = () => {
     if(ClientContext_.current_client){
-      if(ClientContext_.current_client.personID){
-        return ClientContext_.current_client.personID;
+      if(ClientContext_.current_client.clientId){
+        return ClientContext_.current_client.clientId;
       }      
     }
     return 0;
@@ -52,7 +52,12 @@ export default function ChatHeaderView(){
                 <Avatar sx={{ width: 50, height: 50 }}>D</Avatar>
               </Box>
               <Box sx={{ml:1}}>
-                <Typography component="span" variant="body1" sx={{display:"block"}}>{client.data.name}</Typography>
+                {client.data.name ? 
+                (<Typography component="span" variant="body1" sx={{display:"block"}}>{client.data.name}</Typography>)
+                :
+                (<Typography component="span" variant="body1" sx={{display:"block"}}>{client.data.phoneNumber}</Typography>)
+                }
+                
               </Box>
               <Box sx={{ml:1}}>
                 <Tooltip title="Mis Eventos">
