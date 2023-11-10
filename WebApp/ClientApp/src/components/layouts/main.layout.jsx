@@ -28,7 +28,7 @@ export default function MainLayout() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'end',
-        }}>       </Box>
+        }}>      </Box>
         <Box sx={{
             height: 'calc(100vh - 60px)',
             width: '100%',
