@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Select, TextField, IconButton, Typography, Container, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Select, TextField, IconButton, Typography, Container, Button, Box } from '@mui/material';
+import { DragDropContext } from 'react-beautiful-dnd';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -9,6 +10,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { EventBarView } from "../Events/eventBar.view";
 
 export class CanceladoView extends Component {
     static displayName = CanceladoView.name;
@@ -155,128 +157,136 @@ export class CanceladoView extends Component {
             });
 
         return (
-            <Container >
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    margin: 20,
-                    padding: '0 10px'  // Añade padding a la derecha e izquierda
-                }}>
-                    <Typography variant="h2" style={{ fontWeight: 'bold', color: 'orange' }}>
-                        Cancelados
-                    </Typography>
-                </div>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    margin: 20,
-                    padding: '0 10px'  // Añade padding a la derecha e izquierda
-                }}>
-                    <TextField
-                        label="Buscar por nombre del cliente"
-                        fullWidth
-                        value={this.state.searchTerm}
-                        onChange={e => this.setState({ searchTerm: e.target.value })}
-                        style={{ marginBottom: 20 }}
-                    />
-                </div>
-                <Paper elevation={3} style={{ margin: 20 }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell
-                                    style={styles.tableHeader}
-                                    onClick={() => this.handleSort('orderID')}
-                                >
-                                    N° PEDIDO
-                                </TableCell>
-                                <TableCell
-                                    style={styles.tableHeader}
-                                    onClick={() => this.handleSort('client.name')}
-                                >
-                                    CLIENTE
-                                </TableCell>
-                                <TableCell style={styles.tableHeader}>MONTO</TableCell>
-                                <TableCell style={styles.tableHeader}>FECHA</TableCell>
-                                <TableCell style={styles.tableHeader}>PEDIDO</TableCell>
-                                <TableCell style={{ ...styles.tableHeader, width: '160px' }}>ACCIONES</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredData.map((order, index) => (
-                                <TableRow key={order.orderID}>
-                                    <TableCell style={styles.tableCell}>{order.orderID}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.client.name}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.totalAmount !== null ? order.totalAmount : 0}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.creationDate}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.title}</TableCell>
-                                    <TableCell style={{ width: '150px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <IconButton color="primary" onClick={() => this.handleOpenEditModal(order)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton color="primary">
-                                            <WhatsAppIcon />
-                                        </IconButton>
-                                        <IconButton color="primary" onClick={() => this.handleOpenDetailModal(order)}>
-                                            <InfoIcon />
-                                        </IconButton>
+            <DragDropContext>
+                <Container >
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        margin: 20,
+                        padding: '0 10px'  // Añade padding a la derecha e izquierda
+                    }}>
+                        <Typography variant="h2" style={{ fontWeight: 'bold', color: 'orange' }}>
+                            Cancelados
+                        </Typography>
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        margin: 20,
+                        padding: '0 10px'  // Añade padding a la derecha e izquierda
+                    }}>
+                        <TextField
+                            label="Buscar por nombre del cliente"
+                            fullWidth
+                            value={this.state.searchTerm}
+                            onChange={e => this.setState({ searchTerm: e.target.value })}
+                            style={{ marginBottom: 20 }}
+                        />
+                    </div>
+                    <Paper elevation={3} style={{ margin: 20 }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell
+                                        style={styles.tableHeader}
+                                        onClick={() => this.handleSort('orderID')}
+                                    >
+                                        N° PEDIDO
                                     </TableCell>
+                                    <TableCell
+                                        style={styles.tableHeader}
+                                        onClick={() => this.handleSort('client.name')}
+                                    >
+                                        CLIENTE
+                                    </TableCell>
+                                    <TableCell style={styles.tableHeader}>MONTO</TableCell>
+                                    <TableCell style={styles.tableHeader}>FECHA</TableCell>
+                                    <TableCell style={styles.tableHeader}>PEDIDO</TableCell>
+                                    <TableCell style={{ ...styles.tableHeader, width: '160px' }}>ACCIONES</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <Dialog open={this.state.isEditModalOpen} onClose={this.handleCloseEditModal}>
-                    <DialogTitle>Editar Pedido</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText style={{ margin: 5 }}>
-                            Modifica los campos necesarios y guarda los cambios.
-                        </DialogContentText>
-                        <TextField
-                            label="Address"
-                            value={this.state.editData?.address || ''}
-                            margin="normal"
-                            onChange={(e) => this.setState({ editData: { ...this.state.editData, address: e.target.value } })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Location"
-                            value={this.state.editData?.location || ''}
-                            margin="normal"
-                            onChange={(e) => this.setState({ editData: { ...this.state.editData, location: e.target.value } })}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Amount"
-                            value={this.state.editData?.totalAmount || 0}
-                            margin="normal"
-                            onChange={(e) => this.setState({ editData: { ...this.state.editData, totalAmount: parseFloat(e.target.value) } })}
-                            fullWidth
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleEditOrder}>Guardar cambios</Button>
-                        <Button onClick={this.handleCloseEditModal}>Cancelar</Button>
-                    </DialogActions>
-                </Dialog>
-                <Dialog open={this.state.isDetailModalOpen} onClose={() => this.setState({ isDetailModalOpen: false })}>
-                    <DialogTitle>Order Details</DialogTitle>
-                    <DialogContent>
-                        <Typography variant="body1">Order ID: {this.state.orderDetails?.orderID}</Typography>
-                        <Typography variant="body1">Nombre del cliente: {this.state.orderDetails?.client.name}</Typography>
-                        <Typography variant="body1">Fecha de creacion:: {this.state.orderDetails?.creationDate}</Typography>
-                        <Typography variant="body1">Celular: {this.state.orderDetails?.client.phoneNumber}</Typography>
-                        <Typography variant="body1">Ubicacion: {this.state.orderDetails?.location}</Typography>
-                        <Typography variant="body1">Direccion: {this.state.orderDetails?.address}</Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => this.setState({ isDetailModalOpen: false })}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-
-            </Container>
+                            </TableHead>
+                            <TableBody>
+                                {filteredData.map((order, index) => (
+                                    <TableRow key={order.orderID}>
+                                        <TableCell style={styles.tableCell}>{order.orderID}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.client.name}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.totalAmount !== null ? order.totalAmount : 0}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.creationDate}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.title}</TableCell>
+                                        <TableCell style={{ width: '150px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <IconButton color="primary" onClick={() => this.handleOpenEditModal(order)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton color="primary">
+                                                <WhatsAppIcon />
+                                            </IconButton>
+                                            <IconButton color="primary" onClick={() => this.handleOpenDetailModal(order)}>
+                                                <InfoIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                    <Dialog open={this.state.isEditModalOpen} onClose={this.handleCloseEditModal}>
+                        <DialogTitle>Editar Pedido</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText style={{ margin: 5 }}>
+                                Modifica los campos necesarios y guarda los cambios.
+                            </DialogContentText>
+                            <TextField
+                                label="Address"
+                                value={this.state.editData?.address || ''}
+                                margin="normal"
+                                onChange={(e) => this.setState({ editData: { ...this.state.editData, address: e.target.value } })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Location"
+                                value={this.state.editData?.location || ''}
+                                margin="normal"
+                                onChange={(e) => this.setState({ editData: { ...this.state.editData, location: e.target.value } })}
+                                fullWidth
+                            />
+                            <TextField
+                                label="Amount"
+                                value={this.state.editData?.totalAmount || 0}
+                                margin="normal"
+                                onChange={(e) => this.setState({ editData: { ...this.state.editData, totalAmount: parseFloat(e.target.value) } })}
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleEditOrder}>Guardar cambios</Button>
+                            <Button onClick={this.handleCloseEditModal}>Cancelar</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={this.state.isDetailModalOpen} onClose={() => this.setState({ isDetailModalOpen: false })}>
+                        <DialogTitle>Order Details</DialogTitle>
+                        <DialogContent>
+                            <Typography variant="body1">Order ID: {this.state.orderDetails?.orderID}</Typography>
+                            <Typography variant="body1">Nombre del cliente: {this.state.orderDetails?.client.name}</Typography>
+                            <Typography variant="body1">Fecha de creacion:: {this.state.orderDetails?.creationDate}</Typography>
+                            <Typography variant="body1">Celular: {this.state.orderDetails?.client.phoneNumber}</Typography>
+                            <Typography variant="body1">Ubicacion: {this.state.orderDetails?.location}</Typography>
+                            <Typography variant="body1">Direccion: {this.state.orderDetails?.address}</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => this.setState({ isDetailModalOpen: false })}>Close</Button>
+                        </DialogActions>
+                    </Dialog>
+                </Container>
+                <Box sx={{
+                    height: '800px',
+                    overflow: 'auto',
+                    width: '300px',
+                }}>
+                    <EventBarView />
+                </Box>
+            </DragDropContext>
         );
     }
 }

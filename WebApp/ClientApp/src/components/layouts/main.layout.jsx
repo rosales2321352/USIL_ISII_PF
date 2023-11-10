@@ -36,13 +36,6 @@ export default function MainLayout() {
             justifyContent: 'flex-end',
         }}>
             <Outlet />
-            <Box sx={{
-                height: '800px',
-                overflow: 'auto',
-                width: '300px',
-            }}>
-                <EventBarView />
-            </Box>
         </Box>
       </Box>
     </Box>

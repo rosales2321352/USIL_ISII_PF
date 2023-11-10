@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Select, TextField, IconButton, Typography, Container, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Select, TextField, IconButton, Typography, Container, Button, Box } from '@mui/material';
+import { DragDropContext } from 'react-beautiful-dnd';
 import AddIcon from '@mui/icons-material/Add';
 import HistoryIcon from '@mui/icons-material/History';
 import Dialog from '@mui/material/Dialog';
@@ -7,6 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { EventBarView } from "../Events/eventBar.view";
 
 export class HistorialPedidos extends Component {
     static displayName = HistorialPedidos.name;
@@ -113,108 +115,116 @@ export class HistorialPedidos extends Component {
             });
 
         return (
-            <Container >
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    margin: 20,
-                    padding: '0 10px'  // Añade padding a la derecha e izquierda
-                }}>
-                    <Typography variant="h2" style={{ fontWeight: 'bold', color: 'orange' }}>
-                        Historial
-                    </Typography>
-                </div>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    margin: 20,
-                    padding: '0 10px'  // Añade padding a la derecha e izquierda
-                }}>
-                    <TextField
-                        label="Buscar por nombre del cliente"
-                        fullWidth
-                        value={this.state.searchTerm}
-                        onChange={e => this.setState({ searchTerm: e.target.value })}
-                        style={{ marginBottom: 20 }}
-                    />
-                </div>
-                <Paper elevation={3} style={{ margin: 20 }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell
-                                    style={styles.tableHeader}
-                                    onClick={() => this.handleSort('orderID')}
-                                >
-                                    N° PEDIDO
-                                </TableCell>
-                                <TableCell
-                                    style={styles.tableHeader}
-                                    onClick={() => this.handleSort('client.name')}
-                                >
-                                    CLIENTE
-                                </TableCell>
-                                <TableCell style={styles.tableHeader}>MONTO</TableCell>
-                                <TableCell style={styles.tableHeader}>FECHA</TableCell>
-                                <TableCell style={styles.tableHeader}>PEDIDO</TableCell>
-                                <TableCell style={{ ...styles.tableHeader, width: '100px' }}>HISTORIAL</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredData.map((order, index) => (
-                                <TableRow key={order.orderID}>
-                                    <TableCell style={styles.tableCell}>{order.orderID}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.client.name}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.totalAmount !== null ? order.totalAmount : 0}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.creationDate}</TableCell>
-                                    <TableCell style={styles.tableCell}>{order.title}</TableCell>
-                                    <TableCell style={{ width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <IconButton color="primary" onClick={() => this.handleOpenHistory(order.orderID)}>
-                                            <HistoryIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <Dialog
-                    open={this.state.isHistoryModalOpen}
-                    onClose={this.handleCloseHistory}
-                    fullWidth
-                    maxWidth="md"
-                >
-                    <DialogTitle>Historial de Pedido</DialogTitle>
-                    <DialogContent>
+            <DragDropContext>
+                <Container >
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        margin: 20,
+                        padding: '0 10px'  // Añade padding a la derecha e izquierda
+                    }}>
+                        <Typography variant="h2" style={{ fontWeight: 'bold', color: 'orange' }}>
+                            Historial
+                        </Typography>
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        margin: 20,
+                        padding: '0 10px'  // Añade padding a la derecha e izquierda
+                    }}>
+                        <TextField
+                            label="Buscar por nombre del cliente"
+                            fullWidth
+                            value={this.state.searchTerm}
+                            onChange={e => this.setState({ searchTerm: e.target.value })}
+                            style={{ marginBottom: 20 }}
+                        />
+                    </div>
+                    <Paper elevation={3} style={{ margin: 20 }}>
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Fecha</TableCell>
-                                    <TableCell>Comentario</TableCell>
-                                    <TableCell>Estado</TableCell>
+                                    <TableCell
+                                        style={styles.tableHeader}
+                                        onClick={() => this.handleSort('orderID')}
+                                    >
+                                        N° PEDIDO
+                                    </TableCell>
+                                    <TableCell
+                                        style={styles.tableHeader}
+                                        onClick={() => this.handleSort('client.name')}
+                                    >
+                                        CLIENTE
+                                    </TableCell>
+                                    <TableCell style={styles.tableHeader}>MONTO</TableCell>
+                                    <TableCell style={styles.tableHeader}>FECHA</TableCell>
+                                    <TableCell style={styles.tableHeader}>PEDIDO</TableCell>
+                                    <TableCell style={{ ...styles.tableHeader, width: '100px' }}>HISTORIAL</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {this.state.orderHistory.map((history, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{history.date}</TableCell>
-                                        <TableCell>{history.comment}</TableCell>
-                                        <TableCell>{history.orderStatus.name}</TableCell>
+                                {filteredData.map((order, index) => (
+                                    <TableRow key={order.orderID}>
+                                        <TableCell style={styles.tableCell}>{order.orderID}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.client.name}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.totalAmount !== null ? order.totalAmount : 0}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.creationDate}</TableCell>
+                                        <TableCell style={styles.tableCell}>{order.title}</TableCell>
+                                        <TableCell style={{ width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <IconButton color="primary" onClick={() => this.handleOpenHistory(order.orderID)}>
+                                                <HistoryIcon />
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleCloseHistory} color="primary">
-                            Cerrar
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-
-            </Container>
+                    </Paper>
+                    <Dialog
+                        open={this.state.isHistoryModalOpen}
+                        onClose={this.handleCloseHistory}
+                        fullWidth
+                        maxWidth="md"
+                    >
+                        <DialogTitle>Historial de Pedido</DialogTitle>
+                        <DialogContent>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Fecha</TableCell>
+                                        <TableCell>Comentario</TableCell>
+                                        <TableCell>Estado</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {this.state.orderHistory.map((history, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{history.date}</TableCell>
+                                            <TableCell>{history.comment}</TableCell>
+                                            <TableCell>{history.orderStatus.name}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleCloseHistory} color="primary">
+                                Cerrar
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </Container>
+                <Box sx={{
+                    height: '800px',
+                    overflow: 'auto',
+                    width: '300px',
+                }}>
+                    <EventBarView />
+                </Box>
+            </DragDropContext>
         );
     }
 }

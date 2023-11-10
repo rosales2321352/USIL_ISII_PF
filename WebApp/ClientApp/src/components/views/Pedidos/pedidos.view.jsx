@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Container, Typography, Grid, Paper, Divider, IconButton, TextField } from '@mui/material';
+import { Button, Container, Typography, Grid, Paper, Divider, IconButton, TextField, Box } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import Autocomplete from '@mui/material/Autocomplete';
 import HistoryIcon from '@mui/icons-material/History';
-
+import { EventBarView } from "../Events/eventBar.view";
 
 const statusToColumnIndex = {
     1: 0, // Prospecto
@@ -406,7 +406,15 @@ export class PedidosView extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
+                <Box sx={{
+                    height: '800px',
+                    overflow: 'auto',
+                    width: '300px',
+                }}>
+                    <EventBarView />
+                </Box>
             </DragDropContext>
+            
         );
     }
 }
