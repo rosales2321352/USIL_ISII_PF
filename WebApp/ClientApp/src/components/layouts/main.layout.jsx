@@ -31,9 +31,10 @@ export default function MainLayout() {
         }}>       </Box>
         <Box sx={{
             height: 'calc(100vh - 60px)',
+            width: '100%',
             overflow: 'auto',
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'flex-start',
         }}>
             <Outlet />
         </Box>

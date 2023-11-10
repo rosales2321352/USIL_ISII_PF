@@ -18,7 +18,9 @@ namespace WebApp.Data
                 order.TotalAmount,
                 Client = new
                 {
-                    order.Client.Name // Aquí obtienes solo el nombre del cliente
+                    order.Client.Name,
+                    order.Client.Email,
+                    order.Client.PhoneNumber
                 },
                 Status = new
                 {
@@ -30,7 +32,7 @@ namespace WebApp.Data
             return lista;
         }
 
-        public async Task<object> GetOrderById(int id)
+        public async Task<object?> GetOrderById(int id)
         {
             var order = await _context.Orders
             .Select(e => new
@@ -49,13 +51,14 @@ namespace WebApp.Data
                 {
                     e.Client.Name,
                     e.Client.PhoneNumber,
+                    e.Client.Email,
                 }
             })
             .FirstOrDefaultAsync(e => e.OrderID == id);
             if (order != null)
                 return order;
             else
-                return default!;    //TODO! Que se retorna?
+                return null;    //TODO! Que se retorna?
         }
 
         public async Task<IEnumerable<object>> GetOrdersByStatus(int id)
@@ -71,7 +74,9 @@ namespace WebApp.Data
                 order.TotalAmount,
                 Client = new
                 {
-                    order.Client.Name // Aquí obtienes solo el nombre del cliente
+                    order.Client.Name,
+                    order.Client.Email,
+                    order.Client.PhoneNumber
                 },
                 Status = new
                 {

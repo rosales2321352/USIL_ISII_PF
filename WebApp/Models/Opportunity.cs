@@ -5,6 +5,7 @@ namespace WebApp.Models
         public int OpportunityID { get; set; }
         public DateOnly CreationDate { get; set; }
         public int OpportunityStatusID { get; set; }
+        public bool? IsAvailable { get; set; }
         public virtual OpportunityStatus OpportunityStatus { get; set; } = null!;
         public int ClientID { get; set; }
         public virtual Client Client { get; set; } = null!;

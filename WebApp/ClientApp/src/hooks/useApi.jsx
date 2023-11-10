@@ -24,6 +24,7 @@ function useApi(apiData) {
   const abortController = new AbortController();
   const signal = abortController.signal;
   apiData.options.signal = signal;
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -31,19 +32,20 @@ function useApi(apiData) {
         const encryptedData = await AESUtil.encryptData(apiData.options.body);
         apiData.options.body = encryptedData;
       }*/
+
       fetch(apiData.url, apiData.options)
       .then((res) => res.ok ? res.json() : Promise.reject({
         status: res.status,
         statusText: res.statusText
       }))
       .then((data) => {
-        if(data["status_code"] === 200){
+        if(data["statusCode"] === 200){
           setData(data["data"]);
-          if(data["total_rows"]) setTotalRows(data["total_rows"]);
+          if(data["totalRows"]) setTotalRows(data["totalRows"]);
           setError(null);
         }
       
-        setError(data["message"]);
+        //setError(data["message"]);
 
         /*AESUtil.decrypt(data).then((decryptedData:any) => {
           const decryptedText = new TextDecoder().decode(decryptedData);

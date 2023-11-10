@@ -1,4 +1,8 @@
-﻿/* Estilos para Webkit (Chrome, Edge, etc.) */
+﻿*{
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Estilos para Webkit (Chrome, Edge, etc.) */
 ::-webkit-scrollbar {
     width: 8px;
 }

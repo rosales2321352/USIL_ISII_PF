@@ -51,7 +51,7 @@ export class EventBarView extends Component {
 
     loadClients = async () => {
         try {
-            const response = await fetch('api/Client/Lista');
+            const response = await fetch('api/clients/all');
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class DatabaseActualization : Migration
+    public partial class ChangeSizeMessage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,6 +57,7 @@ namespace WebApp.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RUC = table.Column<string>(type: "varchar(12)", maxLength: 12, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true),
                     address = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
@@ -154,13 +155,13 @@ namespace WebApp.Migrations
                 {
                     person_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     phonenumber = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     whatsapp_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -204,7 +205,7 @@ namespace WebApp.Migrations
                     person_id = table.Column<int>(type: "int", nullable: false),
                     seller_id = table.Column<int>(type: "int", nullable: false),
                     client_status_id = table.Column<int>(type: "int", nullable: false),
-                    company_id = table.Column<int>(type: "int", nullable: false)
+                    company_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -219,8 +220,7 @@ namespace WebApp.Migrations
                         name: "FK_client_company_company_id",
                         column: x => x.company_id,
                         principalTable: "company",
-                        principalColumn: "company_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "company_id");
                     table.ForeignKey(
                         name: "FK_client_person_person_id",
                         column: x => x.person_id,
@@ -351,6 +351,7 @@ namespace WebApp.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     creation_date = table.Column<DateOnly>(type: "date", nullable: false),
                     opportunity_status_id = table.Column<int>(type: "int", nullable: false),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true),
                     client_id = table.Column<int>(type: "int", nullable: false),
                     seller_id = table.Column<int>(type: "int", nullable: false)
                 },
@@ -394,6 +395,7 @@ namespace WebApp.Migrations
                     contact_name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     total_amount = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
+                    is_available = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValue: true),
                     order_status_id = table.Column<int>(type: "int", nullable: false),
                     client_id = table.Column<int>(type: "int", nullable: false),
                     seller_id = table.Column<int>(type: "int", nullable: false)
@@ -426,7 +428,7 @@ namespace WebApp.Migrations
                 name: "message",
                 columns: table => new
                 {
-                    message_id = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: false)
+                    message_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     conversation_id = table.Column<int>(type: "int", nullable: false),
                     timestamp = table.Column<DateTime>(type: "timestamp", nullable: false),
@@ -516,7 +518,7 @@ namespace WebApp.Migrations
                 name: "text_message",
                 columns: table => new
                 {
-                    message_id = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: false)
+                    message_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     text = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")

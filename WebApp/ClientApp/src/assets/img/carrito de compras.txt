@@ -1,0 +1,46 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+public class CarritoDeCompras {
+    private static CarritoDeCompras instance;
+    private ObservableList<Producto> productos = FXCollections.observableArrayList();
+
+    // Constructor privado para implementar el patrón Singleton
+    private CarritoDeCompras() {
+    }
+
+    public static CarritoDeCompras getInstance() {
+        if (instance == null) {
+            instance = new CarritoDeCompras();
+        }
+        return instance;
+    }
+
+    public ObservableList<Producto> getProductos() {
+        return productos;
+    }
+
+    public void agregarProducto(Producto producto) {
+        productos.add(producto);
+    }
+
+    public void eliminarProducto(Producto producto) {
+        productos.remove(producto);
+    }
+
+    public void limpiarCarrito() {
+        productos.clear();
+    }
+
+    public boolean estaVacio() {
+        return productos.isEmpty();
+    }
+
+    public double calcularTotal() {
+        double total = 0.0;
+        for (Producto producto : productos) {
+            total += producto.getPrecio();
+        }
+        return total;
+    }
+}

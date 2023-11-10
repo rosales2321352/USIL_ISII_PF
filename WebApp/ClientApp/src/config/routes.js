@@ -10,6 +10,7 @@ import { CanceladoView } from "../components/views/Pedidos/cancelado.view";
 import { HistorialPedidos } from "../components/views/Pedidos/historialPedidos";
 /***/
 import ChatView from "../components/views/Chats/chat.view";
+import Contactos from "../components/views/Contactos/contactos";
 /***/
 import { EventBarView } from "../components/views/Events/eventBar.view"
 
@@ -50,6 +51,10 @@ const AppRoutes = createBrowserRouter([
               Component: ChatView
           },
           {
+              path:'/contactos',
+              Component: Contactos
+          },
+          {
               path: '/events',
               Component: EventBarView
           },
@@ -61,9 +66,6 @@ const AppRoutes = createBrowserRouter([
       }
     ]
   }
-  
-],{
-  basename: "/"
-})
+])
 
 export default AppRoutes;

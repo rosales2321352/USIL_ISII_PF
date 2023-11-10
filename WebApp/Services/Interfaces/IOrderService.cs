@@ -4,7 +4,7 @@ namespace WebApp.Services
     public interface IOrderService : IService<Order>
     {
         Task<IEnumerable<object>> GetAllOrders();
-        Task<object> GetOrderById(int id);
+        Task<object?> GetOrderById(int id);
         Task<IEnumerable<object>> GetOrdersByStatus(int id);
         Task CreateOrder(OrderRequest request);
         Task UpdateOrderStatus(OrderStatusUpdate request);
