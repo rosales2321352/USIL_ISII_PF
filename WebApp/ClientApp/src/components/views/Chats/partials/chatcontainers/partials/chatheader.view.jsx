@@ -4,10 +4,16 @@ import {Box,IconButton,Tooltip,Typography} from "@mui/material"
 import Avatar from '@mui/material/Avatar';
 import useApi from "../../../../../../hooks/useApi";
 import TodayIcon from '@mui/icons-material/Today';
+import OpportunitySelectorView from "./selectors/opportunity.selector.view";
+import OrderSelectorView from "./selectors/order.selector.view";
+
+
 
 export default function ChatHeaderView(){
   
   const ClientContext_ = React.useContext(ClientContext);
+
+  
 
   const getClientId = () => {
     if(ClientContext_.current_client){
@@ -34,7 +40,7 @@ export default function ChatHeaderView(){
       height: "120px",
       borderRadius: '0 0 30px 30px',
       backgroundColor: 'white',
-      p:2
+      p:1,pl:2
     }}>
       <Box sx={{
         display:"flex",
@@ -73,9 +79,13 @@ export default function ChatHeaderView(){
                 </Tooltip>
               </Box>
             </Box>
-            <Box>3</Box>
+            
           </React.Fragment>
         }
+      </Box>
+      <Box>
+        <OpportunitySelectorView/>
+        <OrderSelectorView/>
       </Box>
     </Box>
   )
