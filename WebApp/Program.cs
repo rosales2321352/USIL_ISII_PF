@@ -1,17 +1,22 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using WebApp.Data;
 using WebApp.Models;
 using WebApp.Services;
+using WebApp.Socket;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // Add services to the container.
 
+
+
 builder.Services.AddControllersWithViews();
+
 
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -54,8 +59,10 @@ builder.Services.AddScoped<ICompanyRepository,CompanyRepository>();
 builder.Services.AddScoped<IConversationRepository,ConversationRepository>();
 builder.Services.AddScoped<IWhatsappDataRepository,WhatsappDataRepository>();
 
+builder.Services.AddSignalR();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -67,12 +74,14 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");
-
+app.UseCors("CorsPolicy");
+app.UseEndpoints(endpoints =>
+{
+    
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action=Index}/{id?}");
+    app.MapHub<Signal>("/websocket");
+    app.MapFallbackToFile("index.html");
+});
 app.Run();
