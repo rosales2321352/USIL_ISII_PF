@@ -16,7 +16,7 @@ namespace WebApp.Services
             _textMessageRepository = repository;
         }
 
-        public async Task CreateMessage(WebHookResponseModel request)
+        public async Task<TextMessage> CreateMessage(WebHookResponseModel request)
         {
             IClientService clientService = _serviceProvider.GetRequiredService<IClientService>();
             IWhatsappDataService wzpService = _serviceProvider.GetRequiredService<IWhatsappDataService>();
@@ -64,6 +64,8 @@ namespace WebApp.Services
                 };
 
                 await _repository.Add(textMessage);
+
+                return textMessage;
             }
             else
             {
@@ -79,7 +81,9 @@ namespace WebApp.Services
                     Text = request.Entry[0].Changes[0].Value.Messages[0].Text.Body,
                 };
                 await _repository.Add(textMessage);
+                return textMessage;
             }
+
         }
 
         public async Task SendMessage(TextMessageRequest request)
