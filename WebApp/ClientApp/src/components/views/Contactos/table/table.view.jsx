@@ -1,8 +1,7 @@
 import * as React from 'react';
-import UserData from '../../component/UserData';
 import MaterialTable from 'material-table';
-import CrudApi from '../../component/CrudApi';
 import { Link } from 'react-router-dom';
+import UserData from '../UserData';
 
 export default function Tableview(data) 
 {
@@ -30,7 +29,6 @@ export default function Tableview(data)
                         <UserData client={data}/>
                 </tbody>
         </table>
-        <CrudApi/>
     </div>
         
     
