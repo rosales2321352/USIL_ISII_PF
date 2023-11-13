@@ -1,19 +1,19 @@
-import useApi from "../../../hooks/useApi";
-import { Box, Grid, Paper } from "@mui/material";
-import Tableview from "./partials/tablecontainers/table.view";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Edit from "./partials/tablecontainers/Crud/edit.view";
+//import useApi from "../../../hooks/useApi";
+//import { Box, Grid, Paper } from "@mui/material";
+//import Tableview from "./partials/tablecontainers/table.view";
+//import { BrowserRouter, Route, Routes } from "react-router-dom";
+//import Edit from "./partials/tablecontainers/Crud/edit.view";
 
 export default function Contactos() {
-    const data = useApi({
+  /*  const data = useApi({
         url: "https://localhost:44445/api/client/lista",
         options: {
             method: "GET",
         },
         condition: []
-    });
+    });*/
 
-    return (
+    /*return (
         <BrowserRouter>
         <Routes>
         <Box sx={{ p: 1 }}>
@@ -35,6 +35,8 @@ export default function Contactos() {
                    
         </Routes>
         </BrowserRouter>
-    )
-
+    )*/
+        return (
+            <>Hola</>
+        )
 }
