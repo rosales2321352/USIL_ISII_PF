@@ -53,10 +53,14 @@ namespace WebApp.Services
                 int conversationId = await conversationService.CreateConversartion(conversation);
 
                 long timestamp = long.Parse(request.Entry[0].Changes[0].Value.Messages[0].Timestamp);
+                DateTime dateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+                TimeZoneInfo zonaHorariaInfoLima = TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
+                // Convertir el DateTime en UTC a la zona horaria de Lima
+                DateTime horaLima = TimeZoneInfo.ConvertTime(dateTimeUtc, TimeZoneInfo.Utc, zonaHorariaInfoLima);
                 TextMessage textMessage = new()
                 {
                     MessageID = request.Entry[0].Changes[0].Value.Messages[0].Id,
-                    Timestamp = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime,
+                    Timestamp = horaLima,
                     WhatsappID = request.Entry[0].Changes[0].Value.Messages[0].From,
                     MessageTypeId = 1,
                     ConversationID = conversationId,
@@ -71,10 +75,14 @@ namespace WebApp.Services
             {
                 Conversation? conversation = await conversationService.GetConversationByClient(client.PersonID);
                 long timestamp = long.Parse(request.Entry[0].Changes[0].Value.Messages[0].Timestamp);
+                DateTime dateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+                TimeZoneInfo zonaHorariaInfoLima = TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
+                // Convertir el DateTime en UTC a la zona horaria de Lima
+                DateTime horaLima = TimeZoneInfo.ConvertTime(dateTimeUtc, TimeZoneInfo.Utc, zonaHorariaInfoLima);
                 TextMessage textMessage = new()
                 {
                     MessageID = request.Entry[0].Changes[0].Value.Messages[0].Id,
-                    Timestamp = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime,
+                    Timestamp = horaLima,
                     WhatsappID = request.Entry[0].Changes[0].Value.Messages[0].From,
                     MessageTypeId = 1,
                     ConversationID = conversation.ConversationID,
@@ -88,7 +96,7 @@ namespace WebApp.Services
 
         public async Task SendMessage(TextMessageRequest request)
         {
-            string token = "EAAEfe408O1kBOxEJQtg2kPZCIhJieOeIZBeahkRpAR2Tc5VlIyxZCsWPf2tZA4mmZAk7GDfZBrxgBdsXAZC7QBBZBTk82vgzlF0Kf91YGBFyvkd3nNuzIYw0GpkZAuSlAksmSsygxVlXHKZAnB6XWZA5EiWhIp5DZBqeiUCLeWgokRUo3gZBg5ussF48tulGDecO2YZAsPuJtxhfKQt4RqhqZAxflcZD";
+            string token = "EAAEfe408O1kBO9CCPl1Yo4NZB0qZA1B8uJoHQR8am7F3YxzPqHWHMutyc7aWt4y0vZAdEALZAWR8bHKRChrWlWDo5KExiwSYMmfClK2f2OFkUKyrMlDznWCZAZBNOzEs0cbrHH7dmntqU2UotQNUEOa46JV4QFz2OUZB6xHN42Wvc3GODmmitnZAZA7fBYLyholTHCIcZAornCTqGKZCfeek58ZD";
             string url = "https://graph.facebook.com/v15.0/144739755381611/messages";
 
             var message = new SendMessageRequest
@@ -109,7 +117,7 @@ namespace WebApp.Services
             Console.WriteLine(jsonBody);
 
             using var client = new HttpClient();
-            
+
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, url);
             req.Headers.Add("Authorization", "Bearer " + token);
             req.Content = new StringContent(jsonBody);
@@ -140,7 +148,7 @@ namespace WebApp.Services
             {
                 MessageID = request.Messages[0].Id,
                 Timestamp = DateTime.Now,
-                WhatsappID = request.Contacts[0].Input,
+                WhatsappID = "144739755381611",
                 MessageTypeId = 1,
                 ConversationID = conversationId,
                 Text = text,
