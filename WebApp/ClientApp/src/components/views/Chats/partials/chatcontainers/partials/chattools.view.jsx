@@ -6,7 +6,7 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import { Button } from "@mui/material";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-
+import SendIcon from '@mui/icons-material/Send';
 
 export default function ChatToolsView(){
   const [openEmoji, setOpenEmoji] = useState(false);
@@ -98,7 +98,16 @@ export default function ChatToolsView(){
             <InsertEmoticonIcon fontSize="inherit"/>
           </IconButton>
         </Box>
-        
+        <Box>
+          <Button variant="contained" size="small" 
+          sx={{
+            fontSize: 10,
+            pt:1,pb:1,
+            mr:2,mb:1
+          }} >
+            <SendIcon sx={{fontSize:"15px"}} />
+          </Button>
+        </Box>
 
       </Box>
     </Box>

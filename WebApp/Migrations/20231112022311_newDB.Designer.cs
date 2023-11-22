@@ -11,8 +11,8 @@ using WebApp.Data;
 namespace WebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231105033225_ChangeSizeMessage")]
-    partial class ChangeSizeMessage
+    [Migration("20231112022311_newDB")]
+    partial class newDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -5,6 +5,8 @@ using WebApp.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebApp.Services;
+using Microsoft.AspNetCore.SignalR;
+using WebApp.Hubs;
 namespace WebApp.Controllers
 {
     [Route("api/whatsapp")]
@@ -12,10 +14,11 @@ namespace WebApp.Controllers
     public class WhatsappController : ControllerBase
     {
         private readonly ITextMessageService _textMessageService;
-
-        public WhatsappController(ITextMessageService textMessageService)
+        private readonly IHubContext<ChatHub> _hubContext;
+        public WhatsappController(ITextMessageService textMessageService, IHubContext<ChatHub> hubContext)
         {
             _textMessageService = textMessageService;
+            _hubContext = hubContext;
         }
 
 
@@ -41,9 +44,8 @@ namespace WebApp.Controllers
         [Route("webhook")]
         public async Task<IActionResult> EntryMessage([FromBody] WebHookResponseModel request)
         {
-            Console.WriteLine(request.ToString());
-
-            await _textMessageService.CreateMessage(request);
+            var message = await _textMessageService.CreateMessage(request);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message.WhatsappID, message.Text);
             return StatusCode(StatusCodes.Status200OK, "ok");
         }
     }
