@@ -1,8 +1,10 @@
-//import useApi from "../../../hooks/useApi";
-//import { Box, Grid, Paper } from "@mui/material";
-//import Tableview from "./partials/tablecontainers/table.view";
-//import { BrowserRouter, Route, Routes } from "react-router-dom";
-//import Edit from "./partials/tablecontainers/Crud/edit.view";
+
+import { Box, Grid, Paper } from "@mui/material";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Edit from "./table/partials/edit.view";
+import Tableview from "./table/table.view";
+import useApi from "../../../hooks/useApi";
+
 
 export default function Contactos() {
   /*  const data = useApi({
