@@ -70,7 +70,6 @@ export default function ChatMessagesView(){
         }
         return 0;
       }));
-
       let container = message_ref.current;
       container.scrollTop = container.scrollHeight;
     }
@@ -78,7 +77,7 @@ export default function ChatMessagesView(){
 
   return (
     <Box ref={message_ref} sx={{
-      height: "calc(100% - 240px)",
+      height: "calc(100% - 260px)",
       overflow: "hidden",
       overflowY: "auto",
       padding:"0 15px",
@@ -89,18 +88,20 @@ export default function ChatMessagesView(){
             <Box key={index} sx={{
               display:"flex",
               alignItems:"center",
-              justifyContent:"start",
-              maxWidth:"50%",
+              justifyContent: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ? "start" : "end",
+              float: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ? "inherit" : "inline-end",
+              maxWidth:"70%",
               width:"max-content",  
               
             }}>
               <Box sx={{
                 p:1,
-                backgroundColor: "#fff",
+                backgroundColor: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ?"#fff":"#1976d2",
+                color: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ?"#000":"#fff",
                 margin:"10px 0",
                 borderRadius:"5px",
               }}>
-                <Typography component="span" variant="body2" >{message.text}</Typography>
+                <Typography component="span" variant="body2" >{message.text} - {message.whatsappID} - {ClientContext_.current_client.whatsappData.whatsappID}</Typography>
               </Box>
             </Box>
           ))

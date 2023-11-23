@@ -1,21 +1,21 @@
 
-import { Box, Grid, Paper } from "@mui/material";
+/*import { Box, Grid, Paper } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Edit from "./table/partials/edit.view";
 import Tableview from "./table/table.view";
-import useApi from "../../../hooks/useApi";
+import useApi from "../../../hooks/useApi";*/
 
 
 export default function Contactos() {
-  /*  const data = useApi({
+  /*const data = useApi({
         url: "https://localhost:44445/api/client/lista",
         options: {
             method: "GET",
         },
         condition: []
-    });*/
+    });
 
-    /*return (
+    return (
         <BrowserRouter>
         <Routes>
         <Box sx={{ p: 1 }}>
@@ -26,7 +26,6 @@ export default function Contactos() {
                         <Route path="update/:id" element={<Edit/>}/>
                     </Paper>
                 </Grid>
-              
                 <Grid item xs={12} md={3}>
                     <Paper sx={{ height: 'calc(100vh - 78px)' }}>
                         <h1>Event</h1>
@@ -34,7 +33,6 @@ export default function Contactos() {
                 </Grid>
             </Grid>
         </Box>
-                   
         </Routes>
         </BrowserRouter>
     )*/

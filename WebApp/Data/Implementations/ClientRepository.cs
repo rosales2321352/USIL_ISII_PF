@@ -20,8 +20,11 @@ namespace WebApp.Data
                 e.Email,
                 Company = new
                 {
+                    CompanyID = e.Company != null ? e.Company.CompanyID : (int?)null,
                     e.Company.Address,
-                    e.Company.Name
+                    e.Company.Name,
+                    e.Company.RUC,
+                    e.Company.Email
                 },
                 Status = new
                 {
@@ -51,8 +54,11 @@ namespace WebApp.Data
                 e.Email,
                 Company = new
                 {
+                    CompanyID = e.Company != null ? e.Company.CompanyID : (int?)null,
                     e.Company.Address,
-                    e.Company.Name
+                    e.Company.Name,
+                    e.Company.RUC,
+                    e.Company.Email
                 },
                 Status = new
                 {
@@ -89,8 +95,11 @@ namespace WebApp.Data
                 e.Email,
                 Company = new
                 {
+                    CompanyID = e.Company != null ? e.Company.CompanyID : (int?)null,
                     e.Company.Address,
-                    e.Company.Name
+                    e.Company.Name,
+                    e.Company.RUC,
+                    e.Company.Email
                 },
                 Status = new
                 {

@@ -21,27 +21,18 @@ export default function OpportunitySelectorView(){
   const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
+    //console.log(event.target.selectedOptions[0].value);
     setAge(event.target.value);
   };
 
   return(
-    <FormControl sx={{ m: 1, minWidth: 200 }} size="small">
-      <InputLabel id="demo-select-small-label">Etapa de Oportunidad</InputLabel>
-      <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
-        value={age}
-        label="Etapa de Oportunidad"
-        onChange={handleChange}
-      >
-        <MenuItem value="">
-          <em>Sin etapa</em>
-        </MenuItem>
-        {opportunities.data && Array.isArray(opportunities.data) && opportunities.data.map((opportunity,index)=>(
-          <MenuItem key={index} value={opportunity.opportunityStatusID}>{opportunity.name}</MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <select className='form-control' style={{width:"250px",display:"inline-block"}} value={age} onChange={handleChange}>
+      <option value="">Etapa de Oportunidad</option>
+      {opportunities.data && Array.isArray(opportunities.data) && opportunities.data.map((opportunity,index)=>(
+        <option key={index} value={opportunity.opportunityStatusID}>{opportunity.name}</option>
+      ))}
+    </select>
+
   )
 
 }

@@ -32,6 +32,7 @@ function useApi(apiData) {
         const encryptedData = await AESUtil.encryptData(apiData.options.body);
         apiData.options.body = encryptedData;
       }*/
+      apiData.options.headers = { "Content-Type": "application/json" };
 
       fetch(apiData.url, apiData.options)
       .then((res) => res.ok ? res.json() : Promise.reject({
@@ -86,6 +87,7 @@ export async function  submitApi  (apiData) {
     const encryptedData = await AESUtil.encryptData(apiData.options.body);
     apiData.options.body = encryptedData;
   }*/
+  apiData.options.headers = { "Content-Type": "application/json" };
 
   const abortController = new AbortController();
   const signal = abortController.signal;
