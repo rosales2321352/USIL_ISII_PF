@@ -13,5 +13,16 @@ namespace WebApp.Services
         {
             await _repository.Add(data);
         }
+
+        public async Task CreateWhatsappDataFromJSON(WebHookResponseModel request)
+        {
+             WhatsappData whatsappData = new()
+                {
+                    WhatsappID = request.Entry[0].Changes[0].Value.Contacts[0].Wa_id,
+                    PhonenumberCode = request.Entry[0].Changes[0].Value.Messages[0].From,
+                    WhatsappName = request.Entry[0].Changes[0].Value.Contacts[0].Profile.Name
+                };
+            await _repository.Add(whatsappData);
+        }
     }
 }

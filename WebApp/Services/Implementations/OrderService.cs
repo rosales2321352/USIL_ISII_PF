@@ -4,12 +4,14 @@ namespace WebApp.Services
 {
     public class OrderService : Service<Order>, IOrderService
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly IOrderRepository _orderRepository; //!PREGUNTAR
         private readonly IOrderHistoryRepository _orderHistoryRepository; //!PREGUNTAR
-        public OrderService(IOrderRepository repository, IOrderHistoryRepository historyRepository) : base(repository)
+        public OrderService(IServiceProvider serviceProvider, IOrderRepository repository, IOrderHistoryRepository historyRepository) : base(repository)
         {
             _orderRepository = repository;
             _orderHistoryRepository = historyRepository;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<IEnumerable<object>> GetAllOrders()
@@ -30,6 +32,7 @@ namespace WebApp.Services
 
         public async Task CreateOrder(OrderRequest request)
         {
+            IOrderHistoryService orderHistoryService = _serviceProvider.GetRequiredService<IOrderHistoryService>();
             Order order = new()
             {
                 Name = request.Title,
@@ -42,50 +45,29 @@ namespace WebApp.Services
 
             await _repository.Add(order);
 
-            OrderStatusHistory orderHistoryRegister = new()
-            {
-                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                OrderID = order.OrderID,
-                OrderStatusID = 1,
-                Comment = "Pedido Creado"
-            };
-
-            await _orderHistoryRepository.Add(orderHistoryRegister);
+            await orderHistoryService.CreateNewOrderHistory(order.OrderID);
         }
 
         public async Task UpdateOrderStatus(OrderStatusUpdate request)
         {
+            IOrderHistoryService orderHistoryService = _serviceProvider.GetRequiredService<IOrderHistoryService>();
             var order = await _repository.GetById(request.OrderID);
             order.OrderStatusID = request.OrderStatusID;
 
-            OrderStatusHistory orderHistoryRegister = new()
-            {
-                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                OrderID = request.OrderID,
-                OrderStatusID = request.OrderStatusID,
-                Comment = request.Comment
-            };
-            //TODO _orderHistoryService.Add(orderHistoryRegister);
-            //TODO _orderRepository.UpdateOrderStatus(order);
+            await orderHistoryService.CreateOrderHistory(request);
 
-            await _orderRepository.UpdateOrderStatus(order, orderHistoryRegister, _orderHistoryRepository);
+            await _repository.Update(order);
         }
 
         public async Task EditOrder(OrderEdit request)
         {
+            IOrderHistoryService orderHistoryService = _serviceProvider.GetRequiredService<IOrderHistoryService>();
             var order = await _repository.GetById(request.OrderID);
 
             if (order.OrderStatusID != request.OrderStatusID)
             {
                 order.OrderStatusID = request.OrderStatusID;
-                OrderStatusHistory orderHistoryRegister = new()
-                {
-                    UpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                    OrderID = request.OrderID,
-                    OrderStatusID = request.OrderStatusID
-                };
-                await _orderHistoryRepository.Add(orderHistoryRegister);
-
+                await orderHistoryService.CreateOrderHistory(request.OrderID, request.OrderStatusID);
             }
 
             order.ShippingAddress = request.Address;

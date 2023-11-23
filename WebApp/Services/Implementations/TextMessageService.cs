@@ -23,79 +23,47 @@ namespace WebApp.Services
             IConversationService conversationService = _serviceProvider.GetRequiredService<IConversationService>();
 
             Client? client = await clientService.GetClientByWhatsappId(request.Entry[0].Changes[0].Value.Contacts[0].Wa_id);
+            int conversationId;
 
             //TODO! Separar
             if (client is null)
             {
-                WhatsappData whatsappData = new()
-                {
-                    WhatsappID = request.Entry[0].Changes[0].Value.Contacts[0].Wa_id,
-                    PhonenumberCode = request.Entry[0].Changes[0].Value.Messages[0].From,
-                    WhatsappName = request.Entry[0].Changes[0].Value.Contacts[0].Profile.Name
-                };
-
-                await wzpService.CreateWhatsappData(whatsappData);
-
-                ClientRequest newClient = new()
-                {
-                    WhatsappID = request.Entry[0].Changes[0].Value.Contacts[0].Wa_id,
-                    PhoneNumber = request.Entry[0].Changes[0].Value.Messages[0].From
-                };
-                int clientID = await clientService.CreateClient(newClient);
-
-                Conversation conversation = new()
-                {
-                    SellerID = 1,
-                    ClientID = clientID,
-                    StartDate = DateOnly.FromDateTime(DateTime.Now)
-                };
-
-                int conversationId = await conversationService.CreateConversartion(conversation);
-
-                long timestamp = long.Parse(request.Entry[0].Changes[0].Value.Messages[0].Timestamp);
-                DateTime dateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
-                TimeZoneInfo zonaHorariaInfoLima = TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
-                // Convertir el DateTime en UTC a la zona horaria de Lima
-                DateTime horaLima = TimeZoneInfo.ConvertTime(dateTimeUtc, TimeZoneInfo.Utc, zonaHorariaInfoLima);
-                TextMessage textMessage = new()
-                {
-                    MessageID = request.Entry[0].Changes[0].Value.Messages[0].Id,
-                    Timestamp = horaLima,
-                    WhatsappID = request.Entry[0].Changes[0].Value.Messages[0].From,
-                    MessageTypeId = 1,
-                    ConversationID = conversationId,
-                    Text = request.Entry[0].Changes[0].Value.Messages[0].Text.Body,
-                };
-
-                await _repository.Add(textMessage);
-
-                return textMessage;
+                // Crear el WZPData, Cliente y Conversation
+                await wzpService.CreateWhatsappDataFromJSON(request);
+                int clientID = await clientService.CreateClientFromJSON(request);
+                conversationId = await conversationService.CreateConversartion(clientID);
             }
             else
             {
                 Conversation? conversation = await conversationService.GetConversationByClient(client.PersonID);
-                long timestamp = long.Parse(request.Entry[0].Changes[0].Value.Messages[0].Timestamp);
-                DateTime dateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
-                TimeZoneInfo zonaHorariaInfoLima = TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
-                // Convertir el DateTime en UTC a la zona horaria de Lima
-                DateTime horaLima = TimeZoneInfo.ConvertTime(dateTimeUtc, TimeZoneInfo.Utc, zonaHorariaInfoLima);
-                TextMessage textMessage = new()
-                {
-                    MessageID = request.Entry[0].Changes[0].Value.Messages[0].Id,
-                    Timestamp = horaLima,
-                    WhatsappID = request.Entry[0].Changes[0].Value.Messages[0].From,
-                    MessageTypeId = 1,
-                    ConversationID = conversation.ConversationID,
-                    Text = request.Entry[0].Changes[0].Value.Messages[0].Text.Body,
-                };
-                await _repository.Add(textMessage);
-                return textMessage;
+                conversationId = conversation.ConversationID;
             }
+
+            // Convertir el DateTime en UTC a la zona horaria de Lima
+            long timestamp = long.Parse(request.Entry[0].Changes[0].Value.Messages[0].Timestamp);
+            DateTime dateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+            TimeZoneInfo zonaHorariaInfoLima = TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
+            DateTime horaLima = TimeZoneInfo.ConvertTime(dateTimeUtc, TimeZoneInfo.Utc, zonaHorariaInfoLima);
+
+            TextMessage textMessage = new()
+            {
+                MessageID = request.Entry[0].Changes[0].Value.Messages[0].Id,
+                Timestamp = horaLima,
+                WhatsappID = request.Entry[0].Changes[0].Value.Messages[0].From,
+                MessageTypeId = 1,
+                ConversationID = conversationId,
+                Text = request.Entry[0].Changes[0].Value.Messages[0].Text.Body,
+            };
+
+            await _repository.Add(textMessage);
+
+            return textMessage;
 
         }
 
         public async Task SendMessage(TextMessageRequest request)
         {
+            //! Falta token permanente
             string token = "EAAEfe408O1kBO9CCPl1Yo4NZB0qZA1B8uJoHQR8am7F3YxzPqHWHMutyc7aWt4y0vZAdEALZAWR8bHKRChrWlWDo5KExiwSYMmfClK2f2OFkUKyrMlDznWCZAZBNOzEs0cbrHH7dmntqU2UotQNUEOa46JV4QFz2OUZB6xHN42Wvc3GODmmitnZAZA7fBYLyholTHCIcZAornCTqGKZCfeek58ZD";
             string url = "https://graph.facebook.com/v15.0/144739755381611/messages";
 

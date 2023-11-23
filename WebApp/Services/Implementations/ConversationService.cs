@@ -10,10 +10,16 @@ namespace WebApp.Services
             _conversationRepository = repository;
         }
 
-        public async Task<int> CreateConversartion(Conversation request)
+        public async Task<int> CreateConversartion(int clientID)
         {
-            await _repository.Add(request);
-            return request.ConversationID;
+            Conversation conversation = new()
+            {
+                SellerID = 1,
+                ClientID = clientID,
+                StartDate = DateOnly.FromDateTime(DateTime.Now)
+            };
+            await _repository.Add(conversation);
+            return conversation.ConversationID;
         }
 
         public async Task<Conversation?> GetConversationByClient(int id)

@@ -87,12 +87,5 @@ namespace WebApp.Data
 
             return lista;
         }
-
-        public async Task UpdateOrderStatus(Order entity, OrderStatusHistory register, IOrderHistoryRepository orderHistoryRepository = default!)
-        {
-            await orderHistoryRepository.Add(register);
-            await Update(entity);
-            await _context.SaveChangesAsync();
-        }
     }
 }

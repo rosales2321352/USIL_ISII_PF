@@ -6,6 +6,5 @@ namespace WebApp.Data
         Task<IEnumerable<object>> GetAllOpportunities();
         Task<object> GetOpportunityById(int id);
         Task<IEnumerable<object>> GetOpportunityByStatus(int id);
-        Task UpdateOpportunityStatus(Opportunity opportunity,OpportunityStatusHistory register, IOpportunityHistoryRepository opportunityHistoryRepository);
     }
 }

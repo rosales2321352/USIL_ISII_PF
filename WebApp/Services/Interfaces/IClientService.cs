@@ -8,6 +8,7 @@ namespace WebApp.Services
         Task<IEnumerable<object>> GetAllClientsWithName();
         Task<object?> GetClientDetail(int id);
         Task<int> CreateClient(ClientRequest request);
+        Task<int> CreateClientFromJSON(WebHookResponseModel request);
         Task EditClient(ClientUpdate request);
     }
 }
