@@ -1,9 +1,7 @@
 import * as React from 'react';
 import Modal from 'react-modal';
 import UserData from '../UserData';
-import AddForm from './partials/add.view';
-import AddIcon from '@mui/icons-material/Add';
-import "./table.css";
+import './table.css';
 
 export default function Tableview({data}) 
 {
@@ -18,11 +16,9 @@ export default function Tableview({data})
     };
 
     return <>
-    <div>
-        <div className='text-end'><button onClick={openModal} className='btn btn-primary'> <AddIcon/> </button></div>
-    
+    <div>   
         <table className='table'>
-                <thead>
+                <thead className='thead'>
                     <tr>
                             <th className='id'>ID</th>
                             <th className='nombre'>Nombre</th>
@@ -43,7 +39,6 @@ export default function Tableview({data})
             onRequestClose={closeModal}
             contentLabel="Edit Client Modal"
         >
-        <AddForm closeModal={closeModal} />
         </Modal>
     </div>
         

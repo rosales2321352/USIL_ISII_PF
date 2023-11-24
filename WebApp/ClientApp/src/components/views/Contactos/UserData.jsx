@@ -2,14 +2,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import Modal from 'react-modal';
-import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import EditForm from './table/partials/edit.view';
-import AddForm from './table/partials/add.view';
-import "./table.css";
+import './table/table.css';
 
 const UserData = ({ client }) => {
-  const navigate = useNavigate();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
 
@@ -63,15 +60,19 @@ const UserData = ({ client }) => {
         );
       })}
 
-        {selectedClient &&
-        <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={closeModal}
-            contentLabel="Edit Client Modal"
-        >
-        <EditForm client={selectedClient} closeModal={closeModal} />
-        </Modal> }
-        
+      <tr style={{display:"none"}}>
+              <td>
+                {selectedClient &&
+              <Modal 
+                  isOpen={modalIsOpen}
+                  onRequestClose={closeModal}
+                  contentLabel="Edit Client Modal"
+              >
+                <EditForm client={selectedClient} closeModal={closeModal} />
+              </Modal> }
+              </td>
+      </tr>
+      
     </>
   );
 };

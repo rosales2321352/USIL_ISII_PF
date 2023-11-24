@@ -1,51 +1,60 @@
-.modal-container {
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal {
-    border-radius: 5px;
-    padding: 2rem;
-    background-color: white;
-    width: 25em;
-  }
-  
-  .modal .btn {
-    display: block;
-    margin: auto;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-  }
-  
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    border: 1px solid black;
-    border-radius: 0.3rem;
-    padding: 0.3rem;
-    font-size: 1rem;
-  }
-  
-  .form-group label {
-    margin-bottom: 0.2rem;
-  }
-  
-  .error {
-    background-color: #f8d7da;
-    color: #df4759;
-    padding: 0.5rem;
-    border-radius: 0.3rem;
-    margin-bottom: 1rem;
-  }
+*{
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+.btn-info{
+   border: 0;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+    padding: 0px 10px;
+    left: -100%;
+    border-radius: 3px;
+    background: -webkit-linear-gradient(right, #f3cd41, #ffeb68, #f7e75e, #ffd41c);
+}
+
+.sel {
+  width: 50%;
+  padding: 16px 20px;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+form .container{
+  max-width: 800px;
+  background: #fff;
+  width: 800px;
+  padding: 25px 40px 10px 40px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.container .text{
+  text-align: center;
+  font-size: 41px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  background: -webkit-linear-gradient(right, #dba653, #e29d3c, #eacf43, #fff137);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+form{
+  padding: 30px 0 0 0;
+}
+
+form .modal-container{
+  display: flex;
+  margin: 32px 0;
+    
+}
+label{
+  color:rgb(194, 159, 4);
+  padding:  8px;;
+}
+
+.ReactModal__Content.ReactModal__Content--after-open {
+  border: none !important;
+}

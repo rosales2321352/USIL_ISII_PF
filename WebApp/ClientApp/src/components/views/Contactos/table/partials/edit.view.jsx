@@ -1,45 +1,43 @@
-import axios from 'axios';
-import React, { useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState} from 'react';
+import { submitApi } from '../../../../../hooks/useApi';
+import CompanySelector from './companyselector';
+import StatusSelector from './statusselector';
+import './modal.css';
+import ContactosContext from '../../../../../context/Contactos/contactos.context';
 
 const EditForm = ({ client, closeModal }) => {
+  const {reload, setReload} = useContext(ContactosContext);
   const [data, setData] = useState(client);
-  const navigate = useNavigate();
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (data) {
       let clientformat = {
           personID: data.clientId,
-          clientStatusID: data.clientStatusID,
+          phoneNumber: data.phoneNumber,
+          clientStatusID: data.status.clientStatusID,
           name: data.name,
           email: data.email,
-          companyID: data.companyname,
-          
+          companyID: data.company.companyID,
+          whatsappID : data.whatsappData.whatsappID
       }
-    }
-    // public int PersonID { get; set; }
-    //     public int ClientStatusID { get; set; }
-    //     public string Name { get; set; } = null!;
-    //     public string? Email { get; set; } = null!;
-    //     public string PhoneNumber { get; set; } = null!;
-    //     public string WhatsappID { get; set; } = null!;
-    //     public int? CompanyID { get; set; }
-    // // const apiUrl = process.env.REACT_APP_URL_CLIENT_EDIT + client.id;
-    // console.log('API URL:', apiUrl);
-    // console.log('Data:', data);
+      
+      console.log(clientformat);
 
-    // axios
-    // .put(apiUrl, data)
-    //   .then((res) => {
-    //     alert("Cliente actualizado satisfactoriamente.");
-    //     navigate('client');
-    //     closeModal();
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error al actualizar el cliente:", err);
-    //   });
+      submitApi ({
+        url: process.env.REACT_APP_URL_CLIENT_EDIT,
+        options:{
+          method:"POST",
+          body: JSON.stringify(clientformat)
+        }
+      })
+      .then(()=>{
+          setReload(!reload);
+      })
+      .finally(()=> {
+        closeModal();
+      })
+    }
     console.log(data)
   };
 
@@ -50,50 +48,59 @@ const EditForm = ({ client, closeModal }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {Object.keys(data).map((key) => (
-        // Verifica si el campo debe mostrarse
-        shouldDisplayField(key) && (
-          <div key={key}>
-            <label htmlFor={key}>{key}</label>
-            {typeof data[key] === 'object' ? (
-              // Si el valor es un objeto, muestra campos anidados
-              Object.keys(data[key]).map((nestedKey) => (
-                <div key={nestedKey}>
-                  <label htmlFor={`${key}.${nestedKey}`}>{nestedKey}</label>
-                  <input
-                    type='text'
-                    name={`${key}.${nestedKey}`}
-                    value={data[key][nestedKey]}
-                    className='form-control'
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        [key]: {
-                          ...data[key],
-                          [nestedKey]: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                </div>
-              ))
-            ) : (
-              // Si el valor no es un objeto, muestra un campo de entrada regular
-              <input
-                type='text'
-                name={key}
-                value={data[key]}
-                className='form-control'
-                onChange={(e) => setData({ ...data, [key]: e.target.value })}
-              />
-            )}
+    <form onSubmit={handleSubmit} >
+      <div className='container'>
+          <div class="text">
+            Editar Contacto
           </div>
-        )
-      ))}
-      <br />
+          <div className='modal-container'>
+            <label htmlFor="name">Name:</label>
+            <input
+              value={data.name}
+              type='text'
+              name='name'
+              className='form-control'
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+            />
+        </div>
+        <div className='modal-container'>
+          <label htmlFor="phoneNumber">Numero:</label>
+          <input
+            value={data.phoneNumber}
+            type='text'
+            name='phoneNumber'
+            className='form-control'
+            readOnly={true}
+            onChange={(e) => setData({ ...data, phoneNumber: e.target.value })}
+          />
+        </div>
+        <div className='modal-container'>
+          <label htmlFor="email">Email:</label>
+          <input
+            value={data.email}
+            type='text'
+            name='email'
+            className='form-control'
+            onChange={(e) => setData({ ...data, email: e.target.value })}
+          />
+        </div>
 
-      <button className='btn btn-info'>Update</button>
+        <div className='modal-container'>
+          <label htmlFor="company.name">Empresa:</label>
+            <CompanySelector data_={{data, setData}}/>
+        </div>
+
+        <div className='modal-container'>
+          <label htmlFor="status.name">Estado:</label>
+            <StatusSelector data_={{data, setData}}/>
+        </div>
+        
+        <button type='submit' className='btn-info'>
+          Submit
+        </button>
+
+      </div>
+      
     </form>
   );
 };
