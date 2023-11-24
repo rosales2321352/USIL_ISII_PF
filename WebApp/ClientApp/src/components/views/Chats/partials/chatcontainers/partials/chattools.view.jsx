@@ -1,6 +1,7 @@
-import  { useState, createRef } from "react";
+import  { useState, createRef, useContext, useEffect } from "react";
+import ClientContext from "../../../../../../context/Client/client.context";
+import MessageContext from "../../../../../../context/Message/message.context";
 import {Box, IconButton} from "@mui/material";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import { Button } from "@mui/material";
@@ -8,8 +9,29 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import SendIcon from '@mui/icons-material/Send';
 import NoteDialogView from "../../informationcontainer/noteinformation/notedialog.view";
+import EventDialogView_ from "../../informationcontainer/eventinformation/eventdialog.view";
+import useApi, { submitApi } from "../../../../../../hooks/useApi";
+
 
 export default function ChatToolsView(){
+  const ClientContext_ = useContext(ClientContext);
+  const MessageContext_ = useContext(MessageContext);
+  const [conversation, setConversation] = useState({});
+  useEffect(() => {
+    if(ClientContext_.current_client.clientId){
+      submitApi({
+        url: "https://localhost:44445/api/conversations/details/"+ ClientContext_.current_client.clientId,
+        options:{
+          method: "GET",
+        }
+      }).then((data) => {
+        if(data && data.statusCode === 200){
+          setConversation(data.data);
+        }
+      })
+    }      
+  },[ClientContext_.current_client])
+
   const [openEmoji, setOpenEmoji] = useState(false);
   const [selector,setSelector] = useState({
     before: "",
@@ -62,6 +84,36 @@ export default function ChatToolsView(){
     setOpenEmoji(false);
   }
 
+  const handlerSendMessage = () => {
+    let editor = textArea.current;
+    if(!editor.value || !conversation.conversationID){
+      return;
+    }
+    let textMessage= {
+      conversationID: conversation.conversationID,
+      phoneNumber: ClientContext_.current_client.phoneNumber,
+      text: editor.value
+    }
+
+    fetch("https://localhost:44445/api/texts/send", {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(textMessage)
+    })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          MessageContext_.setReload(!MessageContext_.reload);
+      })
+      .catch(error => {
+          console.error("Hubo un problema con la petición fetch:", error);
+      }).finally(() => {
+        editor.value = "";
+      });
+  }
 
   return (
     <>
@@ -75,9 +127,10 @@ export default function ChatToolsView(){
       <Box sx={{height: "35px"}}>
         <Box sx={{border:"1px solid #e0e0e0", display:"flex", alignItems:"center", justifyContent:"end", p:1, pr:3}}>
           <NoteDialogView note={null}/>
-          <IconButton aria-label="Calendario" size="small">
+          <EventDialogView_ event={null}/>
+          {/* <IconButton aria-label="Calendario" size="small">
             <CalendarMonthIcon fontSize="inherit"/>
-          </IconButton>
+          </IconButton> */}
         </Box>
       </Box>
       <Box sx={{height: "calc(100% - 75px)"}}>
@@ -105,7 +158,7 @@ export default function ChatToolsView(){
             fontSize: 10,
             pt:1,pb:1,
             mr:2,mb:1
-          }} >
+          }} onClick={handlerSendMessage} >
             <SendIcon sx={{fontSize:"15px"}} />
           </Button>
         </Box>

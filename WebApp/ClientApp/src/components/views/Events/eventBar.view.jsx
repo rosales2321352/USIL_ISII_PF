@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Dialog, DialogTitle, DialogContent, Icon
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 import Autocomplete from '@mui/material/Autocomplete';
 
 export class EventBarView extends Component {
@@ -112,9 +113,10 @@ export class EventBarView extends Component {
             return; 
         }
 
-        const formattedDate = newEvent.date.toISOString().split('T')[0];
-        const formattedStartTime = newEvent.startTime.toISOString().split('T')[1].substring(0, 5) + ":00"; // add seconds
-        const formattedEndTime = newEvent.endTime.toISOString().split('T')[1].substring(0, 5) + ":00"; // add seconds
+        const formattedDate = format(newEvent.date, 'yyyy-MM-dd', { timeZone: 'America/Lima' });
+        const formattedStartTime = format(newEvent.startTime, 'HH:mm:ss', { timeZone: 'America/Lima' });
+        const formattedEndTime = format(newEvent.endTime, 'HH:mm:ss', { timeZone: 'America/Lima' });
+
 
         const payload = {
             clientID: selectedClientId,
@@ -292,7 +294,7 @@ export class EventBarView extends Component {
                         <TextField
                             label="Hora de Inicio"
                             type="time"
-                            value={newEvent.startTime.toISOString().split('T')[1].substring(0, 5)}
+                            value={format(utcToZonedTime(newEvent.startTime, 'America/Lima'), 'HH:mm', { timeZone: 'America/Lima' })}
                             fullWidth
                             InputLabelProps={{
                                 shrink: true,
@@ -301,12 +303,21 @@ export class EventBarView extends Component {
                                 step: 300, // 5 min
                             }}
                             margin="normal"
-                            onChange={(e) => this.setState({ newEvent: { ...newEvent, startTime: new Date(newEvent.date.toDateString() + ' ' + e.target.value) } })}
+                            onChange={(e) => {
+                                const selectedTime = zonedTimeToUtc(
+                                    new Date(newEvent.date.toDateString() + ' ' + e.target.value),
+                                    'America/Lima'
+                                );
+                                this.setState({ newEvent: {
+                                    ...newEvent,
+                                    startTime: selectedTime,
+                                }});
+                            }}
                         />
                         <TextField
                             label="Hora de Fin"
                             type="time"
-                            value={newEvent.endTime.toISOString().split('T')[1].substring(0, 5)}
+                            value={format(utcToZonedTime(newEvent.endTime, 'America/Lima'), 'HH:mm', { timeZone: 'America/Lima' })}
                             fullWidth
                             InputLabelProps={{
                                 shrink: true,
@@ -315,7 +326,16 @@ export class EventBarView extends Component {
                                 step: 300, // 5 min
                             }}
                             margin="normal"
-                            onChange={(e) => this.setState({ newEvent: { ...newEvent, endTime: new Date(newEvent.date.toDateString() + ' ' + e.target.value) } })}
+                            onChange={(e) => {
+                                const selectedTime = zonedTimeToUtc(
+                                    new Date(newEvent.date.toDateString() + ' ' + e.target.value),
+                                    'America/Lima'
+                                );
+                                this.setState({ newEvent: {
+                                    ...newEvent,
+                                    endTime: selectedTime,
+                                }});
+                            }}
                         />
                         <TextField
                             label="Descripción del Evento"

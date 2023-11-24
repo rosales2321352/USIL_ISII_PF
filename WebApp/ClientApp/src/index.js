@@ -10,6 +10,7 @@ import './assets/css/main.css'
 import './assets/GlobalStyles.css';
 import { ThemeProvider } from '@mui/material/styles';
 import ThemeDefault from './theme/theme';
+import EventState from './context/Event/event.state.context';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
@@ -18,7 +19,9 @@ root.render(
   <StrictMode>
     <ThemeProvider theme={ThemeDefault}>
       <ClientState>
+        <EventState>
           <RouterProvider router={AppRoutes} />
+        </EventState>
       </ClientState>
     </ThemeProvider>
   </StrictMode>

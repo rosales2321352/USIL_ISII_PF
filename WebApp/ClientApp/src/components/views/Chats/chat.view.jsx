@@ -6,10 +6,12 @@ import { useEffect,useState } from "react";
 import "./assets/css/chat.css";
 import InformationContainerView from "./partials/informationcontainer/informationcontainer";
 import NoteState from "../../../context/Note/note.state.context";
+import MessageState from "../../../context/Message/message.state.context";
 
 export default function ChatView(){
 
   return (
+    <MessageState>
     <NoteState>
       <Box sx={{p:1,width:"100%"}}>
         <Grid container spacing={1}>
@@ -31,5 +33,6 @@ export default function ChatView(){
         </Grid>
       </Box>
     </NoteState>
+    </MessageState>
   )
 }

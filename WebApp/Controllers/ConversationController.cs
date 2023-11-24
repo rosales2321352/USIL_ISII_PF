@@ -26,5 +26,17 @@ namespace WebApp.Controllers
 
             return StatusCode(StatusCodes.Status200OK, response);
         }
+
+        [HttpGet]
+        [Route("details/{id:int}")]
+        public async Task<IActionResult> GetConversationByClient(int id)
+        {
+            var conversation = await _conversationService.GetConversationByClient(id);
+
+            ApiSingleObjectResponse<object> response = new(conversation, StatusCodes.Status200OK);
+
+            return StatusCode(StatusCodes.Status200OK, response);
+        }
     }
+        
 }

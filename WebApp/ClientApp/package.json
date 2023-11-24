@@ -12,6 +12,7 @@
     "@mui/lab": "^5.0.0-alpha.152",
     "@mui/material": "^5.14.14",
     "bootstrap": "^5.2.3",
+    "date-fns-tz": "^2.0.0",
     "emoji-mart": "^5.5.2",
     "http-proxy-middleware": "^2.0.6",
     "jquery": "^3.6.4",

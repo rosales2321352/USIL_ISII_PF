@@ -1,5 +1,6 @@
 import React from 'react';
 import ClientContext from '../../../../../../context/Client/client.context';
+import EventContext from '../../../../../../context/Event/event.context';
 import { Box , Paper, Typography } from '@mui/material';
 import useApi from '../../../../../../hooks/useApi';
 import EventCardView from './eventcard.view';
@@ -7,7 +8,7 @@ import EventCardView from './eventcard.view';
 export default function EventInformationView(){
 
   const ClientContext_ = React.useContext(ClientContext);
-
+  const EventContext_ = React.useContext(EventContext);
   const getClientId = () => {
     if(ClientContext_.current_client){
       if(ClientContext_.current_client.clientId){
@@ -22,7 +23,7 @@ export default function EventInformationView(){
     options:{
       method: "GET",
     },
-    condition:[ClientContext_.current_client]
+    condition:[ClientContext_.current_client,EventContext_.reload]
   });
 
   

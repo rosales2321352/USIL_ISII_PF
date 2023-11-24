@@ -51,7 +51,8 @@ namespace WebApp.Data
                 e.EndTime,
                 e.Description,
                 Client = new
-                {
+                {   
+                    e.Client.PersonID,
                     e.Client.Name,
                     e.Client.PhoneNumber,
                     e.Client.Email

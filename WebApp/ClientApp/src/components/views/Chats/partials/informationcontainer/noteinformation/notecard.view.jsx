@@ -45,7 +45,7 @@ export default function NoteCardView({note}) {
           <Box>
             <NoteDialogView note={note}/>
             <IconButton aria-label="Calendario" size="small" onClick={handlerDelete} >
-              <DeleteOutlineIcon fontSize='small'/>
+              <DeleteOutlineIcon sx={{fontSize:"16px",color:"#000"}}/>
             </IconButton>
           </Box>
         </Box>

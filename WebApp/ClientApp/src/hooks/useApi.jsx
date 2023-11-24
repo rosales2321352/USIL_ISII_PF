@@ -35,10 +35,21 @@ function useApi(apiData) {
       apiData.options.headers = { "Content-Type": "application/json" };
 
       fetch(apiData.url, apiData.options)
-      .then((res) => res.ok ? res.json() : Promise.reject({
-        status: res.status,
-        statusText: res.statusText
-      }))
+      .then((res) => {
+        if (res.ok) {
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+              return res.json();
+          } else {
+              return res.text();
+          }
+        } else {
+          return Promise.reject({
+            status: res.status,
+            statusText: res.statusText,
+          });
+        }
+      })
       .then((data) => {
         if(data["statusCode"] === 200){
           setData(data["data"]);
@@ -95,7 +106,12 @@ export async function  submitApi  (apiData) {
   return fetch(apiData.url, apiData.options)
     .then((res) => {
       if (res.ok) {
-        return res.json();
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            return res.json();
+        } else {
+            return res.text();
+        }
       } else {
         return Promise.reject({
           status: res.status,

@@ -1,14 +1,17 @@
 import * as React from "react";
 import ClientContext from "../../../../../../context/Client/client.context";
+import MessageContext from "../../../../../../context/Message/message.context";
 import {Box, Typography} from "@mui/material";
 import useApi from "../../../../../../hooks/useApi";
 import * as signalR from '@microsoft/signalr';
 
 
 
+
 export default function ChatMessagesView(){
 
   const ClientContext_ = React.useContext(ClientContext);
+  const MessageContext_ = React.useContext(MessageContext);
   const message_ref = React.createRef();
   const [messageSorted, setMessageSorted] = React.useState([]);
   const [lastReceivedMessage, setLastReceivedMessage] = React.useState(null);
@@ -55,7 +58,7 @@ export default function ChatMessagesView(){
     options: {
       method: "GET",
     },
-    condition: [ClientContext_.current_client, lastReceivedMessage],
+    condition: [ClientContext_.current_client, lastReceivedMessage,MessageContext_.reload],
   });
 
   React.useEffect(() => {

@@ -27,3 +27,14 @@ export const NoteInformationForm = {
   description: '',
   annotationTypeID: null
 }
+
+export const EventInformationForm = {
+  eventID: null,
+  title: '',
+  date: new Date(),
+  startTime: new Date(),
+  endTime: new Date(),
+  description: '',
+  clientID: '',
+  eventTypeID: ''
+}

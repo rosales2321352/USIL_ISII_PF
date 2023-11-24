@@ -93,7 +93,7 @@ export default function NoteDialogView({note}) {
   return (
     <React.Fragment>
       <IconButton aria-label="Calendario" size="small" onClick={handleClickOpen}>
-        {note ? <FindInPageOutlinedIcon fontSize='inherit'/>: <NoteAltIcon fontSize='inherit'/>}
+        {note ? <FindInPageOutlinedIcon sx={{fontSize:"16px",color:"#000"}}/>: <NoteAltIcon sx={{fontSize:"16px",color:"#000"}}/>}
       </IconButton>
       <Dialog
         open={open}
