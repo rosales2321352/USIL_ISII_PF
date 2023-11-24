@@ -92,8 +92,7 @@ export default function ChatMessagesView(){
               alignItems:"center",
               justifyContent: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ? "start" : "end",
               float: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ? "inherit" : "inline-end",
-              maxWidth:"70%",
-              width:"max-content",  
+              width:"100%"
               
             }}>
               <Box sx={{
@@ -101,9 +100,11 @@ export default function ChatMessagesView(){
                 backgroundColor: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ?"#fff":"#1976d2",
                 color: message.whatsappID === ClientContext_.current_client.whatsappData.whatsappID ?"#000":"#fff",
                 margin:"10px 0",
+                maxWidth:"70%",
+                width:"max-content",  
                 borderRadius:"5px",
               }}>
-                <Typography component="span" variant="body2" >{message.text} - {message.whatsappID} - {ClientContext_.current_client.whatsappData.whatsappID}</Typography>
+                <Typography component="span" variant="body2" >{message.text}</Typography>
               </Box>
             </Box>
           ))

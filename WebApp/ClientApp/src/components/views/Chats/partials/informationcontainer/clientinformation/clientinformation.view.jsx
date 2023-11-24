@@ -4,6 +4,7 @@ import { ClientForm} from '../../../../../common/interface';
 import {Box,Typography} from '@mui/material';
 import CompanyInformationView from './companyinformation.view';
 import { submitApi } from '../../../../../../hooks/useApi';
+import CompanySelectorView from './companyselector.view';
 
 export default function ClientInformationView(){
   
@@ -59,7 +60,6 @@ export default function ClientInformationView(){
   }
 
   const handlerSubmit = (e) => {
-    console.log(clientForm)
     if(client.personID !== null){
       if(clientForm[e.target.name] !== clientFormPrevious[e.target.name]){
         submitApi({
@@ -96,8 +96,13 @@ export default function ClientInformationView(){
             <Typography sx={{fontSize:"14px"}} component={'span'}>Correo:</Typography>
             <input type='text' name='email' onBlur={handlerSubmit} onChange={handlerChange} value={clientForm.email}/>
           </Box>
+          <Box className="container-input-client-information">
+            <Typography sx={{fontSize:"14px"}} component={'span'}>Empresa:</Typography>
+            {/* <input type='text' name='email' onBlur={handlerSubmit} onChange={handlerChange} value={clientForm.email}/> */}
+            <CompanySelectorView onBlur={handlerSubmit} companyID={clientForm.companyID} form={{clientForm, setClientForm}} setClientFormPrevious={setClientFormPrevious}/>
+          </Box>
         </Box>
-        <CompanyInformationView/>
+        {/* <CompanyInformationView/> */}
       </Box>
     </>
   )
