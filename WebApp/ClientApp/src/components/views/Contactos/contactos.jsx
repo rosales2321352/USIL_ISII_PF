@@ -1,9 +1,6 @@
 import { Box, Grid, Paper } from "@mui/material";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Edit from "./table/partials/edit.view";
 import Tableview from "./table/table.view";
 import useApi from "../../../hooks/useApi";
-import { useEffect } from "react";
 import EventView from "./table/event";
 
 

@@ -37,7 +37,7 @@ export default function ChatHeaderView(){
   return(
     <Box sx={{
       border: '1px solid #e0e0e0',
-      height: "120px",
+      height: "110px",
       borderRadius: '0 0 30px 30px',
       backgroundColor: 'white',
       p:1,pl:2
@@ -83,7 +83,7 @@ export default function ChatHeaderView(){
           </React.Fragment>
         }
       </Box>
-      <Box>
+      <Box sx={{mt:1}}>
         <OpportunitySelectorView/>
         <OrderSelectorView/>
       </Box>
