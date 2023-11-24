@@ -1,36 +1,38 @@
 import * as React from 'react';
-import MaterialTable from 'material-table';
 import { Link } from 'react-router-dom';
 import UserData from '../UserData';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+
 
 export default function Tableview(data) 
 {
-    return <>
-    <div>
-        <div className='text-end'><Link to="/Guardar" className='btn btn-primary'>Add +</Link></div>
-        
-       <MaterialTable options={{sorting:true, search:true, searchText: "9999",
-        searchFieldAlignment: "left", searchAutoFocus: true, searchFieldVariant: "standard"}} title= "Contactos" />
+    return (
+        <>
+            <div>
+                <div className='text-end'>
+                    <Link to="/Guardar" className='btn btn-primary'>Add +</Link>
+                </div>
 
-        <table className='table'>
-                <thead className='thead'>
-                    <tr className='tr'>
-                            <th className='th'>ID</th>
-                            <th className='th'>Nombre</th>
-                            <th className='th'>Numero</th>
-                            <th className='th'>Estado</th>
-                            <th className='th'>Direccion</th>
-                            <th className='th'>Pais</th>
-                            <th className='th'>RUC</th>
-                            <th className='th'>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <UserData client={data}/>
-                </tbody>
-        </table>
-    </div>
-        
-    
-    </>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>Numero</TableCell>
+                                <TableCell>Estado</TableCell>
+                                <TableCell>Direccion</TableCell>
+                                <TableCell>Pais</TableCell>
+                                <TableCell>RUC</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <UserData client={data} />
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+        </>
+    );
 }
