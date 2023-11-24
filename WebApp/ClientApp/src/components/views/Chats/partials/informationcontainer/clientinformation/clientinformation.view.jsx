@@ -80,7 +80,7 @@ export default function ClientInformationView(){
   return(
     <>
       <Box>
-        <Box >
+        <Box sx={{borderBottom:"1px solid #000",pb:1}}>
           <Typography sx={{fontSize:"14px"}}>Información</Typography>
         </Box>
         <Box sx={{mt:2}}>

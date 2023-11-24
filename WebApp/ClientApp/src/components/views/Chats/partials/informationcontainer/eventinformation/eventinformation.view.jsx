@@ -1,6 +1,6 @@
 import React from 'react';
 import ClientContext from '../../../../../../context/Client/client.context';
-import { Box , Typography } from '@mui/material';
+import { Box , Paper, Typography } from '@mui/material';
 import useApi from '../../../../../../hooks/useApi';
 import EventCardView from './eventcard.view';
 
@@ -30,7 +30,7 @@ export default function EventInformationView(){
   return(
     <>
       <Box sx={{mt:2}}>
-        <Box>
+        <Box sx={{borderBottom:"1px solid #000",pb:1}}>
           <Typography sx={{fontSize:"14px"}}>Eventos</Typography>
         </Box>
         {events && Array.isArray(events.data) && events.data.length > 0 && 
@@ -40,6 +40,13 @@ export default function EventInformationView(){
             </React.Fragment> 
           ))
         }    
+        {events && Array.isArray(events.data) && events.data.length === 0 &&
+        <Box sx={{textAlign:"center"}}>
+          <Paper sx={{p:2}}>
+            <Typography sx={{fontSize:"14px"}}>No hay eventos</Typography>
+          </Paper>
+        </Box>
+        }
       </Box>
     </>
   )
