@@ -30,8 +30,9 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateOpportunityStatus([FromBody] OpportunityStatusRequest request)
         {
-            await _opportunityStatusService.CreateOpportunityStatus(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var opportunityStatus = await _opportunityStatusService.CreateOpportunityStatus(request);
+            ApiSingleObjectResponse<object> response = new(opportunityStatus, StatusCodes.Status200OK, "Estado de Oportunidad Creada");
+            return StatusCode(StatusCodes.Status200OK, response);
 
         }
 
@@ -39,12 +40,17 @@ namespace WebApp.Controllers
         [Route("edit")]
         public async Task<IActionResult> Edit([FromBody] OpportunityStatusRequest request)
         {
-            await _opportunityStatusService.EditOpportunityStatus(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var opportunityStatus = await _opportunityStatusService.EditOpportunityStatus(request);
+            ApiSingleObjectResponse<object> response = new(opportunityStatus, StatusCodes.Status200OK, "Estado de Oportunidad Actualizada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
-
-
-
-        //TODO Eliminacion logica y fisica de estados.
+        
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] OpportunityStatusDelete request)
+        {
+            await _opportunityStatusService.DeleteOpportunityStatus(request.OpportunityStatusID);
+            return StatusCode(StatusCodes.Status200OK, "Estado de Oportunidad Eliminada");
+        }
     }
 }

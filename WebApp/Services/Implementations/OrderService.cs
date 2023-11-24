@@ -5,12 +5,10 @@ namespace WebApp.Services
     public class OrderService : Service<Order>, IOrderService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IOrderRepository _orderRepository; //!PREGUNTAR
-        private readonly IOrderHistoryRepository _orderHistoryRepository; //!PREGUNTAR
+        private readonly IOrderRepository _orderRepository;
         public OrderService(IServiceProvider serviceProvider, IOrderRepository repository, IOrderHistoryRepository historyRepository) : base(repository)
         {
             _orderRepository = repository;
-            _orderHistoryRepository = historyRepository;
             _serviceProvider = serviceProvider;
         }
 
@@ -30,7 +28,7 @@ namespace WebApp.Services
             return await _orderRepository.GetOrdersByStatus(id);
         }
 
-        public async Task CreateOrder(OrderRequest request)
+        public async Task<object> CreateOrder(OrderRequest request)
         {
             IOrderHistoryService orderHistoryService = _serviceProvider.GetRequiredService<IOrderHistoryService>();
             Order order = new()
@@ -46,9 +44,22 @@ namespace WebApp.Services
             await _repository.Add(order);
 
             await orderHistoryService.CreateNewOrderHistory(order.OrderID);
+
+            var response = new
+            {
+                order.OrderID,
+                order.Name,
+                order.CreationDate,
+                order.TotalAmount,
+                order.OrderStatusID,
+                order.ClientID,
+                order.SellerID
+            };
+
+            return response;
         }
 
-        public async Task UpdateOrderStatus(OrderStatusUpdate request)
+        public async Task<object> UpdateOrderStatus(OrderStatusUpdate request)
         {
             IOrderHistoryService orderHistoryService = _serviceProvider.GetRequiredService<IOrderHistoryService>();
             var order = await _repository.GetById(request.OrderID);
@@ -57,9 +68,21 @@ namespace WebApp.Services
             await orderHistoryService.CreateOrderHistory(request);
 
             await _repository.Update(order);
+            var response = new
+            {
+                order.OrderID,
+                order.Name,
+                order.CreationDate,
+                order.TotalAmount,
+                order.OrderStatusID,
+                order.ClientID,
+                order.SellerID
+            };
+
+            return response;
         }
 
-        public async Task EditOrder(OrderEdit request)
+        public async Task<object> EditOrder(OrderEdit request)
         {
             IOrderHistoryService orderHistoryService = _serviceProvider.GetRequiredService<IOrderHistoryService>();
             var order = await _repository.GetById(request.OrderID);
@@ -77,6 +100,28 @@ namespace WebApp.Services
 
             await _repository.Update(order);
 
+            var response = new
+            {
+                order.OrderID,
+                order.Name,
+                order.CreationDate,
+                order.TotalAmount,
+                order.OrderStatusID,
+                order.ClientID,
+                order.SellerID,
+                order.ShippingAddress,
+                order.GeographicLocation,
+                order.ContactName,
+            };
+
+            return response;
+        }
+
+        public async Task DeleteOrder(int id)
+        {
+            var order = await _repository.GetById(id);
+            order.IsAvailable = false;
+            await _repository.Update(order);
         }
     }
 }

@@ -9,11 +9,9 @@ namespace WebApp.Services
     public class TextMessageService : Service<TextMessage>, ITextMessageService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ITextMessageRepository _textMessageRepository;
         public TextMessageService(IServiceProvider serviceProvider, ITextMessageRepository repository) : base(repository)
         {
             _serviceProvider = serviceProvider;
-            _textMessageRepository = repository;
         }
 
         public async Task<TextMessage> CreateMessage(WebHookResponseModel request)
@@ -25,7 +23,6 @@ namespace WebApp.Services
             Client? client = await clientService.GetClientByWhatsappId(request.Entry[0].Changes[0].Value.Contacts[0].Wa_id);
             int conversationId;
 
-            //TODO! Separar
             if (client is null)
             {
                 // Crear el WZPData, Cliente y Conversation

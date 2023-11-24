@@ -39,7 +39,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> GetEventDetail(int id)
         {
             var eve = await _eventService.GetEventDetail(id);
-            ApiSingleObjectResponse<Annotation> response = new(eve, StatusCodes.Status200OK);
+            ApiSingleObjectResponse<object> response = new(eve, StatusCodes.Status200OK, "Evento Encontrado");
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
@@ -47,17 +47,18 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateEvent([FromBody] EventRequest request)
         {
-            await _eventService.CreateEvent(request);
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var eve = await _eventService.CreateEvent(request);
+            ApiSingleObjectResponse<object> response = new(eve, StatusCodes.Status200OK, "Evento Creado");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> EditEvent([FromBody] EventUpdate request)
         {
-            await _eventService.EditEvent(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var eve = await _eventService.EditEvent(request);
+            ApiSingleObjectResponse<object> response = new(eve, StatusCodes.Status200OK, "Evento Actualizado");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpDelete]
@@ -65,7 +66,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> DeleteEvent([FromBody] EventDelete request)
         {
             await _eventService.DeleteEvent(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            return StatusCode(StatusCodes.Status200OK, "Evento Eliminado");
         }
     }
 }

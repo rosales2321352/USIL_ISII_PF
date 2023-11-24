@@ -6,8 +6,8 @@ namespace WebApp.Services
         Task<IEnumerable<object>> GetAllAnnotations();
         Task<object> GetAnnotationDetail(int id);
         Task<IEnumerable<object>> GetAnnotationsByClient(int id);
-        Task CreateAnnotation(AnnotationRequest request);
-        Task EditAnnotation(AnnotationUpdate request);
+        Task<object> CreateAnnotation(AnnotationRequest request);
+        Task<object> EditAnnotation(AnnotationUpdate request);
         Task DeleteAnnotation(AnnotationDelete request);
     }
 }

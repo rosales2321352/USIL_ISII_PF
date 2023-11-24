@@ -14,7 +14,7 @@ namespace WebApp.Services
         {
             return await _orderStatusRepository.GetAllOrderStatuses();
         }
-        public async Task CreateOrderStatus(OrderStatusRequest request)
+        public async Task<object> CreateOrderStatus(OrderStatusRequest request)
         {
             OrderStatus orderStatus = new ()
             {
@@ -22,14 +22,24 @@ namespace WebApp.Services
             };
 
             await _repository.Add(orderStatus);
+            request.StatusID = orderStatus.OrderStatusID;
+            return request;
         }
-        public async Task EditOrderStatus(OrderStatusRequest request)
+        public async Task<object> EditOrderStatus(OrderStatusRequest request)
         {
             int statusId = request.StatusID ?? 0;
             var orderStatus = await _repository.GetById(statusId);
 
             orderStatus.Name = request.Name;
 
+            await _repository.Update(orderStatus);
+            return request;
+        }
+
+        public async Task DeleteOrderStatus(int id)
+        {
+            var orderStatus = await _repository.GetById(id);
+            orderStatus.IsAvailable = false;
             await _repository.Update(orderStatus);
         }
     }

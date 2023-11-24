@@ -15,7 +15,7 @@ namespace WebApp.Services
             return await _companyRepository.GetAllCompanies();
         }
 
-        public async Task CreateCompany(CompanyRequest request)
+        public async Task<object> CreateCompany(CompanyRequest request)
         {
             Company company = new()
             {
@@ -25,9 +25,11 @@ namespace WebApp.Services
                 Email = request.Email
             };
             await _repository.Add(company);
+            request.CompanyID = company.CompanyID;
+            return request;
         }
 
-        public async Task EditCompany(CompanyUpdate request)
+        public async Task<object> EditCompany(CompanyUpdate request)
         {
             var company = await _repository.GetById(request.CompanyID);
             company.Address = request.Address;
@@ -36,7 +38,15 @@ namespace WebApp.Services
             company.Name = request.Name;
 
             await _repository.Update(company);
+            return request;
+        }
 
+        public async Task DeleteCompany(CompanyDelete request)
+        {
+            var company = await _repository.GetById(request.CompanyID);
+            company.IsAvailable = false;
+
+            await _repository.Update(company);
         }
     }
 }

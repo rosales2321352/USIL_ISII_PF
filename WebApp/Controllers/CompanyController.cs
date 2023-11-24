@@ -32,7 +32,7 @@ namespace WebApp.Controllers
         {
             var company = await _companyService.GetById(id);
 
-            ApiSingleObjectResponse<object> response = new(company, StatusCodes.Status200OK);
+            ApiSingleObjectResponse<object> response = new(company, StatusCodes.Status200OK, "Compañia Encontrada");
 
             return StatusCode(StatusCodes.Status200OK, response);
         }
@@ -41,35 +41,26 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyRequest request)
         {
-            await _companyService.CreateCompany(request);
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var company = await _companyService.CreateCompany(request);
+            ApiSingleObjectResponse<object> response = new(company, StatusCodes.Status200OK, "Compañia Creada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> EdiCompany([FromBody]CompanyUpdate request)
+        public async Task<IActionResult> EditCompany([FromBody] CompanyUpdate request)
         {
-            await _companyService.EditCompany(request);
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var company = await _companyService.EditCompany(request);
+            ApiSingleObjectResponse<object> response = new(company, StatusCodes.Status200OK, "Compañia Actualizada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
-        //TODO!
-        /*[HttpDelete]
-        [Route("delete/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] CompanyDelete request)
         {
-            Company? company = await _context.Companies.FindAsync(id);
-
-            if (company != null)
-            {
-                _context.Companies.Remove(company);
-                await _context.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, "ok");
-            }
-
-            return StatusCode(StatusCodes.Status400BadRequest, "Not Company Found with that ID");
-        }*/
+            await _companyService.DeleteCompany(request);
+            return StatusCode(StatusCodes.Status200OK, "Compañía Eliminada");
+        }
     }
 }

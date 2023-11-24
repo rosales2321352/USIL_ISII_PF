@@ -30,20 +30,29 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateOrderStatus([FromBody] OrderStatusRequest request)
         {
-            await _orderStatusService.CreateOrderStatus(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var orderStatus = await _orderStatusService.CreateOrderStatus(request);
+            ApiSingleObjectResponse<object> response = new(orderStatus, StatusCodes.Status200OK, "Estado de Orden Creada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> Edit([FromBody] OrderStatusRequest request)
         {
-            await _orderStatusService.EditOrderStatus(request);
+            var orderStatus = await _orderStatusService.EditOrderStatus(request);
+            
+            ApiSingleObjectResponse<object> response = new(orderStatus, StatusCodes.Status200OK, "Estado de Orden Actualizada");
 
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
-        //TODO Eliminacion logica y fisica de estados.
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] OrderStatusDelete request)
+        {
+            await _orderStatusService.DeleteOrderStatus(request.OrderID);
+            return StatusCode(StatusCodes.Status200OK, "Estado de Orden Eliminada");
+        }
         
     }
 }

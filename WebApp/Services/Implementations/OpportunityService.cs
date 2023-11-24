@@ -28,7 +28,7 @@ namespace WebApp.Services
             return await _opportunityRepository.GetOpportunityByStatus(id);
         }
 
-        public async Task CreateOpportunity(OpportunityRequest request)
+        public async Task<object> CreateOpportunity(OpportunityRequest request)
         {
             Opportunity opportunity = new()
             {
@@ -39,9 +39,20 @@ namespace WebApp.Services
             };
 
             await _repository.Add(opportunity);
+
+            var response = new
+            {
+                opportunity.OpportunityID,
+                opportunity.CreationDate,
+                opportunity.ClientID,
+                opportunity.SellerID,
+                opportunity.OpportunityStatusID
+            };
+
+            return response;
         }
 
-        public async Task UpdateOpportunityStatus(OpportunityStatusUpdate request)
+        public async Task<object> UpdateOpportunityStatus(OpportunityStatusUpdate request)
         {
             IOpportunityHistoryService opportunityHistory = _serviceProvider.GetRequiredService<IOpportunityHistoryService>();
             var opportunity = await _repository.GetById(request.OpportunityID);
@@ -49,6 +60,24 @@ namespace WebApp.Services
 
             await opportunityHistory.CreateOpportunityHistory(request);
 
+            await _repository.Update(opportunity);
+
+            var response = new
+            {
+                opportunity.OpportunityID,
+                opportunity.CreationDate,
+                opportunity.ClientID,
+                opportunity.SellerID,
+                opportunity.OpportunityStatusID
+            };
+
+            return response;
+        }
+
+        public async Task DeleteOpportunity(int id)
+        {
+            var opportunity = await _repository.GetById(id);
+            opportunity.IsAvailable = false;
             await _repository.Update(opportunity);
         }
 

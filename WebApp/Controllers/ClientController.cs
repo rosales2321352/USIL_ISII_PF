@@ -39,24 +39,17 @@ namespace WebApp.Controllers
         public async Task<IActionResult> GetClientDetail(int id)
         {
             var client = await _clientService.GetClientDetail(id);
-            ApiSingleObjectResponse<object> response = new(client, StatusCodes.Status200OK);
+            ApiSingleObjectResponse<object> response = new(client, StatusCodes.Status200OK, "Cliente Encontrado");
             return StatusCode(StatusCodes.Status200OK, response);
         }
-
-        /*[HttpPost]
-        [Route("create")]
-        public async Task<IActionResult> CreateClient([FromBody] ClientRequest request)
-        {
-            await _clientService.CreateClient(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
-        }*/
 
         [HttpPost]
         [Route("edit")]
         public async Task<IActionResult> UpdateClient([FromBody] ClientUpdate request)
         {
-            await _clientService.EditClient(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var client = await _clientService.EditClient(request);
+            ApiSingleObjectResponse<object> response = new(client, StatusCodes.Status200OK, "Cliente Actualizado");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
     }

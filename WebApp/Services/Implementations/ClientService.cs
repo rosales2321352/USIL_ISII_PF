@@ -51,7 +51,7 @@ namespace WebApp.Services
             await _repository.Add(client);
             return client.PersonID;
         }
-        public async Task EditClient(ClientUpdate request)
+        public async Task<object> EditClient(ClientUpdate request)
         {
             Client client = await _clientRepository.GetById(request.PersonID);
 
@@ -61,6 +61,7 @@ namespace WebApp.Services
             client.Email = request.Email;
 
             await _repository.Update(client);
+            return request;
         }
 
     }

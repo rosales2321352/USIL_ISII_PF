@@ -6,7 +6,8 @@ namespace WebApp.Services
         Task<IEnumerable<object>> GetAllOpportunities();
         Task<object> GetOpportunityById(int id);
         Task<IEnumerable<object>> GetOpportunityByStatus(int id);
-        Task CreateOpportunity(OpportunityRequest request);
-        Task UpdateOpportunityStatus(OpportunityStatusUpdate request);
+        Task<object> CreateOpportunity(OpportunityRequest request);
+        Task<object> UpdateOpportunityStatus(OpportunityStatusUpdate request);
+        Task DeleteOpportunity(int id);
     }
 }

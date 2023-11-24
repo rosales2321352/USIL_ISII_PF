@@ -15,7 +15,7 @@ namespace WebApp.Services
             return await _opportunityStatusRepository.GetAllOpportunityStatuses();
         }
 
-        public async Task CreateOpportunityStatus(OpportunityStatusRequest request)
+        public async Task<object> CreateOpportunityStatus(OpportunityStatusRequest request)
         {
             OpportunityStatus opportunityStatus = new ()
             {
@@ -23,14 +23,26 @@ namespace WebApp.Services
             };
 
             await _repository.Add(opportunityStatus);
+            request.StatusID = opportunityStatus.OpportunityStatusID;
+            return request;
         }
 
-        public async Task EditOpportunityStatus(OpportunityStatusRequest request)
+        public async Task<object> EditOpportunityStatus(OpportunityStatusRequest request)
         {
             int statusId = request.StatusID ?? 0;
             var opportunityStatus = await _repository.GetById(statusId);
 
             opportunityStatus.Name = request.Name;
+
+            await _repository.Update(opportunityStatus);
+            return request;
+        }
+
+        public async Task DeleteOpportunityStatus(int id)
+        {
+            var opportunityStatus = await _repository.GetById(id);
+
+            opportunityStatus.IsAvailable = false;
 
             await _repository.Update(opportunityStatus);
         }
