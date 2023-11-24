@@ -2,7 +2,7 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import PaginationLayout from "../../../../layouts/pagination/pagination.layout";
 import useApi from "../../../../../hooks/useApi";
 import ListView from "./list.view";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 
 export default function ContactListView(){

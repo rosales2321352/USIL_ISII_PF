@@ -64,7 +64,7 @@ export default function ChatToolsView(){
   return (
     <Box sx={{
       border: '1px solid #e0e0e0',
-      height: "180px",
+      height: "150px",
       borderRadius: '30px 30px 0 0',
       backgroundColor: 'white',
       position:"relative"

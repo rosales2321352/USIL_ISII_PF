@@ -3,6 +3,8 @@ import ContactListView from "./partials/contactlist/contactlist.view";
 import ChatContainersView from "./partials/chatcontainers/chatcontainers.view";
 import useApi, { submitApi } from "../../../hooks/useApi";
 import { useEffect,useState } from "react";
+import "./assets/css/chat.css";
+import InformationContainerView from "./partials/informationcontainer/informationcontainer";
 
 export default function ChatView(){
 
@@ -21,7 +23,7 @@ export default function ChatView(){
         </Grid>
         <Grid item xs={12} md={3}>
           <Paper sx={{height: 'calc(100vh - 78px)'}}>
-            <h1>Chat</h1>
+            <InformationContainerView/>
           </Paper>
         </Grid>
       </Grid>
