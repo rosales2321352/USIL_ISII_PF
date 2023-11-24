@@ -4,7 +4,7 @@ import UserData from '../UserData';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 
-export default function Tableview(data) 
+export default function Tableview({data}) 
 {
     return (
         <>

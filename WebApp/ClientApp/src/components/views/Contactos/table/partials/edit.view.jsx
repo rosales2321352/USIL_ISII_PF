@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-export default function Edit() {
-    const {id} = useParams();
-    const [data, setData] = useState([])
-    const navigate = useNavigate();
+const EditForm = ({ client, closeModal }) => {
+  const {reload, setReload} = useContext(ContactosContext);
+  const [data, setData] = useState(client);
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
     useEffect(() => {
         fetch('https://localhost:44445/api/client/' + id)
@@ -30,6 +31,8 @@ export default function Edit() {
             })
             .catch(err => {});
     }
+    console.log(data)
+  };
 
     return (
         <div className='d-flex w-100 h-100'>
