@@ -6,6 +6,6 @@ namespace WebApp.Data
         Task<IEnumerable<object>> GetAllOrders();
         Task<object?> GetOrderById(int id);
         Task<IEnumerable<object>> GetOrdersByStatus(int id);
-        Task UpdateOrderStatus(Order entity, OrderStatusHistory register, IOrderHistoryRepository orderHistoryRepository);
+        
     }
 }

@@ -33,7 +33,7 @@ namespace WebApp.Controllers
         {
             var opportunity = await _opportunityService.GetOpportunityById(id);
 
-            ApiSingleObjectResponse<object> response = new(opportunity, StatusCodes.Status200OK);
+            ApiSingleObjectResponse<object> response = new(opportunity, StatusCodes.Status200OK, "Oportunidad Encontrada");
 
             return StatusCode(StatusCodes.Status200OK, response);
         }
@@ -53,20 +53,28 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateOpportunity([FromBody] OpportunityRequest request)
         {
-            await _opportunityService.CreateOpportunity(request);
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var opportunity = await _opportunityService.CreateOpportunity(request);
+            ApiSingleObjectResponse<object> response = new(opportunity, StatusCodes.Status200OK, "Oportunidad Creada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> UpdateOpportunityStatus([FromBody] OpportunityStatusUpdate request)
         {
-            await _opportunityService.UpdateOpportunityStatus(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var opportunity = await _opportunityService.UpdateOpportunityStatus(request);
+            ApiSingleObjectResponse<object> response = new(opportunity, StatusCodes.Status200OK, "Oportunidad Actualizada");
+            
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
-        //TODO eliminacion
-        
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteOpportunity([FromBody] OpportunityDelete request)
+        {
+            await _opportunityService.DeleteOpportunity(request.OpportunityID);
+            return StatusCode(StatusCodes.Status200OK, "Oportunidad eliminada");
+        }
+
     }
 }

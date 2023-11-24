@@ -29,9 +29,9 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateAnnotationType([FromBody] AnnotationTypeRequest request)
         {
-            await _annotatitonTypeService.CreateAnnotationType(request);
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var annotationType = await _annotatitonTypeService.CreateAnnotationType(request);
+            ApiSingleObjectResponse<object> response = new(annotationType, StatusCodes.Status201Created, "Tipo de Anotacion Creada");
+            return StatusCode(StatusCodes.Status201Created, response);
 
         }
 
@@ -39,9 +39,19 @@ namespace WebApp.Controllers
         [Route("edit")]
         public async Task<IActionResult> Edit([FromBody] AnnotationTypeRequest request)
         {
-            await _annotatitonTypeService.EditAnnotationType(request);
+            var annotationType = await _annotatitonTypeService.EditAnnotationType(request);
+            
+            ApiSingleObjectResponse<object> response = new(annotationType, StatusCodes.Status201Created, "Tipo de Anotacion Actualizada");
 
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            return StatusCode(StatusCodes.Status200OK, response);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody]AnnotationTypeDelete request)
+        {
+            await _annotatitonTypeService.DeleteAnnotationType(request);
+            return StatusCode(StatusCodes.Status200OK, "Tipo de Anotacion Eliminada");
         }
     }
 }

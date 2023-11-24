@@ -4,7 +4,8 @@ namespace WebApp.Services
     public interface IAnnotationTypeService : IService<AnnotationType>
     {
         Task<IEnumerable<object>> GetAllAnnotationTypes();
-        Task CreateAnnotationType(AnnotationTypeRequest request);
-        Task EditAnnotationType(AnnotationTypeRequest request);
+        Task<object> CreateAnnotationType(AnnotationTypeRequest request);
+        Task<object> EditAnnotationType(AnnotationTypeRequest request);
+        Task DeleteAnnotationType(AnnotationTypeDelete request);
     }
 }

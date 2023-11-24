@@ -6,8 +6,8 @@ namespace WebApp.Services
         Task<IEnumerable<object>> GetAllEvents();
         Task<object> GetEventDetail(int id);
         Task<IEnumerable<object>> GetAllEventsByClient(int id);
-        Task CreateEvent(EventRequest request);
-        Task EditEvent(EventUpdate request);
+        Task<object> CreateEvent(EventRequest request);
+        Task<object> EditEvent(EventUpdate request);
         Task DeleteEvent(EventDelete request);
     }
 }

@@ -28,16 +28,26 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateClientStatus([FromBody] ClientStatusRequest request)
         {
-            await _clientStatusService.CreateClientStatus(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var client = await _clientStatusService.CreateClientStatus(request);
+            ApiSingleObjectResponse<object> response = new(client, StatusCodes.Status200OK, "Estado de Cliente Creado");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> EditClientStatus([FromBody] ClientStatusRequest request)
         {
-            await _clientStatusService.EditClientStatus(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var client = await _clientStatusService.EditClientStatus(request);
+            ApiSingleObjectResponse<object> response = new(client, StatusCodes.Status200OK, "Estado de Cliente Creado");
+            return StatusCode(StatusCodes.Status200OK, response);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody]ClientStatusDelete request)
+        {
+            await _clientStatusService.DeleteClientStatus(request);
+            return StatusCode(StatusCodes.Status200OK, "Estado de Cliente Eliminado");
         }
     }
 }

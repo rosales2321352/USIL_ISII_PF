@@ -41,7 +41,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> GetAnnotationDetail(int id)
         {
             var annotation = await _annotationService.GetAnnotationDetail(id);
-            ApiSingleObjectResponse<Annotation> response = new(annotation, StatusCodes.Status200OK);
+            ApiSingleObjectResponse<object> response = new(annotation, StatusCodes.Status200OK, "Anotacion Obtenida");
             return StatusCode(StatusCodes.Status200OK, response);
         }
 
@@ -49,17 +49,18 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateAnnotation([FromBody] AnnotationRequest request)
         {
-            await _annotationService.CreateAnnotation(request);
-
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var annotation = await _annotationService.CreateAnnotation(request);
+            ApiSingleObjectResponse<object> response = new(annotation, StatusCodes.Status201Created, "Anotacion Creada");
+            return StatusCode(StatusCodes.Status201Created, response);
         }
 
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> EditAnnotation([FromBody] AnnotationUpdate request)
         {
-            await _annotationService.EditAnnotation(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var annotation = await _annotationService.EditAnnotation(request);
+            ApiSingleObjectResponse<object> response = new(annotation, StatusCodes.Status200OK, "Anotacion Actualizada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpDelete]
@@ -67,7 +68,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> DeleteAnnotation([FromBody] AnnotationDelete request)
         {
             await _annotationService.DeleteAnnotation(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            return StatusCode(StatusCodes.Status200OK, "Anotacion Eliminada");
         }
     }
 }

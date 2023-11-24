@@ -4,12 +4,12 @@ namespace WebApp.Services
 {
     public class OpportunityService : Service<Opportunity>, IOpportunityService
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly IOpportunityRepository _opportunityRepository;
-        private readonly IOpportunityHistoryRepository _opportunityHistoryRepository;
-        public OpportunityService(IOpportunityRepository repository,IOpportunityHistoryRepository historyRepository) : base(repository) 
-        { 
+        public OpportunityService(IServiceProvider serviceProvider, IOpportunityRepository repository) : base(repository)
+        {
+            _serviceProvider = serviceProvider;
             _opportunityRepository = repository;
-            _opportunityHistoryRepository = historyRepository;
         }
 
         public async Task<IEnumerable<object>> GetAllOpportunities()
@@ -28,7 +28,7 @@ namespace WebApp.Services
             return await _opportunityRepository.GetOpportunityByStatus(id);
         }
 
-        public async Task CreateOpportunity(OpportunityRequest request)
+        public async Task<object> CreateOpportunity(OpportunityRequest request)
         {
             Opportunity opportunity = new()
             {
@@ -39,22 +39,46 @@ namespace WebApp.Services
             };
 
             await _repository.Add(opportunity);
+
+            var response = new
+            {
+                opportunity.OpportunityID,
+                opportunity.CreationDate,
+                opportunity.ClientID,
+                opportunity.SellerID,
+                opportunity.OpportunityStatusID
+            };
+
+            return response;
         }
 
-        public async Task UpdateOpportunityStatus(OpportunityStatusUpdate request)
+        public async Task<object> UpdateOpportunityStatus(OpportunityStatusUpdate request)
         {
+            IOpportunityHistoryService opportunityHistory = _serviceProvider.GetRequiredService<IOpportunityHistoryService>();
             var opportunity = await _repository.GetById(request.OpportunityID);
             opportunity.OpportunityStatusID = request.OpportunityStatusID;
 
-            OpportunityStatusHistory opportunityHistoryRegister = new()
+            await opportunityHistory.CreateOpportunityHistory(request);
+
+            await _repository.Update(opportunity);
+
+            var response = new
             {
-                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
-                OpportunityID = request.OpportunityID,
-                OpportunityStatusID = request.OpportunityStatusID,
-                Comment = request.Comment
+                opportunity.OpportunityID,
+                opportunity.CreationDate,
+                opportunity.ClientID,
+                opportunity.SellerID,
+                opportunity.OpportunityStatusID
             };
 
-            await _opportunityRepository.UpdateOpportunityStatus(opportunity,opportunityHistoryRegister, _opportunityHistoryRepository);
+            return response;
+        }
+
+        public async Task DeleteOpportunity(int id)
+        {
+            var opportunity = await _repository.GetById(id);
+            opportunity.IsAvailable = false;
+            await _repository.Update(opportunity);
         }
 
     }

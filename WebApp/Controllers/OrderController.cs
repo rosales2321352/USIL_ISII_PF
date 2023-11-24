@@ -40,13 +40,14 @@ namespace WebApp.Controllers
         {
             var order = await _orderService.GetOrderById(id);
 
-            if(order is null)
+            if (order is null)
             {
                 //TODO! Json Error
-                return StatusCode(StatusCodes.Status404NotFound, "No hay");
-            }else
+                return StatusCode(StatusCodes.Status404NotFound, "No existe");
+            }
+            else
             {
-                ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK);
+                ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK, "Pedido Encontrado");
                 return StatusCode(StatusCodes.Status200OK, response);
             }
 
@@ -69,8 +70,10 @@ namespace WebApp.Controllers
         {
             try
             {
-                await _orderService.CreateOrder(request);
-                return StatusCode(StatusCodes.Status200OK, "ok");
+                var order = await _orderService.CreateOrder(request);
+
+                ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK, "Orden Creada");
+                return StatusCode(StatusCodes.Status200OK, response);
             }
             catch (Exception ex)
             {
@@ -84,7 +87,8 @@ namespace WebApp.Controllers
         {
             try
             {
-                await _orderService.UpdateOrderStatus(request);
+                var order = await _orderService.UpdateOrderStatus(request);
+                ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK, "Orden Actualizada");
                 return StatusCode(StatusCodes.Status200OK, "ok");
             }
             catch (Exception ex)
@@ -97,10 +101,17 @@ namespace WebApp.Controllers
         [Route("edit")]
         public async Task<IActionResult> Edit([FromBody] OrderEdit request)
         {
-            await _orderService.EditOrder(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var order = await _orderService.EditOrder(request);
+            ApiSingleObjectResponse<object> response = new(order, StatusCodes.Status200OK, "Orden Actualizada");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
-        
-        //TODO Eliminacion Lógica y Física
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] OrderDelete request)
+        {
+            await _orderService.DeleteOrder(request.OrderID);
+            return StatusCode(StatusCodes.Status200OK, "Orden Eliminada");
+        }
     }
 }

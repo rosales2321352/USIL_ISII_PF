@@ -13,6 +13,18 @@ namespace WebApp.Services
         public async Task<IEnumerable<object>> GetAllHistory(int id)
         {
             return await _opportunityHistoryRepository.GetOpportunitiesHistory(id);
-        } 
+        }
+
+        public async Task CreateOpportunityHistory(OpportunityStatusUpdate request)
+        {
+            OpportunityStatusHistory opportunityHistoryRegister = new()
+            {
+                UpdateDate = DateOnly.FromDateTime(DateTime.Now),
+                OpportunityID = request.OpportunityID,
+                OpportunityStatusID = request.OpportunityStatusID,
+                Comment = request.Comment
+            };
+            await _repository.Add(opportunityHistoryRegister);
+        }
     }
 }

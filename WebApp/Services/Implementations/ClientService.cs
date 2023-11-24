@@ -2,7 +2,7 @@ using WebApp.Data;
 using WebApp.Models;
 namespace WebApp.Services
 {
-    public class ClientService: Service<Client>, IClientService
+    public class ClientService : Service<Client>, IClientService
     {
         private readonly IClientRepository _clientRepository;
         public ClientService(IClientRepository repository) : base(repository)
@@ -34,20 +34,34 @@ namespace WebApp.Services
                 ClientStatusID = 1,
                 SellerID = 1
             };
-            
+
             await _repository.Add(client);
             return client.PersonID;
         }
-        public async Task EditClient(ClientUpdate request)
+        public async Task<int> CreateClientFromJSON(WebHookResponseModel request)
+        {
+            Client client = new()
+            {
+                PhoneNumber = request.Entry[0].Changes[0].Value.Messages[0].From,
+                WhatsappID = request.Entry[0].Changes[0].Value.Contacts[0].Wa_id,
+                ClientStatusID = 1,
+                SellerID = 1
+            };
+
+            await _repository.Add(client);
+            return client.PersonID;
+        }
+        public async Task<object> EditClient(ClientUpdate request)
         {
             Client client = await _clientRepository.GetById(request.PersonID);
-            
+
             client.Name = request.Name;
             client.PhoneNumber = request.PhoneNumber;
             client.CompanyID = request.CompanyID;
             client.Email = request.Email;
 
             await _repository.Update(client);
+            return request;
         }
 
     }

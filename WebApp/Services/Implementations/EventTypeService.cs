@@ -14,7 +14,7 @@ namespace WebApp.Services
         {
             return await _eventTypeRepository.GetAllEventTypes();
         }
-        public async Task CreateEventType(EventTypeRequest request)
+        public async Task<object> CreateEventType(EventTypeRequest request)
         {
             EventType eventType = new()
             {
@@ -22,13 +22,25 @@ namespace WebApp.Services
             };
 
             await _repository.Add(eventType);
+            request.TypeID = eventType.EventTypeID;
+            return request;
         }
-        public async Task EditEventType(EventTypeRequest request)
+        public async Task<object> EditEventType(EventTypeRequest request)
         {
             int statusId = request.TypeID ?? 0;
             var eventType = await _repository.GetById(statusId);
 
             eventType.Name = request.Name;
+
+            await _repository.Update(eventType);
+            return request;
+        }
+
+        public async Task DeleteEventType(int eventTypeID)
+        {
+            var eventType = await _repository.GetById(eventTypeID);
+
+            eventType.IsAvailable = false;
 
             await _repository.Update(eventType);
         }

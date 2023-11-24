@@ -4,7 +4,8 @@ namespace WebApp.Services
     public interface IClientStatusService: IService<ClientStatus>
     {
         Task<IEnumerable<object>> GetAllClientStatus();
-        Task CreateClientStatus(ClientStatusRequest request);
-        Task EditClientStatus(ClientStatusRequest request);
+        Task<object> CreateClientStatus(ClientStatusRequest request);
+        Task<object> EditClientStatus(ClientStatusRequest request);
+        Task DeleteClientStatus(ClientStatusDelete request);
     }
 }

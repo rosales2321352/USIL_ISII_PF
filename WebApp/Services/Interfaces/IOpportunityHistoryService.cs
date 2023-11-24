@@ -4,5 +4,6 @@ namespace WebApp.Services
     public interface IOpportunityHistoryService : IService<OpportunityStatusHistory>
     {
         Task<IEnumerable<object>> GetAllHistory(int id);
+        Task CreateOpportunityHistory(OpportunityStatusUpdate request);
     }
 }

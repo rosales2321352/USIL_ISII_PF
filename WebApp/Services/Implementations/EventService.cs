@@ -25,7 +25,7 @@ namespace WebApp.Services
         {
             return await _eventRepository.GetAllEventsByClient(id);
         }
-        public async Task CreateEvent(EventRequest request)
+        public async Task<object> CreateEvent(EventRequest request)
         {
             Event eve = new()
             {
@@ -40,9 +40,12 @@ namespace WebApp.Services
             };
 
             await _repository.Add(eve);
+            request.EventID = eve.EventID;
+
+            return request;
         }
 
-        public async Task EditEvent(EventUpdate request)
+        public async Task<object> EditEvent(EventUpdate request)
         {
             var eve = await _repository.GetById(request.EventID);
 
@@ -54,6 +57,7 @@ namespace WebApp.Services
             eve.EndTime = request.EndTime;
 
             await _repository.Update(eve);
+            return request;
         }
 
         public async Task DeleteEvent(EventDelete request)

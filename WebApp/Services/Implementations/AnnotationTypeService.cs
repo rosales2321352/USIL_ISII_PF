@@ -15,7 +15,7 @@ namespace WebApp.Services
         {
             return await _annotationTypeRepository.GetAllAnnotationTypes();
         }
-        public async Task CreateAnnotationType(AnnotationTypeRequest request)
+        public async Task<object> CreateAnnotationType(AnnotationTypeRequest request)
         {
             AnnotationType annotationType = new()
             {
@@ -23,13 +23,26 @@ namespace WebApp.Services
             };
 
             await _repository.Add(annotationType);
+            request.TypeID = annotationType.AnnotationTypeID;
+            return request;
         }
-        public async Task EditAnnotationType(AnnotationTypeRequest request)
+        public async Task<object> EditAnnotationType(AnnotationTypeRequest request)
         {
             int statusId = request.TypeID ?? 0;
             var annotationType = await _repository.GetById(statusId);
 
             annotationType.Name = request.Name;
+
+            await _repository.Update(annotationType);
+            return request;
+        }
+
+        public async Task DeleteAnnotationType(AnnotationTypeDelete request)
+        {
+            int statusId = request.AnnotationTypeID;
+            var annotationType = await _repository.GetById(statusId);
+
+            annotationType.IsAvailable = false;
 
             await _repository.Update(annotationType);
         }

@@ -75,13 +75,5 @@ namespace WebApp.Data
 
             return lista;
         }
-
-        //TODO! Preguntar como hacer bien esto.
-        public async Task UpdateOpportunityStatus(Opportunity opportunity,OpportunityStatusHistory register, IOpportunityHistoryRepository opportunityHistoryRepository = default!)
-        {
-            await opportunityHistoryRepository.Add(register);
-            await Update(opportunity);
-            await _context.SaveChangesAsync();
-        }
     }
 }

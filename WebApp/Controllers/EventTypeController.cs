@@ -28,16 +28,26 @@ namespace WebApp.Controllers
         [Route("create")]
         public async Task<IActionResult> NewEventType([FromBody] EventTypeRequest request)
         {
-            await _eventTypeService.CreateEventType(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var eventType = await _eventTypeService.CreateEventType(request);
+            ApiSingleObjectResponse<object> response = new(eventType, StatusCodes.Status200OK, "Tipo de Evento Creado");
+            return StatusCode(StatusCodes.Status200OK, response);
         }
 
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> Edit([FromBody] EventTypeRequest request)
         {
-            await _eventTypeService.EditEventType(request);
-            return StatusCode(StatusCodes.Status200OK, "ok");
+            var eventType = await _eventTypeService.EditEventType(request);
+            ApiSingleObjectResponse<object> response = new(eventType, StatusCodes.Status200OK, "Tipo de Evento Actualizado");
+            return StatusCode(StatusCodes.Status200OK, response);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteEventType([FromBody] EventTypeDelete request)
+        {
+            await _eventTypeService.DeleteEventType(request.EventTypeID);
+            return StatusCode(StatusCodes.Status200OK, "Tipo de Evento Eliminado");
         }
     }
 }

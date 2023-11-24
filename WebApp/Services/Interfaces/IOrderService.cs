@@ -6,8 +6,9 @@ namespace WebApp.Services
         Task<IEnumerable<object>> GetAllOrders();
         Task<object?> GetOrderById(int id);
         Task<IEnumerable<object>> GetOrdersByStatus(int id);
-        Task CreateOrder(OrderRequest request);
-        Task UpdateOrderStatus(OrderStatusUpdate request);
-        Task EditOrder(OrderEdit request);
+        Task<object> CreateOrder(OrderRequest request);
+        Task<object> UpdateOrderStatus(OrderStatusUpdate request);
+        Task<object> EditOrder(OrderEdit request);
+        Task DeleteOrder(int id);
     }
 }

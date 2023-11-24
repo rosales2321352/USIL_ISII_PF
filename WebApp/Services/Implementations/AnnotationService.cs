@@ -26,7 +26,7 @@ namespace WebApp.Services
             return await _annotationRepository.GetAnnotationsByClient(id);
         }
 
-        public async Task CreateAnnotation(AnnotationRequest request)
+        public async Task<object> CreateAnnotation(AnnotationRequest request)
         {
             Annotation annotation = new ()
             {
@@ -36,11 +36,13 @@ namespace WebApp.Services
                 SellerID = request.SellerID,
                 ClientID = request.ClientID,
             };
-
+            
             await _repository.Add(annotation);
+            request.AnnotationID = annotation.AnnotationID;
+            return request;
         }
 
-        public async Task EditAnnotation(AnnotationUpdate request)
+        public async Task<object> EditAnnotation(AnnotationUpdate request)
         {
             var annotation = await _repository.GetById(request.AnnotationID);
             
@@ -49,6 +51,7 @@ namespace WebApp.Services
             annotation.AnnotationTypeID = request.AnnotationTypeID;
 
             await _repository.Update(annotation);
+            return request;
         }
 
         public async Task DeleteAnnotation(AnnotationDelete request)
