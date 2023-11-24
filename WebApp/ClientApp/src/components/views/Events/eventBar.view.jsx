@@ -192,7 +192,7 @@ export class EventBarView extends Component {
         const { events, isDialogOpen, selectedEvent, isAddEventModalOpen, newEvent } = this.state;
 
         return (
-            <div style={{ paddingRight: '40px', marginTop: 10 }} >
+            <div style={{  marginTop: 10 }} >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <h3 style={{ margin: 0 }}>Eventos</h3>
                     <IconButton onClick={this.handleAddEvent} >

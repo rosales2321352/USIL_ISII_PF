@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import React, { useContext, useState} from 'react';
+import { submitApi } from '../../../../../hooks/useApi';
+import CompanySelector from './companyselector';
+import StatusSelector from './statusselector';
+import './modal.css';
+import ContactosContext from '../../../../../context/Contactos/contactos.context';
 
 const EditForm = ({ client, closeModal }) => {
   const {reload, setReload} = useContext(ContactosContext);
@@ -7,55 +11,98 @@ const EditForm = ({ client, closeModal }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    useEffect(() => {
-        fetch('https://localhost:44445/api/client/' + id)
-            .then(response => response.json())
-            .then(data => setData(data))
-            .catch(err => console.log(err));
-    }, [id]);
+    if (data) {
+      let clientformat = {
+          personID: data.clientId,
+          phoneNumber: data.phoneNumber,
+          clientStatusID: data.status.clientStatusID,
+          name: data.name,
+          email: data.email,
+          companyID: data.company.companyID,
+          whatsappID : data.whatsappData.whatsappID
+      }
+      
+      console.log(clientformat);
 
-    function handleSubmit(event) {
-        event.preventDefault();
-
-        fetch('https://localhost:44445/api/client/' + id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(() => {
-                alert("Cliente actualizado satisfactoriamente.");
-                navigate('client');
-            })
-            .catch(err => {});
+      submitApi ({
+        url: process.env.REACT_APP_URL_CLIENT_EDIT,
+        options:{
+          method:"POST",
+          body: JSON.stringify(clientformat)
+        }
+      })
+      .then(()=>{
+          setReload(!reload);
+      })
+      .finally(()=> {
+        closeModal();
+      })
     }
     console.log(data)
   };
 
-    return (
-        <div className='d-flex w-100 h-100'>
-            <div className='w-50 border bg-ligth p-5'>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="name">ID</label>
-                        <input type='text' name='name' value={data.id || ''} className='form-control' readOnly />
-                    </div>
-                    <div>
-                        <label htmlFor="name">Name</label>
-                        <input type='text' name='name' value={data.name || ''} className='form-control'
-                            onChange={e => setData({ ...data, name: e.target.value })} />
-                    </div>
-                    <div>
-                        <label htmlFor="number">Number</label>
-                        <input type='number' name='number' value={data.number || ''} className='form-control'
-                            onChange={e => setData({ ...data, number: e.target.value })} />
-                    </div><br />
+  // Función para determinar si un campo debe mostrarse o no en el formulario
+  const shouldDisplayField = (fieldName) => {
+    const nonEditableFields = ['clientId', 'whatsappData', 'phoneNumber'];
+    return !nonEditableFields.includes(fieldName);
+  };
 
-                    <button className='btn btn-info'>Update</button>
-                </form>
-            </div>
+  return (
+    <form onSubmit={handleSubmit} >
+      <div className='container'>
+          <div class="text">
+            Editar Contacto
+          </div>
+          <div className='modal-container'>
+            <label htmlFor="name">Name:</label>
+            <input
+              value={data.name}
+              type='text'
+              name='name'
+              className='form-control'
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+            />
         </div>
-    )
-}
+        <div className='modal-container'>
+          <label htmlFor="phoneNumber">Numero:</label>
+          <input
+            value={data.phoneNumber}
+            type='text'
+            name='phoneNumber'
+            className='form-control'
+            readOnly={true}
+            onChange={(e) => setData({ ...data, phoneNumber: e.target.value })}
+          />
+        </div>
+        <div className='modal-container'>
+          <label htmlFor="email">Email:</label>
+          <input
+            value={data.email}
+            type='text'
+            name='email'
+            className='form-control'
+            onChange={(e) => setData({ ...data, email: e.target.value })}
+          />
+        </div>
+
+        <div className='modal-container'>
+          <label htmlFor="company.name">Empresa:</label>
+            <CompanySelector data_={{data, setData}}/>
+        </div>
+
+        <div className='modal-container'>
+          <label htmlFor="status.name">Estado:</label>
+            <StatusSelector data_={{data, setData}}/>
+        </div>
+        
+        <button type='submit' className='btn-info'>
+          Submit
+        </button>
+
+      </div>
+      
+    </form>
+  );
+};
+
+export default EditForm;
