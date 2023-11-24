@@ -25,6 +25,7 @@ namespace WebApp.Data
                 },
                 Type = new
                 {
+                    annotationTypeID = annotation.AnnotationType.AnnotationTypeID != null ? annotation.AnnotationType.AnnotationTypeID : (int?)null,
                     annotation.AnnotationType.Name
                 }
             }).ToListAsync();
@@ -47,6 +48,7 @@ namespace WebApp.Data
                 },
                 Type = new
                 {
+                    annotationTypeID = annotation.AnnotationType.AnnotationTypeID != null ? annotation.AnnotationType.AnnotationTypeID : (int?)null,
                     annotation.AnnotationType.Name
                 }
             }).FirstOrDefaultAsync(e => e.AnnotationID == id);
@@ -75,6 +77,7 @@ namespace WebApp.Data
                 },
                 Type = new
                 {
+                    annotationTypeID = annotation.AnnotationType.AnnotationTypeID != null ? annotation.AnnotationType.AnnotationTypeID : (int?)null,
                     annotation.AnnotationType.Name
                 }
             }).ToListAsync();
