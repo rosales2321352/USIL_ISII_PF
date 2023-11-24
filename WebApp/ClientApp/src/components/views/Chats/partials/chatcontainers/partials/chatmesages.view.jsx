@@ -79,7 +79,7 @@ export default function ChatMessagesView(){
 
   return (
     <Box ref={message_ref} sx={{
-      height: "calc(100% - 260px)",
+      height: "calc(100% - 220px)",
       overflow: "hidden",
       overflowY: "auto",
       padding:"0 15px",

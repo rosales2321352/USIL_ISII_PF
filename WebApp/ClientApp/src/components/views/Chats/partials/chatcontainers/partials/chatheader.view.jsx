@@ -37,7 +37,7 @@ export default function ChatHeaderView(){
   return(
     <Box sx={{
       border: '1px solid #e0e0e0',
-      height: "110px",
+      height: "70px",
       borderRadius: '0 0 30px 30px',
       backgroundColor: 'white',
       p:1,pl:2
@@ -65,7 +65,7 @@ export default function ChatHeaderView(){
                 }
                 
               </Box>
-              <Box sx={{ml:1}}>
+              {/* <Box sx={{ml:1}}>
                 <Tooltip title="Mis Eventos">
                   <IconButton sx={{
                     backgroundColor:"#FCF2CC",
@@ -77,16 +77,16 @@ export default function ChatHeaderView(){
                     <TodayIcon sx={{color:"#E9A13B"}}/>
                   </IconButton>
                 </Tooltip>
-              </Box>
+              </Box> */}
             </Box>
             
           </React.Fragment>
         }
       </Box>
-      <Box sx={{mt:1}}>
+      {/* <Box sx={{mt:1}}>
         <OpportunitySelectorView/>
         <OrderSelectorView/>
-      </Box>
+      </Box> */}
     </Box>
   )
 
