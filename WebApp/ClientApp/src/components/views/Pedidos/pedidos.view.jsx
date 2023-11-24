@@ -166,7 +166,8 @@ export class PedidosView extends Component {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            this.setState({ clients: data });
+            console.log(data)
+            this.setState({ clients: data.data });
         } catch (error) {
             console.error("Hubo un problema con la petición fetch:", error);
         }
@@ -377,10 +378,10 @@ export class PedidosView extends Component {
                             options={this.state.clients}
                             getOptionLabel={(client) => `${client.name} - ${client.phoneNumber}`}
                             value={
-                                this.state.clients.find(client => client.personID === this.state.selectedClientId) || null
+                                this.state.clients.find(client => client.clientId  === this.state.selectedClientId) || null
                             }
                             onChange={(event, newValue) => {
-                                this.setState({ selectedClientId: newValue ? newValue.personID : null });
+                                this.setState({ selectedClientId: newValue ? newValue.clientId : null });
                             }}
                             renderInput={(params) => (
                                 <TextField

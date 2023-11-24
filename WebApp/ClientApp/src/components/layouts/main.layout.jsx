@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { EventBarView } from "../../components/views/Events/eventBar.view"
+import NavBar from './navBar';
 
 export default function MainLayout() {
   return (
@@ -17,7 +17,7 @@ export default function MainLayout() {
         border: '1px solid #e0e0e0',
         width: '200px',
         height: '100vh',
-      }} >Hola</Box>
+        }} ><NavBar /></Box>
       <Box sx={{
         border: '1px solid #e0e0e0',
         width: 'calc(100vw - 200px)',
@@ -28,7 +28,7 @@ export default function MainLayout() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'end',
-        }}>      </Box>
+        }}> </Box>
         <Box sx={{
             height: 'calc(100vh - 60px)',
             width: '100%',

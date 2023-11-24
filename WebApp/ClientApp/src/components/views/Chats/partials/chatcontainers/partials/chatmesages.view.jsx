@@ -2,7 +2,6 @@ import * as React from "react";
 import ClientContext from "../../../../../../context/Client/client.context";
 import {Box, Typography} from "@mui/material";
 import useApi from "../../../../../../hooks/useApi";
-import Timeline from '@mui/lab/Timeline';
 import * as signalR from '@microsoft/signalr';
 
 
