@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PaginationLayout from "../../../../layouts/pagination/pagination.layout";
 import useApi from "../../../../../hooks/useApi";
 import ListView from "./list.view";
@@ -20,18 +20,6 @@ export default function ContactListView(){
       p:1,
       height: '100%',
     }}>
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '40px',
-      }}>
-        <TextField id="search-form-contact-list" label="Buscar Contacto" variant="outlined" size="small" sx={{
-          mr:1,
-          fontSize: 10,
-        }}/>
-        <Button variant="contained" >Buscar</Button>
-      </Box>
       <Box sx={{pt: "5px",mb: "5px", borderBottom: "2px solid #444"}}>
         <Typography component="span"  sx={{display:"block"}}>Contactos</Typography>
       </Box>

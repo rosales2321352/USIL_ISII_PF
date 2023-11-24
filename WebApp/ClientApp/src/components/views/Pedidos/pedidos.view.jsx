@@ -59,16 +59,13 @@ export class PedidosView extends Component {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            // Aquí puedes manejar cualquier respuesta si es necesario
             const data = await response.json();
-            console.log(data);
 
         } catch (error) {
             console.error("Hubo un problema con la petición fetch:", error);
         }
     }
 
-    // 2. Implementa el método para abrir el modal
     openModal = async (contact) => {
         try {
             // Hacer una solicitud al controlador para obtener los detalles del pedido
@@ -166,7 +163,6 @@ export class PedidosView extends Component {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            console.log(data)
             this.setState({ clients: data.data });
         } catch (error) {
             console.error("Hubo un problema con la petición fetch:", error);
@@ -209,10 +205,8 @@ export class PedidosView extends Component {
 
             const text = await response.text();
             if (text === "ok") {
-                console.log("Pedido creado exitosamente.");
                 this.loadData();
-                this.closeAddModal();  // Cierra el modal una vez que el pedido ha sido creado
-                // Aquí puedes agregar lógica para actualizar tus pedidos o cualquier otra operación posterior
+                this.closeAddModal();
             } else {
                 console.error("Error al crear el pedido:", text);
             }

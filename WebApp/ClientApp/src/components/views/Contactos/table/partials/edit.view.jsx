@@ -28,7 +28,7 @@ export default function Edit() {
                 alert("Cliente actualizado satisfactoriamente.");
                 navigate('client');
             })
-            .catch(err => console.log(err));
+            .catch(err => {});
     }
 
     return (

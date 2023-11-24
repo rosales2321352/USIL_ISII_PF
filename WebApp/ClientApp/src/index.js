@@ -16,16 +16,13 @@ const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-  <StrictMode>
-    <ThemeProvider theme={ThemeDefault}>
-      <ClientState>
-        <EventState>
-          <RouterProvider router={AppRoutes} />
-        </EventState>
-      </ClientState>
-    </ThemeProvider>
-  </StrictMode>
-  
+  <ThemeProvider theme={ThemeDefault}>
+    <ClientState>
+      <EventState>
+        <RouterProvider router={AppRoutes} />
+      </EventState>
+    </ClientState>
+  </ThemeProvider>
 )
 
 // If you want your app to work offline and load faster, you can change

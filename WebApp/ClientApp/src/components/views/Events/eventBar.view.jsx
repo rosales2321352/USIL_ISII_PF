@@ -148,7 +148,6 @@ export class EventBarView extends Component {
                 }
             })
             .then(data => {
-                console.log(data);
                 this.handleAddEventClose();
                 this.loadEvents();
             })
@@ -180,7 +179,6 @@ export class EventBarView extends Component {
                     }
                 })
                 .then(data => {
-                    console.log(data);
                     this.handleClose();
                     this.loadEvents(); 
                 })

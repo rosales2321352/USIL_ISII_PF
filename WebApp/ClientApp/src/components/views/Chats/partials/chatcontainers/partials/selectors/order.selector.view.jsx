@@ -1,9 +1,5 @@
 import * as React from 'react';
 import ClientContext from '../../../../../../../context/Client/client.context';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import useApi from '../../../../../../../hooks/useApi';
 
 export default function OrderSelectorView(){
@@ -21,7 +17,6 @@ export default function OrderSelectorView(){
   const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
-    //console.log(event.target.selectedOptions[0].value);
     setAge(event.target.value);
   };
 

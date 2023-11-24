@@ -14,7 +14,6 @@ export default function TypeAnnotationView({typeAnnotationId,form}) {
   })
 
   const handleChange = (event) => {
-    //console.log(event.target.selectedOptions[0].value);
     setNoteForm({
       ...noteForm,
       annotationTypeID: parseInt(event.target.selectedOptions[0].value)

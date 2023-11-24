@@ -26,16 +26,12 @@ export default function ChatMessagesView(){
     connection.serverTimeoutInMilliseconds = 100000;
 
     connection.start()
-      .then(() => {
-        console.log("Conexión exitosa con el servidor SignalR");
-      })
       .catch(error => {
         console.error("Error al conectar:", error);
         setConnectionError(error);
       });
 
     connection.on("ReceiveMessage", function (user, message) {
-      console.log(`Mensaje recibido de ${user}: ${message}`);
       setLastReceivedMessage({ user, message });
     });
 
@@ -85,7 +81,7 @@ export default function ChatMessagesView(){
       padding:"0 15px",
     }}>
       <Box position="alternate">
-        {
+        {!messages.loading && 
           Array.isArray(messageSorted) && messageSorted.map((message, index) => (
             <Box key={index} sx={{
               display:"flex",
@@ -104,7 +100,9 @@ export default function ChatMessagesView(){
                 width:"max-content",  
                 borderRadius:"5px",
               }}>
-                <Typography component="span" variant="body2" >{message.text}</Typography>
+                  { ClientContext_.current_client.whatsappData.whatsappID&&
+                    <Typography component="span" variant="body2" >{message.text}</Typography>    
+                  }
               </Box>
             </Box>
           ))

@@ -21,7 +21,7 @@ const UserData = ({ client }) => {
                     alert('Cliente fue eliminado.');
                     navigate("/client");
                 })
-                .catch(err => console.log(err))
+                .catch(err => {})
         }
     }
 

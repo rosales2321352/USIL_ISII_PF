@@ -13,7 +13,7 @@ export default function Add() {
         .then(res=> {
             alert("Cliente Agregado Satisfactoriamente.");
             navigat('client');
-        }).catch(err => console.log(err));
+        }).catch(err => {});
     }
     
   return (

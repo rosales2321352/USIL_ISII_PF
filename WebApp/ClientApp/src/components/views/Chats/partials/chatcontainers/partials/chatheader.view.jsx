@@ -1,11 +1,9 @@
 import * as React from "react";
 import ClientContext from "../../../../../../context/Client/client.context";
-import {Box,IconButton,Tooltip,Typography} from "@mui/material"
+import {Box,Typography} from "@mui/material"
 import Avatar from '@mui/material/Avatar';
 import useApi from "../../../../../../hooks/useApi";
-import TodayIcon from '@mui/icons-material/Today';
-import OpportunitySelectorView from "./selectors/opportunity.selector.view";
-import OrderSelectorView from "./selectors/order.selector.view";
+
 
 
 
@@ -65,28 +63,11 @@ export default function ChatHeaderView(){
                 }
                 
               </Box>
-              {/* <Box sx={{ml:1}}>
-                <Tooltip title="Mis Eventos">
-                  <IconButton sx={{
-                    backgroundColor:"#FCF2CC",
-                    border:"1px solid #E9A13B",
-                    "&:hover":{
-                      backgroundColor:"#FCF2CC !important",
-                    },
-                  }}>
-                    <TodayIcon sx={{color:"#E9A13B"}}/>
-                  </IconButton>
-                </Tooltip>
-              </Box> */}
             </Box>
             
           </React.Fragment>
         }
       </Box>
-      {/* <Box sx={{mt:1}}>
-        <OpportunitySelectorView/>
-        <OrderSelectorView/>
-      </Box> */}
     </Box>
   )
 
