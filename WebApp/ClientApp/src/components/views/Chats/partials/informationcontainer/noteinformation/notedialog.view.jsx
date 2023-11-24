@@ -77,7 +77,7 @@ export default function NoteDialogView({note}) {
                 sellerID: ClientContext_.current_client?.sellerID || 0
               })
             }
-          }).catch((error) => {
+          }).then(() => {
             setNoteForm(NoteInformationForm);
             setNoteFormPrevious(NoteInformationForm);
             NoteContext_.setReload(!NoteContext_.reload);  

@@ -33,7 +33,7 @@ namespace WebApp.Controllers
         {
             var conversation = await _conversationService.GetConversationByClient(id);
 
-            ApiSingleObjectResponse<object> response = new(conversation, StatusCodes.Status200OK);
+            ApiSingleObjectResponse<object> response = new(conversation, StatusCodes.Status200OK,"Conversacion Encontrada");
 
             return StatusCode(StatusCodes.Status200OK, response);
         }
