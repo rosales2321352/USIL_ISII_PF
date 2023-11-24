@@ -56,6 +56,7 @@ namespace WebApp.Services
             Client client = await _clientRepository.GetById(request.PersonID);
 
             client.Name = request.Name;
+            client.ClientStatusID = request.ClientStatusID; 
             client.PhoneNumber = request.PhoneNumber;
             client.CompanyID = request.CompanyID;
             client.Email = request.Email;
