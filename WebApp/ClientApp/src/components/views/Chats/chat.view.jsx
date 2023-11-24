@@ -1,8 +1,6 @@
 import { Box, Grid, Paper } from "@mui/material";
 import ContactListView from "./partials/contactlist/contactlist.view";
 import ChatContainersView from "./partials/chatcontainers/chatcontainers.view";
-import useApi, { submitApi } from "../../../hooks/useApi";
-import { useEffect,useState } from "react";
 
 export default function ChatView(){
 

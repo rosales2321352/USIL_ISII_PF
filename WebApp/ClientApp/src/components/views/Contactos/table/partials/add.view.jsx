@@ -1,40 +1,99 @@
-import axios from 'axios'
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import "./modal.css";
 
-export default function Add() {
-    const [inputData, setInputData] = useState({name:'', number:''})
-    const navigat = useNavigate();
-    
-    function handleSubmit(event){
-        event.preventDefault()
+const AddForm = ({ closeModal }) => {
+  const [inputData, setInputData] = useState({
+    name: '',
+    phoneNumber: '',
+    email: '',
+    company: {
+      company_address: '',
+      company_name: '',
+    },
+    status: {
+      clientStatusID: 1,
+      name: 'Sin Agregar',
+    },
+  });
+  const navigate = useNavigate();
 
-        axios.post('https://localhost:44445/api/client', inputData)
-        .then(res=> {
-            alert("Cliente Agregado Satisfactoriamente.");
-            navigat('client');
-        }).catch(err => console.log(err));
-    }
-    
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    axios
+      .post(process.env.REACT_APP_URL_CLIENT_CREATE, inputData)
+      .then((res) => {
+        alert("Cliente Agregado Satisfactoriamente.");
+        navigate('client');
+        closeModal();
+      })
+      .catch((err) => {
+        console.error("Error al agregar el cliente:", err);
+      });
+  };
+
   return (
-    <div className='d-flex w-100 h-100'>
-        <div className='w-50 border bg-ligth p-5'>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input type='text' name='name' className='form-control' 
-                    onChange={e => setInputData({...inputData, name: e.target.value})} />
-                    
-                </div>
-                <div>
-                    <label htmlFor="number">Number</label>
-                    <input type='number' name='number' className='form-control'
-                    onChange={e => setInputData({...inputData, number: e.target.value})} />
-                </div><br/>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="name">Name:</label>
+        <input
+          value={inputData.name}
+          type='text'
+          name='name'
+          className='form-control'
+          onChange={(e) => setInputData({ ...inputData, name: e.target.value })}
+        />
+      </div>
+      <div>
+        <label htmlFor="phoneNumber">Phone Number:</label>
+        <input
+          value={inputData.phoneNumber}
+          type='text'
+          name='phoneNumber'
+          className='form-control'
+          onChange={(e) => setInputData({ ...inputData, phoneNumber: e.target.value })}
+        />
+      </div>
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input
+          value={inputData.email}
+          type='text'
+          name='email'
+          className='form-control'
+          onChange={(e) => setInputData({ ...inputData, email: e.target.value })}
+        />
+      </div>
+      <div>
+        <label htmlFor="company.name">Company Name:</label>
+        <input
+          value={inputData.company.company_name}
+          type='text'
+          name='company_name'
+          className='form-control'
+          onChange={(e) => setInputData({ ...inputData, company: { ...inputData.company, company_name: e.target.value } })}
+        />
+      </div>
+      <div>
+        <label htmlFor="company.address">Company Address:</label>
+        <input
+          value={inputData.company.company_address}
+          type='text'
+          name='company_address'
+          className='form-control'
+          onChange={(e) => setInputData({ ...inputData, company: { ...inputData.company, company_address: e.target.value } })}
+        />
+      </div>
+      <br />
 
-                <button className='btn btn-info' >Submit</button>
-            </form>
-        </div>
-    </div>
-  )
-}
+      <button type='submit' className='btn btn-info'>
+        Submit
+      </button>
+
+    </form>
+  );
+};
+
+export default AddForm;

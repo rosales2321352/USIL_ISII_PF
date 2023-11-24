@@ -24,7 +24,7 @@ const AppRoutes = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: PedidosView
+            Component: Contactos
           },
           {
             path: '/pedidos',
