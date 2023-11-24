@@ -74,7 +74,7 @@ export default function CompanyInformationView(){
 
   return (
     <>
-      <Box sx={{mt:2}}>
+      <Box sx={{mt:2,borderBottom:"1px solid #000",pb:1}}>
         <Typography sx={{fontSize:"14px"}}>Empresa</Typography>
       </Box>
       <Box sx={{mt:2}}>

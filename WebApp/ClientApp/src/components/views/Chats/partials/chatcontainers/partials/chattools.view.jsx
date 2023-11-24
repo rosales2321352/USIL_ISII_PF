@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import SendIcon from '@mui/icons-material/Send';
+import NoteDialogView from "../../informationcontainer/noteinformation/notedialog.view";
 
 export default function ChatToolsView(){
   const [openEmoji, setOpenEmoji] = useState(false);
@@ -61,7 +62,9 @@ export default function ChatToolsView(){
     setOpenEmoji(false);
   }
 
+
   return (
+    <>
     <Box sx={{
       border: '1px solid #e0e0e0',
       height: "150px",
@@ -71,9 +74,7 @@ export default function ChatToolsView(){
     }}>
       <Box sx={{height: "35px"}}>
         <Box sx={{border:"1px solid #e0e0e0", display:"flex", alignItems:"center", justifyContent:"end", p:1, pr:3}}>
-          <IconButton aria-label="Notas" size="small">
-            <NoteAltIcon fontSize="inherit"/>
-          </IconButton>
+          <NoteDialogView note={null}/>
           <IconButton aria-label="Calendario" size="small">
             <CalendarMonthIcon fontSize="inherit"/>
           </IconButton>
@@ -111,6 +112,7 @@ export default function ChatToolsView(){
 
       </Box>
     </Box>
+    </>
   )
 
 }

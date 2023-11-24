@@ -35,7 +35,8 @@ namespace WebApp.Data
                 {
                     e.WhatsappData.WhatsappID,
                     e.WhatsappData.PhonenumberCode
-                }
+                },
+                SellerID = e.SellerID != null ? e.Seller.PersonID : (int?)null
             }).ToListAsync();
 
             return list;
@@ -70,6 +71,7 @@ namespace WebApp.Data
                     e.WhatsappData.WhatsappID,
                     e.WhatsappData.PhonenumberCode
                 },
+                SellerID = e.SellerID != null ? e.Seller.PersonID : (int?)null,
                 TotalOrders = e.Orders.Count(e => e.OrderStatusID != 3),
                 TotalOrdersCanceled = e.Orders.Count(e => e.OrderStatusID == 3),
                 TotalOrdersFinalize = e.Orders.Count(e => e.OrderStatusID == 4),
@@ -111,6 +113,7 @@ namespace WebApp.Data
                     e.WhatsappData.WhatsappID,
                     e.WhatsappData.PhonenumberCode
                 },
+                SellerID = e.SellerID != null ? e.Seller.PersonID : (int?)null,
                 TotalOrders = e.Orders.Count(e => e.OrderStatusID != 3),
                 TotalOrdersCanceled = e.Orders.Count(e => e.OrderStatusID == 3),
                 TotalOrdersFinalize = e.Orders.Count(e => e.OrderStatusID == 4),

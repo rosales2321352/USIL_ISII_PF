@@ -20,3 +20,10 @@ export const ClientInformationForm = {
   ...ClientForm,
   ...CompanyForm
 }
+
+export const NoteInformationForm = {
+  annotationID: null,
+  title: '',
+  description: '',
+  annotationTypeID: null
+}
